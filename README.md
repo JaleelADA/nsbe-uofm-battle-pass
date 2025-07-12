@@ -190,13 +190,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - NSBE UofM Executive Board
 - University of Michigan Engineering Career Resource Center
 - P-Zone and M-Zone collaboration partners
-- Beta testers and student feedback contributors
 
 ## 📞 Support & Contact
 
 ### **Technical Support**
 - Create an issue on GitHub
-- Email: [your-email@umich.edu](mailto:nsbe.membership@umich.edu)
+- Email: [nsbe.membership@umich.edu](mailto:nsbe.membership@umich.edu)
 
 ### **NSBE UofM Chapter**
 - Website: [NSBE UofM](https://maizepages.umich.edu/organization/nsbe)
@@ -205,7 +204,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### **Professional Development Partners**
 - **P-Zone**: Professional development workshops
 - **M-Zone**: Mentorship program coordination
-- **ECRC**: Career resources and guidance
 
 ---
 

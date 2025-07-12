@@ -213,6 +213,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for NSBE UofM | Empowering Excellence Through Technology**
 
-[🔗 Live Demo](https://yourusername.github.io/BP-Game) • [📧 Contact](mailto:your-email@umich.edu) • [🐛 Report Bug](https://github.com/yourusername/BP-Game/issues)
+[🔗 Live site](https://JaleelADA.github.io/BP-Game) • [📧 Contact](mailto:your-email@umich.edu) • [🐛 Report Bug](https://github.com/JaleelADA/BP-Game/issues)
 
 </div>

@@ -78,18 +78,37 @@ python -m http.server 8000
 ## 🏗️ Project Structure
 
 ```
-BP-Game/
-├── index.html              # Main entry point
-├── src/
+nsbe-uofm-battle-pass/
+├── index.html              # Web app main entry point
+├── src/                    # Web application source
 │   ├── app-optimized.js    # Main React application (optimized)
 │   ├── app.js             # Original application (full-featured)
 │   ├── App.jsx            # Alternative React component
 │   ├── main.jsx           # React entry point
 │   └── index.css          # Custom styles
+├── mobile/                 # 📱 React Native mobile app
+│   ├── src/
+│   │   ├── App.js         # Main mobile app component
+│   │   ├── components/    # Mobile UI components
+│   │   ├── services/      # Google Sheets integration
+│   │   ├── styles/        # Mobile styling and theme
+│   │   └── utils/         # Utilities and static data
+│   ├── package.json       # Mobile app dependencies
+│   └── README.md          # Mobile setup instructions
 ├── tailwind.config.js     # Tailwind configuration
-├── test-optimized.html    # Testing page for optimized version
 └── README.md              # Project documentation
 ```
+
+## 📱 Mobile App
+
+A React Native mobile application is available in the `/mobile` directory with:
+
+- **Full leaderboard search** - Find any user in the complete database
+- **Real-time data sync** - Same Google Sheets integration as web app
+- **Mobile-optimized UI** - Touch-friendly interface with native components
+- **Core features** - User stats, badges, events, announcements, and leaderboard
+
+See [`/mobile/README.md`](./mobile/README.md) for setup instructions.
 
 ## 🎨 Customization
 
@@ -160,7 +179,7 @@ We welcome contributions from NSBE members and the broader community!
 
 ### **Version 2.0**
 - [ ] User authentication system
-- [ ] Mobile app (React Native)
+- [x] Mobile app (React Native) ✅ **Available in `/mobile` directory**
 - [ ] Push notifications for events
 - [ ] Social features (friend connections)
 - [ ] Advanced analytics dashboard

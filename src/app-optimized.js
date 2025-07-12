@@ -1277,45 +1277,177 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           </div>
         </StyledSection>
 
-        {/* Achievement Badges */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-yellow-400 mb-4 text-center">🏅 ACHIEVEMENT BADGES</h2>
-          <div className="text-center mb-6 p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
-            <p className="text-blue-200 text-sm">
-              🔗 <strong>Live Progress Tracking:</strong> Your achievements update automatically based on event attendance and XP earned. 
-              Complete more PD workshops, mentorship sessions, and academic activities to unlock new badges!
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {achievements.filter(achievement => activeFilter === 'all' || achievement.category === activeFilter).map((achievement, index) => (
-              <div
-                key={index}
-                className={`p-4 text-center transition-all cursor-pointer hover:scale-105 ${
-                  achievement.status === 'completed' ? 'opacity-100' : 'opacity-60'
-                }`}
-                style={{
-                  background: achievement.status === 'completed' 
-                    ? 'linear-gradient(135deg, #1e293b, #334155)' 
-                    : 'linear-gradient(135deg, #374151, #4b5563)',
-                  clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)',
-                  border: `3px solid ${achievement.color}`,
-                  boxShadow: achievement.status === 'completed' 
-                    ? `0 0 20px ${achievement.glow}` 
-                    : 'none'
-                }}
-              >
-                <div className="text-3xl mb-2">{achievement.icon}</div>
-                <div className="text-xs font-bold text-white mb-1">{achievement.name}</div>
-                <div className="text-xs text-gray-300 mb-2">{achievement.desc}</div>
-                {achievement.status === 'completed' ? (
-                  <div className="text-xs text-yellow-400 font-bold">+{achievement.xp} XP ✓</div>
-                ) : (
-                  <div className="text-xs text-gray-500">+{achievement.xp} XP 🔒</div>
-                )}
-              </div>
-            ))}
-          </div>
+        {/* Filter Buttons for Subsections */}
+        <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { id: 'all', label: 'Progress', icon: '🌟', color: 'yellow' },
+            { id: 'nsbe', label: 'NSBE Mentoring', icon: '🔥', color: 'red' },
+            { id: 'pzone', label: 'Professional Dev', icon: '🚀', color: 'blue' },
+            { id: 'academic', label: 'Academic Corner', icon: '🎓', color: 'purple' }
+          ].map((filter) => (
+            <button
+              key={filter.id}
+              onClick={() => setActiveFilter(filter.id)}
+              className={`p-4 text-sm font-semibold transition-all duration-300 border-2 ${
+                activeFilter === filter.id 
+                  ? `bg-${filter.color}-400/20 text-${filter.color}-300 border-${filter.color}-400 shadow-lg` 
+                  : 'text-gray-300 hover:text-white hover:bg-gray-700/30 border-gray-600'
+              }`}
+              style={{ 
+                clipPath: 'polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px)',
+                fontFamily: 'Orbitron, monospace'
+              }}
+            >
+              <div className="text-2xl mb-2">{filter.icon}</div>
+              <div>{filter.label}</div>
+            </button>
+          ))}
         </div>
+
+        {/* Content based on active filter */}
+        {activeFilter === 'all' && (
+          <div>
+            {/* Achievement Badges */}
+            <div className="mb-6">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-4 text-center">🏅 ACHIEVEMENT BADGES</h2>
+              <div className="text-center mb-6 p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
+                <p className="text-blue-200 text-sm">
+                  🔗 <strong>Live Progress Tracking:</strong> Your achievements update automatically based on event attendance and XP earned. 
+                  Complete more PD workshops, mentorship sessions, and academic activities to unlock new badges!
+                </p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {achievements.map((achievement, index) => (
+                  <div
+                    key={index}
+                    className={`p-4 text-center transition-all cursor-pointer hover:scale-105 ${
+                      achievement.status === 'completed' ? 'opacity-100' : 'opacity-60'
+                    }`}
+                    style={{
+                      background: achievement.status === 'completed' 
+                        ? 'linear-gradient(135deg, #1e293b, #334155)' 
+                        : 'linear-gradient(135deg, #374151, #4b5563)',
+                      clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)',
+                      border: `3px solid ${achievement.color}`,
+                      boxShadow: achievement.status === 'completed' ? `0 0 20px ${achievement.glow}` : 'none'
+                    }}
+                  >
+                    <div className="text-3xl mb-2">{achievement.icon}</div>
+                    <div className="text-xs font-bold text-white mb-1">{achievement.name}</div>
+                    <div className="text-xs text-gray-300 mb-2">{achievement.desc}</div>
+                    {achievement.status === 'completed' ? (
+                      <div className="text-xs text-yellow-400 font-bold">+{achievement.xp} XP ✓</div>
+                    ) : (
+                      <div className="text-xs text-gray-500">+{achievement.xp} XP 🔒</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* NSBE Mentoring Section */}
+        {activeFilter === 'nsbe' && (
+          <div className="space-y-8">
+            <StyledSection theme="gold" className="p-6" style={{
+              clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
+              border: '2px solid #ffed4e',
+              color: '#fff'
+            }}>
+              <h3 className="text-xl font-bold mb-4 text-center text-white">🎯 NSBE UofM Mentorship Program 2025</h3>
+              <p className="text-sm mb-4 text-white">
+                The NSBE UofM Mentorship Program empowers students through intentional, community-driven relationships 
+                that promote academic excellence, professional growth, and a strong cultural foundation.
+              </p>
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <div className="p-3 bg-black/20 rounded">
+                  <strong className="text-yellow-300">🔥 Mentorship Benefits:</strong>
+                  <ul className="text-sm mt-2 space-y-1 text-white">
+                    <li>• 1-on-1 career guidance</li>
+                    <li>• Industry connections</li>
+                    <li>• Personal development</li>
+                    <li>• Academic support</li>
+                  </ul>
+                </div>
+                <div className="p-3 bg-black/20 rounded">
+                  <strong className="text-yellow-300">🎯 Program Structure:</strong>
+                  <ul className="text-sm mt-2 space-y-1 text-white">
+                    <li>• Monthly mentor meetings</li>
+                    <li>• Group activities</li>
+                    <li>• Professional workshops</li>
+                    <li>• Networking events</li>
+                  </ul>
+                </div>
+              </div>
+              <button className="w-full p-3 text-center font-bold bg-gradient-to-r from-red-600 to-red-700 text-white transition-all duration-300 hover:from-red-700 hover:to-red-800">
+                🔥 Sign Up for Mentorship Program
+              </button>
+            </StyledSection>
+          </div>
+        )}
+
+        {/* Professional Dev Section */}
+        {activeFilter === 'pzone' && (
+          <StyledSection theme="blue" className="p-6" style={{
+            clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+            border: '2px solid #0ea5e9'
+          }}>
+            <h3 className="text-2xl font-bold text-sky-200 mb-6 text-center">🚀 PROFESSIONAL DEVELOPMENT ZONE</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="text-lg font-bold text-yellow-300 mb-4">📝 Resume Resources</h4>
+                <div className="space-y-3">
+                  <a href="https://careercenter.umich.edu/article/resume-resources" target="_blank" className="block p-3 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors">
+                    📄 Career Center Resume Resources
+                  </a>
+                  <a href="https://career.engin.umich.edu/resumes-cvs-cover-letters/" target="_blank" className="block p-3 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors">
+                    🔧 ECRC Resume, CVs, and Cover Letters
+                  </a>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-lg font-bold text-yellow-300 mb-4">🎯 Interview Prep</h4>
+                <div className="space-y-3">
+                  <button className="w-full p-2 text-left text-sky-100 hover:bg-sky-800/30 border border-sky-600">
+                    🎤 Mock Interview Sessions
+                  </button>
+                  <button className="w-full p-2 text-left text-sky-100 hover:bg-sky-800/30 border border-sky-600">
+                    💡 Technical Interview Prep
+                  </button>
+                  <button className="w-full p-2 bg-sky-400/30 text-sky-100 font-bold border border-sky-400">
+                    📥 Download Interview Guide PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+          </StyledSection>
+        )}
+
+        {/* Academic Corner */}
+        {activeFilter === 'academic' && (
+          <StyledSection theme="red" className="p-6" style={{
+            clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+            border: '2px solid #ef4444'
+          }}>
+            <h3 className="text-2xl font-bold text-red-200 mb-4 text-center">📚 ACADEMIC EXCELLENCE CORNER</h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="p-4 bg-red-900/50 border border-red-400">
+                <div className="text-yellow-300 font-bold mb-2">🌟 Current Recognition</div>
+                <div className="text-red-100">"Study Star" - Top 10% GPA in your cohort</div>
+              </div>
+              <div className="p-4 bg-red-900/50 border border-red-400">
+                <div className="text-yellow-300 font-bold mb-2">💡 Tip of the Week</div>
+                <div className="text-red-100 text-sm">Schedule study sessions during peak focus hours (9-11 AM)</div>
+              </div>
+              <div className="p-4 bg-red-900/50 border border-red-400">
+                <button className="w-full p-3 bg-red-400/30 text-red-100 hover:bg-red-400/40 transition-all font-bold">
+                  📖 Access Study Resources
+                </button>
+              </div>
+            </div>
+          </StyledSection>
+        )}
       </div>
     </div>
   );

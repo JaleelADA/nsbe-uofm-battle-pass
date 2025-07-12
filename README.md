@@ -181,10 +181,8 @@ We welcome contributions from NSBE members and the broader community!
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Authors & Acknowledgments
-
 ### **Development Team**
-- **Lead Developer**: [Your Name](https://github.com/yourusername)
+- **Lead Developer**: [Jaleel Drones](https://github.com/JaleelADA)
 - **NSBE UofM Chapter**: Mentorship program design
 - **P-Zone Partnership**: Professional development content
 
@@ -198,7 +196,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### **Technical Support**
 - Create an issue on GitHub
-- Email: [your-email@umich.edu](mailto:your-email@umich.edu)
+- Email: [your-email@umich.edu](mailto:nsbe.membership@umich.edu)
 
 ### **NSBE UofM Chapter**
 - Website: [NSBE UofM](https://maizepages.umich.edu/organization/nsbe)

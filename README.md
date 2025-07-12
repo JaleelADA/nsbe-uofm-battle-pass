@@ -6,7 +6,6 @@
 
 A gamified mentorship and professional development platform for the National Society of Black Engineers (NSBE) University of Michigan chapter. Track progress, earn achievements, and unlock career development opportunities through an interactive Battle Pass system.
 
-![NSBE Battle Pass Preview](https://via.placeholder.com/800x400/0f172a/ffd700?text=NSBE+Battle+Pass+2025)
 
 ## 🚀 Features
 
@@ -20,7 +19,7 @@ A gamified mentorship and professional development platform for the National Soc
 ### 🔥 **Mentorship Hub**
 - **NSBE Mentoring** - Program details and sign-up portal
 - **Professional Development** - Resume resources and interview prep
-- **Academic Corner** - GPA tracking and study resources
+- **Academic Corner** - study resources
 - **Interactive Filters** - Navigate between different development areas
 
 ### 📊 **Data Integration**

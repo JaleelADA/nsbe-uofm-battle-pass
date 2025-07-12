@@ -1,6 +1,6 @@
 ﻿## 🏆 NSBE UofM Battle Pass 2025
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://yourusername.github.io/BP-Game)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://nsbeum.live)
 [![GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-blue)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -213,6 +213,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ for NSBE UofM | Empowering Excellence Through Technology**
 
-[🔗 Live site](https://JaleelADA.github.io/BP-Game) • [📧 Contact](mailto:your-email@umich.edu) • [🐛 Report Bug](https://github.com/JaleelADA/BP-Game/issues)
+[🔗 Live site](https://nsbeum.live) • [📧 Contact](mailto:jaleeldrones1@gmail.com) • [🐛 Report Bug](https://github.com/JaleelADA/BP-Game/issues)
 
 </div>

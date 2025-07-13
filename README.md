@@ -178,8 +178,8 @@ We welcome contributions from NSBE members and the broader community!
 ## 📋 Roadmap
 
 ### **Version 2.0**
-- [ ] User authentication system
-- [x] Mobile app (React Native) ✅ **Available in `/mobile` directory**
+- [x] User authentication system
+- [x] Mobile UI
 - [ ] Push notifications for events
 - [ ] Social features (friend connections)
 - [ ] Advanced analytics dashboard
@@ -193,7 +193,6 @@ We welcome contributions from NSBE members and the broader community!
 ## 🐛 Known Issues
 
 - **Large datasets**: Performance may slow with 500+ students
-- **Mobile Safari**: Some CSS animations may not render smoothly
 - **IE compatibility**: Not supported (requires modern browser)
 
 ## 📄 License

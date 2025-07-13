@@ -315,35 +315,35 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
   const progress = hasUserData && userXP ? (userXP / maxXP) * 100 : 0;
   
   return (
-    <div className="relative p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8" style={{
+    <div className="relative p-3 sm:p-4 lg:p-5 mb-3 sm:mb-4 lg:mb-5" style={{
       background: 'linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 50%, #0a0f1c 100%)',
       clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
       border: '2px solid #FFD700',
       boxShadow: '0 0 30px rgba(255, 215, 0, 0.4), inset 0 0 50px rgba(255, 215, 0, 0.1)'
     }}>
       
-      <div className="flex flex-col lg:flex-row items-center lg:justify-between space-y-6 lg:space-y-0">
-        <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-8 w-full lg:w-auto">
+      <div className="flex flex-col lg:flex-row items-center lg:justify-between space-y-4 lg:space-y-0">
+        <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3 lg:space-x-6 w-full lg:w-auto">
           {/* NSBE Torch Logo */}
           <div className="relative shrink-0">
-            <div className="w-16 h-20 sm:w-20 sm:h-24 lg:w-24 lg:h-28 flex items-center justify-center relative" style={{
+            <div className="w-14 h-16 sm:w-16 sm:h-20 lg:w-20 lg:h-24 flex items-center justify-center relative" style={{
               background: 'linear-gradient(135deg, #FFD700, #FFA500)',
               clipPath: SHARED_STYLES.clipPaths.badge,
               boxShadow: '0 0 25px rgba(255, 215, 0, 0.6)'
             }}>
-              <div className="w-12 h-16 sm:w-14 sm:h-18 lg:w-16 lg:h-20 flex items-center justify-center relative" style={{
+              <div className="w-10 h-14 sm:w-12 sm:h-16 lg:w-14 lg:h-18 flex items-center justify-center relative" style={{
                 background: 'linear-gradient(135deg, #0a0f1c, #1a1f2e)',
                 clipPath: SHARED_STYLES.clipPaths.badge,
                 border: '2px solid #FFD700'
               }}>
-                <div className="text-lg sm:text-xl lg:text-2xl">🔥</div>
+                <div className="text-base sm:text-lg lg:text-xl">🔥</div>
               </div>
             </div>
           </div>
           
           <div className="flex-1 text-center sm:text-left w-full">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 lg:space-x-6 mb-4 lg:mb-6">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black tracking-wider" style={{
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 lg:space-x-4 mb-3 lg:mb-4">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-black tracking-wider" style={{
                 fontFamily: 'Orbitron, monospace',
                 background: SHARED_STYLES.gradients.gold,
                 WebkitBackgroundClip: 'text',
@@ -351,20 +351,20 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
                 textShadow: '0 0 30px rgba(255, 215, 0, 0.8)',
                 letterSpacing: '0.15em'
               }}>NSBE</h1>
-              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-bold text-yellow-400" style={{
+              <h2 className="text-base sm:text-lg md:text-xl lg:text-3xl font-bold text-yellow-400" style={{
                 fontFamily: 'Orbitron, monospace',
                 letterSpacing: '0.1em'
               }}>UofM BATTLE PASS</h2>
             </div>
             
             {/* Name Input */}
-            <div className="mb-4 lg:mb-6">
+            <div className="mb-3 lg:mb-4">
               <input
                 type="text"
                 placeholder="Enter your name to see your XP"
                 value={userName}
                 onChange={(e) => onNameChange(e.target.value)}
-                className="w-full max-w-sm lg:max-w-md bg-gray-900/90 border-2 border-yellow-400/60 px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base text-yellow-100 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
+                className="w-full max-w-sm lg:max-w-md bg-gray-900/90 border-2 border-yellow-400/60 px-3 py-2 lg:px-3 lg:py-2 text-sm lg:text-base text-yellow-100 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
                 style={{ 
                   fontFamily: 'Orbitron, monospace',
                   clipPath: SHARED_STYLES.clipPaths.card,
@@ -375,7 +375,7 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
             
             {/* Progress Bar - only show when user has data */}
             {hasUserData && (
-              <div className="w-full max-w-sm lg:max-w-md bg-gray-900 h-6 lg:h-8 relative" style={{
+              <div className="w-full max-w-sm lg:max-w-md bg-gray-900 h-5 lg:h-6 relative" style={{
                 border: '2px lg:border-3 solid #FFD700',
                 clipPath: SHARED_STYLES.clipPaths.card,
                 boxShadow: '0 0 25px rgba(255, 215, 0, 0.4)'
@@ -396,20 +396,20 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
         {/* Level/XP display - only show when user has data */}
         {hasUserData && (
           <div className="text-center lg:text-right">
-            <div className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-black" style={{
+            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black" style={{
               fontFamily: 'Orbitron, monospace',
               background: SHARED_STYLES.gradients.gold,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               textShadow: '0 0 40px rgba(255, 215, 0, 0.8)'
             }}>{userLevel}</div>
-            <div className="text-sm sm:text-base lg:text-xl text-yellow-300 font-bold" style={{
+            <div className="text-sm sm:text-base lg:text-lg text-yellow-300 font-bold" style={{
               fontFamily: 'Orbitron, monospace'
             }}>
               {userXP}/{maxXP} XP
             </div>
             {userName && (
-              <div className="text-yellow-400 font-bold mt-2 lg:mt-3 text-sm sm:text-base lg:text-lg" style={{
+              <div className="text-yellow-400 font-bold mt-2 lg:mt-2 text-sm sm:text-base lg:text-base" style={{
                 fontFamily: 'Orbitron, monospace'
               }}>
                 Welcome, {userName}!
@@ -730,11 +730,11 @@ function InfoSidebar() {
 
 function BadgeSection() {
   return (
-    <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+    <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-5">
       {BADGES_CONFIG.map((badge, index) => (
         <div key={index} className={`bg-gradient-to-br ${badge.color} ${
           badge.active ? 'opacity-100' : 'opacity-40'
-        } p-3 sm:p-4 lg:p-6 text-center min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] transform hover:scale-105 transition-all duration-300 relative`}
+        } p-2 sm:p-3 lg:p-4 text-center min-w-[90px] sm:min-w-[110px] lg:min-w-[120px] transform hover:scale-105 transition-all duration-300 relative`}
         style={{
           clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
           border: `2px solid ${badge.active ? badge.border : '#4a5568'}`,
@@ -761,9 +761,9 @@ function MentorshipSection({ onMentorshipClick }) {
   return (
     <StyledSection style={{
       clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-    }} className="p-4 sm:p-6 lg:p-8 h-fit">
+    }} className="p-3 sm:p-4 lg:p-5 h-fit">
       <div className="text-center">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-4 sm:mb-6 relative" style={{
+        <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 relative" style={{
           background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
           clipPath: SHARED_STYLES.clipPaths.badge,
           boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
@@ -776,12 +776,12 @@ function MentorshipSection({ onMentorshipClick }) {
           </div>
         </div>
         <SectionTitle theme="blue">MENTORSHIP</SectionTitle>
-        <div className="p-3 sm:p-4 mb-3 sm:mb-4 relative" style={{
+        <div className="p-2 sm:p-3 mb-2 sm:mb-3 relative" style={{
           background: 'rgba(55, 65, 81, 0.7)',
           clipPath: SHARED_STYLES.clipPaths.card,
           border: '1px solid #6b7280'
         }}>
-          <div className="font-bold text-base sm:text-lg lg:text-xl mb-2" style={{
+          <div className="font-bold text-sm sm:text-base lg:text-lg mb-1" style={{
             background: SHARED_STYLES.gradients.gold,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
@@ -808,9 +808,9 @@ function MemberStats({ userStats }) {
   return (
     <StyledSection style={{
       clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-    }} className="p-4 sm:p-6 lg:p-8 h-fit">
+    }} className="p-3 sm:p-4 lg:p-5 h-fit">
       <div className="text-center">
-        <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 mx-auto mb-4 sm:mb-6 relative" style={{
+        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-3 sm:mb-4 relative" style={{
           background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
           clipPath: SHARED_STYLES.clipPaths.badge,
           boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)'
@@ -829,13 +829,13 @@ function MemberStats({ userStats }) {
         </div>
         <SectionTitle theme="gold">MEMBER STATS</SectionTitle>
         {userStats && userStats.rank && (
-          <div className="mt-4 sm:mt-6 space-y-2">
-            <div className="p-2 sm:p-3 relative bg-gray-800/70 border border-gray-600" style={{
+          <div className="mt-3 sm:mt-4 space-y-2">
+            <div className="p-2 sm:p-2 relative bg-gray-800/70 border border-gray-600" style={{
               clipPath: SHARED_STYLES.clipPaths.button
             }}>
               <div className="text-xs sm:text-sm text-gray-300">Tier: <span className="text-yellow-400 font-bold">{userStats.tier}</span></div>
             </div>
-            <div className="p-2 sm:p-3 relative bg-gray-800/70 border border-gray-600" style={{
+            <div className="p-2 sm:p-2 relative bg-gray-800/70 border border-gray-600" style={{
               clipPath: SHARED_STYLES.clipPaths.button
             }}>
               <div className="text-xs sm:text-sm text-gray-300">Rank: <span className="text-yellow-400 font-bold">#{userStats.rank}</span></div>
@@ -960,8 +960,8 @@ function Leaderboard({ userName, onUserDataFound }) {
   return (
     <StyledSection style={{
       clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-    }} className="p-4 sm:p-6 lg:p-8 h-fit">
-      <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 space-y-2 sm:space-y-0">
+    }} className="p-3 sm:p-4 lg:p-5 h-fit">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-4 sm:mb-5 space-y-2 sm:space-y-0">
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-black font-futuristic tracking-wider text-center sm:text-left" style={{
           background: SHARED_STYLES.gradients.gold,
           WebkitBackgroundClip: 'text',
@@ -979,7 +979,7 @@ function Leaderboard({ userName, onUserDataFound }) {
         </div>
       )}
       
-      <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
+      <div className="space-y-2 sm:space-y-3 max-h-64 sm:max-h-80 overflow-y-auto">
         {leaders.map((leader, index) => {
           const isCurrentUser = userName && (
             leader.name.toLowerCase().includes(userName.toLowerCase()) ||
@@ -987,29 +987,29 @@ function Leaderboard({ userName, onUserDataFound }) {
           );
           
           return (
-            <div key={index} className={`flex justify-between items-center text-white p-3 sm:p-4 border transition-all duration-300 ${
+            <div key={index} className={`flex justify-between items-center text-white p-2 sm:p-3 border transition-all duration-300 ${
               isCurrentUser 
                 ? 'bg-yellow-400/20 border-yellow-400 shadow-lg shadow-yellow-400/20' 
                 : 'bg-gray-800/30 border-gray-600 hover:bg-gray-700/30'
             }`} style={{
               clipPath: SHARED_STYLES.clipPaths.card
             }}>
-              <div className="flex items-center space-x-3 sm:space-x-4">
-                <span className={`font-bold text-base sm:text-lg tracking-wide min-w-[20px] ${
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <span className={`font-bold text-sm sm:text-base tracking-wide min-w-[15px] ${
                   isCurrentUser ? 'text-yellow-400' : 'text-white'
                 }`}>{leader.rank}</span>
                 <div>
-                  <div className={`font-bold text-sm sm:text-base lg:text-lg ${
+                  <div className={`font-bold text-xs sm:text-sm lg:text-base ${
                     isCurrentUser ? 'text-yellow-300' : 'text-white'
                   }`}>
                     {leader.name} {isCurrentUser && '(You)'}
                   </div>
-                  <div className={`text-xs sm:text-sm font-semibold ${getTierColor(leader.tier)}`}>
+                  <div className={`text-xs sm:text-xs font-semibold ${getTierColor(leader.tier)}`}>
                     {leader.tier}
                   </div>
                 </div>
               </div>
-              <span className="font-black text-lg sm:text-xl" style={{
+              <span className="font-black text-base sm:text-lg" style={{
                 background: SHARED_STYLES.gradients.gold,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
@@ -1019,11 +1019,11 @@ function Leaderboard({ userName, onUserDataFound }) {
         })}
       </div>
       
-      <div className="mt-4 sm:mt-6 text-center">
+      <div className="mt-3 sm:mt-4 text-center">
         <StyledButton 
           onClick={fetchLeaderboardData}
           disabled={loading}
-          className="text-xs sm:text-sm py-2 px-4 sm:py-3 sm:px-6"
+          className="text-xs sm:text-sm py-2 px-3 sm:py-2 sm:px-4"
         >
           {loading ? 'Refreshing...' : 'Refresh Data'}
         </StyledButton>
@@ -1097,10 +1097,10 @@ function App() {
         
         {/* Show main dashboard content */}
         {hasUserData ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
             <div className="lg:col-span-2 xl:col-span-2">
               <BadgeSection />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
                 <MentorshipSection onMentorshipClick={() => setMentorshipMode(true)} />
                 <MemberStats userStats={userStats} />
               </div>
@@ -1117,16 +1117,16 @@ function App() {
           </div>
         ) : (
           /* Show main dashboard without user-specific data */
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
             <div className="lg:col-span-2 xl:col-span-2">
               <BadgeSection />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
                 <MentorshipSection onMentorshipClick={() => setMentorshipMode(true)} />
                 <StyledSection style={{
                   clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-                }} className="p-4 sm:p-6 lg:p-8 h-fit">
+                }} className="p-3 sm:p-4 lg:p-5 h-fit">
                   <div className="text-center">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 mx-auto mb-4 sm:mb-6 relative" style={{
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-3 sm:mb-4 relative" style={{
                       background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
                       clipPath: SHARED_STYLES.clipPaths.badge,
                       boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)'
@@ -1164,8 +1164,8 @@ function App() {
         
         {/* User stats display when name is entered */}
         {userName && userStats.rank && (
-          <StyledSection theme="gold" className="mt-6 sm:mt-8 text-center p-3 sm:p-4">
-            <p className="text-yellow-400 font-bold text-base sm:text-lg lg:text-xl" style={{
+          <StyledSection theme="gold" className="mt-4 sm:mt-5 text-center p-2 sm:p-3">
+            <p className="text-yellow-400 font-bold text-sm sm:text-base lg:text-lg" style={{
               fontFamily: 'Orbitron, monospace'
             }}>
               {userName} - Rank #{userStats.rank} | {userStats.tier} Tier | {userStats.xp} XP
@@ -1174,7 +1174,7 @@ function App() {
         )}
         
         {/* Debug info */}
-        <div className="mt-6 sm:mt-8 text-center text-gray-500 text-xs sm:text-sm">
+        <div className="mt-4 sm:mt-5 text-center text-gray-500 text-xs sm:text-sm">
           <p>Connected to Google Sheet: {SHEET_CONFIG.SHEET_ID}</p>
           <p>Last updated: {new Date().toLocaleTimeString()}</p>
         </div>

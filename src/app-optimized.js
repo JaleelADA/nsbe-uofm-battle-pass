@@ -154,7 +154,8 @@ const SHARED_STYLES = {
     gold: 'linear-gradient(135deg, #ffd700, #ffed4e)',
     blue: 'linear-gradient(135deg, #60a5fa, #3b82f6)',
     green: 'linear-gradient(135deg, #34d399, #10b981)',
-    purple: 'linear-gradient(135deg, #a78bfa, #8b5cf6)'
+    purple: 'linear-gradient(135deg, #a78bfa, #8b5cf6)',
+    progress: 'linear-gradient(90deg, #34d399, #10b981)'
   },
   
   // Borders
@@ -171,6 +172,32 @@ const SHARED_STYLES = {
     blue: '0 0 20px rgba(59, 130, 246, 0.2)',
     green: '0 0 20px rgba(16, 185, 129, 0.2)',
     purple: '0 0 20px rgba(139, 92, 246, 0.2)'
+  },
+  
+  // Add responsive utilities
+  responsive: {
+    mobile: 'max-width: 640px',
+    tablet: 'max-width: 1024px', 
+    desktop: 'min-width: 1025px'
+  },
+  
+  // Responsive spacing
+  spacing: {
+    mobile: {
+      padding: '1rem',
+      margin: '0.5rem',
+      gap: '0.5rem'
+    },
+    tablet: {
+      padding: '1.5rem',
+      margin: '1rem', 
+      gap: '1rem'
+    },
+    desktop: {
+      padding: '2rem',
+      margin: '1.5rem',
+      gap: '1.5rem'
+    }
   }
 };
 
@@ -1252,27 +1279,27 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           border: '3px solid #ffd700',
           boxShadow: '0 0 40px rgba(255, 215, 0, 0.4)'
         }}>
-          <h1 className="text-5xl font-black tracking-wider mb-4" style={{
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-wider mb-2 md:mb-4" style={{
             background: SHARED_STYLES.gradients.gold,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             fontFamily: 'Orbitron, monospace'
           }}>🔥 MENTORSHIP + DEVELOPMENT HUB</h1>
-          <p className="text-xl text-gray-300 mb-6" style={{ fontFamily: 'Orbitron, monospace' }}>
+          <p className="text-sm md:text-xl text-gray-300 mb-4 md:mb-6" style={{ fontFamily: 'Orbitron, monospace' }}>
             Powered by NSBE UofM × P-Zone × M-Zone
           </p>
-          <div className="flex justify-center items-center space-x-8 text-4xl">
+          <div className="flex justify-center items-center space-x-4 md:space-x-8 text-2xl md:text-4xl">
             <div className="text-center">
               <div>🔥</div>
-              <div className="text-sm text-yellow-400 mt-2">NSBE</div>
+              <div className="text-xs md:text-sm text-yellow-400 mt-1 md:mt-2">NSBE</div>
             </div>
             <div className="text-center">
               <div>🎓</div>
-              <div className="text-sm text-blue-400 mt-2">Academic</div>
+              <div className="text-xs md:text-sm text-blue-400 mt-1 md:mt-2">Academic</div>
             </div>
             <div className="text-center">
               <div>🚀</div>
-              <div className="text-sm text-purple-400 mt-2">P-Zone</div>
+              <div className="text-xs md:text-sm text-purple-400 mt-1 md:mt-2">P-Zone</div>
             </div>
           </div>
         </StyledSection>
@@ -1298,8 +1325,8 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
                 fontFamily: 'Orbitron, monospace'
               }}
             >
-              <div className="text-2xl mb-2">{filter.icon}</div>
-              <div>{filter.label}</div>
+              <div className="text-xl mb-1">{filter.icon}</div>
+              <div className="text-xs">{filter.label}</div>
             </button>
           ))}
         </div>
@@ -1393,30 +1420,27 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
             clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
             border: '2px solid #0ea5e9'
           }}>
-            <h3 className="text-2xl font-bold text-sky-200 mb-6 text-center">🚀 PROFESSIONAL DEVELOPMENT ZONE</h3>
-            <div className="grid md:grid-cols-2 gap-6">
+            <h3 className="text-xl font-bold text-sky-200 mb-4 text-center">🚀 PROFESSIONAL DEVELOPMENT</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h4 className="text-lg font-bold text-yellow-300 mb-4">📝 Resume Resources</h4>
-                <div className="space-y-3">
-                  <a href="https://careercenter.umich.edu/article/resume-resources" target="_blank" className="block p-3 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors">
-                    📄 Career Center Resume Resources
+                <h4 className="text-lg font-bold text-yellow-300 mb-3">📝 Resume Resources</h4>
+                <div className="space-y-2">
+                  <a href="https://careercenter.umich.edu/article/resume-resources" target="_blank" className="block p-2 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
+                    📄 Career Center Resources
                   </a>
-                  <a href="https://career.engin.umich.edu/resumes-cvs-cover-letters/" target="_blank" className="block p-3 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors">
-                    🔧 ECRC Resume, CVs, and Cover Letters
+                  <a href="https://career.engin.umich.edu/resumes-cvs-cover-letters/" target="_blank" className="block p-2 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
+                    🔧 ECRC Resume Guide
                   </a>
                 </div>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-yellow-300 mb-4">🎯 Interview Prep</h4>
-                <div className="space-y-3">
-                  <button className="w-full p-2 text-left text-sky-100 hover:bg-sky-800/30 border border-sky-600">
-                    🎤 Mock Interview Sessions
+                <h4 className="text-lg font-bold text-yellow-300 mb-3">🎯 Interview Prep</h4>
+                <div className="space-y-2">
+                  <button className="w-full p-2 text-left text-sm text-sky-100 hover:bg-sky-800/30 border border-sky-600 rounded">
+                    🎤 Mock Interviews
                   </button>
-                  <button className="w-full p-2 text-left text-sky-100 hover:bg-sky-800/30 border border-sky-600">
-                    💡 Technical Interview Prep
-                  </button>
-                  <button className="w-full p-2 bg-sky-400/30 text-sky-100 font-bold border border-sky-400">
-                    📥 Download Interview Guide PDF
+                  <button className="w-full p-2 text-left text-sm text-sky-100 hover:bg-sky-800/30 border border-sky-600 rounded">
+                    💡 Technical Prep
                   </button>
                 </div>
               </div>
@@ -1430,8 +1454,8 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
             clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
             border: '2px solid #ef4444'
           }}>
-            <h3 className="text-2xl font-bold text-red-200 mb-4 text-center">📚 ACADEMIC EXCELLENCE CORNER</h3>
-            <div className="grid md:grid-cols-3 gap-6">
+            <h3 className="text-xl font-bold text-red-200 mb-4 text-center">📚 ACADEMIC EXCELLENCE CORNER</h3>
+            <div className="grid md:grid-cols-3 gap-4">
               <div className="p-4 bg-red-900/50 border border-red-400">
                 <div className="text-yellow-300 font-bold mb-2">🌟 Current Recognition</div>
                 <div className="text-red-100">"Study Star" - Top 10% GPA in your cohort</div>

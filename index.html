@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     <title>NSBEUM Battle Pass 2.0</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -101,6 +101,61 @@
         overflow: visible;
         clip: auto;
         white-space: normal;
+      }
+      
+      /* Mobile-first responsive utilities */
+      @media (max-width: 640px) {
+        .text-responsive {
+          font-size: 0.875rem;
+          line-height: 1.25rem;
+        }
+        
+        .clip-mobile {
+          clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px) !important;
+        }
+        
+        .padding-mobile {
+          padding: 0.75rem !important;
+        }
+        
+        .space-mobile > * + * {
+          margin-left: 0.5rem !important;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .text-xs-mobile {
+          font-size: 0.75rem;
+          line-height: 1rem;
+        }
+        
+        .p-xs-mobile {
+          padding: 0.5rem !important;
+        }
+      }
+      
+      /* Touch-friendly interactive elements */
+      @media (pointer: coarse) {
+        button, .cursor-pointer {
+          min-height: 44px;
+          min-width: 44px;
+        }
+      }
+      
+      /* Smooth animations on capable devices */
+      @media (prefers-reduced-motion: no-preference) {
+        .smooth-animate {
+          transition: all 0.3s ease-in-out;
+        }
+      }
+      
+      /* Respect user's motion preferences */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     </style>
   </head>

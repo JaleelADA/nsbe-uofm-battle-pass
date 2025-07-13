@@ -315,35 +315,35 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
   const progress = hasUserData && userXP ? (userXP / maxXP) * 100 : 0;
   
   return (
-    <div className="relative p-8 mb-8" style={{
+    <div className="relative p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8" style={{
       background: 'linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 50%, #0a0f1c 100%)',
-      clipPath: 'polygon(60px 0%, 100% 0%, 100% calc(100% - 60px), calc(100% - 60px) 100%, 0% 100%, 0% 60px)',
-      border: '3px solid #FFD700',
+      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+      border: '2px solid #FFD700',
       boxShadow: '0 0 30px rgba(255, 215, 0, 0.4), inset 0 0 50px rgba(255, 215, 0, 0.1)'
     }}>
       
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-8">
+      <div className="flex flex-col lg:flex-row items-center lg:justify-between space-y-6 lg:space-y-0">
+        <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-8 w-full lg:w-auto">
           {/* NSBE Torch Logo */}
-          <div className="relative">
-            <div className="w-24 h-28 flex items-center justify-center relative" style={{
+          <div className="relative shrink-0">
+            <div className="w-16 h-20 sm:w-20 sm:h-24 lg:w-24 lg:h-28 flex items-center justify-center relative" style={{
               background: 'linear-gradient(135deg, #FFD700, #FFA500)',
               clipPath: SHARED_STYLES.clipPaths.badge,
               boxShadow: '0 0 25px rgba(255, 215, 0, 0.6)'
             }}>
-              <div className="w-16 h-20 flex items-center justify-center relative" style={{
+              <div className="w-12 h-16 sm:w-14 sm:h-18 lg:w-16 lg:h-20 flex items-center justify-center relative" style={{
                 background: 'linear-gradient(135deg, #0a0f1c, #1a1f2e)',
                 clipPath: SHARED_STYLES.clipPaths.badge,
                 border: '2px solid #FFD700'
               }}>
-                <div className="text-2xl">🔥</div>
+                <div className="text-lg sm:text-xl lg:text-2xl">🔥</div>
               </div>
             </div>
           </div>
           
-          <div className="flex-1">
-            <div className="flex items-center space-x-6 mb-6">
-              <h1 className="text-6xl font-black tracking-wider" style={{
+          <div className="flex-1 text-center sm:text-left w-full">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 lg:space-x-6 mb-4 lg:mb-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black tracking-wider" style={{
                 fontFamily: 'Orbitron, monospace',
                 background: SHARED_STYLES.gradients.gold,
                 WebkitBackgroundClip: 'text',
@@ -351,22 +351,21 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
                 textShadow: '0 0 30px rgba(255, 215, 0, 0.8)',
                 letterSpacing: '0.15em'
               }}>NSBE</h1>
-              <h2 className="text-4xl font-bold text-yellow-400" style={{
+              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-bold text-yellow-400" style={{
                 fontFamily: 'Orbitron, monospace',
                 letterSpacing: '0.1em'
               }}>UofM BATTLE PASS</h2>
             </div>
             
             {/* Name Input */}
-            <div className="mb-6">
+            <div className="mb-4 lg:mb-6">
               <input
                 type="text"
                 placeholder="Enter your name to see your XP"
                 value={userName}
                 onChange={(e) => onNameChange(e.target.value)}
-                className="bg-gray-900/90 border-2 border-yellow-400/60 px-4 py-3 text-yellow-100 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
+                className="w-full max-w-sm lg:max-w-md bg-gray-900/90 border-2 border-yellow-400/60 px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base text-yellow-100 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
                 style={{ 
-                  width: '380px',
                   fontFamily: 'Orbitron, monospace',
                   clipPath: SHARED_STYLES.clipPaths.card,
                   boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)'
@@ -376,8 +375,8 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
             
             {/* Progress Bar - only show when user has data */}
             {hasUserData && (
-              <div className="w-[400px] bg-gray-900 h-8 relative" style={{
-                border: '3px solid #FFD700',
+              <div className="w-full max-w-sm lg:max-w-md bg-gray-900 h-6 lg:h-8 relative" style={{
+                border: '2px lg:border-3 solid #FFD700',
                 clipPath: SHARED_STYLES.clipPaths.card,
                 boxShadow: '0 0 25px rgba(255, 215, 0, 0.4)'
               }}>
@@ -396,21 +395,21 @@ function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userN
         
         {/* Level/XP display - only show when user has data */}
         {hasUserData && (
-          <div className="text-right">
-            <div className="text-9xl font-black" style={{
+          <div className="text-center lg:text-right">
+            <div className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-black" style={{
               fontFamily: 'Orbitron, monospace',
               background: SHARED_STYLES.gradients.gold,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               textShadow: '0 0 40px rgba(255, 215, 0, 0.8)'
             }}>{userLevel}</div>
-            <div className="text-xl text-yellow-300 font-bold" style={{
+            <div className="text-sm sm:text-base lg:text-xl text-yellow-300 font-bold" style={{
               fontFamily: 'Orbitron, monospace'
             }}>
               {userXP}/{maxXP} XP
             </div>
             {userName && (
-              <div className="text-yellow-400 font-bold mt-3 text-lg" style={{
+              <div className="text-yellow-400 font-bold mt-2 lg:mt-3 text-sm sm:text-base lg:text-lg" style={{
                 fontFamily: 'Orbitron, monospace'
               }}>
                 Welcome, {userName}!
@@ -547,17 +546,17 @@ function InfoSidebar() {
     switch(activeSection) {
       case 'tiers':
         return (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <SectionTitle theme="gold">BATTLE PASS TIERS</SectionTitle>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {TIER_DEFINITIONS.map((tier, index) => (
-                <div key={index} className="p-4 text-sm" style={{
+                <div key={index} className="p-3 sm:p-4 text-xs sm:text-sm" style={{
                   background: tier.bg,
                   clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)',
                   color: tier.color
                 }}>
-                  <div className="font-bold text-base mb-2">{tier.icon} {tier.tier} – {tier.range}</div>
+                  <div className="font-bold text-sm sm:text-base mb-2">{tier.icon} {tier.tier} – {tier.range}</div>
                   <div className="font-semibold leading-relaxed">{tier.desc}</div>
                 </div>
               ))}
@@ -567,27 +566,27 @@ function InfoSidebar() {
 
       case 'points':
         return (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <SectionTitle theme="blue">POINT SYSTEM</SectionTitle>
             
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {POINT_SYSTEM.map((item, index) => (
-                <div key={index} className="p-3 bg-gray-800/50 border border-gray-600 text-sm" style={{
+                <div key={index} className="p-2 sm:p-3 bg-gray-800/50 border border-gray-600 text-xs sm:text-sm" style={{
                   clipPath: SHARED_STYLES.clipPaths.button
                 }}>
                   <div className="flex justify-between items-center">
                     <span className="text-white font-semibold">{item.activity}</span>
-                    <span className="text-yellow-400 font-bold text-base">{item.points}</span>
+                    <span className="text-yellow-400 font-bold text-sm sm:text-base">{item.points}</span>
                   </div>
                 </div>
               ))}
               
-              <div className="p-4 mt-6 text-sm text-center" style={{
+              <div className="p-3 sm:p-4 mt-4 sm:mt-6 text-xs sm:text-sm text-center" style={{
                 background: 'linear-gradient(135deg, #ffd700, #ffa500)',
                 clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)',
                 color: '#000'
               }}>
-                <div className="font-bold text-base mb-1">⚡ SPECIAL BONUS</div>
+                <div className="font-bold text-sm sm:text-base mb-1">⚡ SPECIAL BONUS</div>
                 <div className="font-semibold">1.5× Multiplier After Volunteering</div>
               </div>
             </div>
@@ -596,12 +595,12 @@ function InfoSidebar() {
 
       case 'docs':
         return (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <SectionTitle theme="blue">📄 DOCUMENTATION</SectionTitle>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {DOCUMENTATION_LINKS.map((doc, index) => (
                 <a key={index} href={doc.url} target="_blank" rel="noopener noreferrer" 
-                   className="block p-3 text-sm text-cyan-100 hover:text-cyan-200 transition-colors border border-gray-600 hover:bg-gray-800/30" 
+                   className="block p-2 sm:p-3 text-xs sm:text-sm text-cyan-100 hover:text-cyan-200 transition-colors border border-gray-600 hover:bg-gray-800/30" 
                    style={{ clipPath: SHARED_STYLES.clipPaths.button }}>
                   {doc.title}
                 </a>
@@ -612,18 +611,18 @@ function InfoSidebar() {
 
       case 'events':
         return (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <SectionTitle theme="gold">📅 UPCOMING EVENTS</SectionTitle>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {EVENTS_DATA.map((event, index) => (
-                <div key={index} className="p-4 bg-gray-800/50 border border-gray-600" style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}>
-                  <div className="font-bold text-yellow-400 mb-2 text-base">{event.date} – {event.title}</div>
-                  <div className="text-gray-300 text-sm mb-1">{event.time}</div>
-                  <div className="text-gray-400 text-sm">{event.location}</div>
+                <div key={index} className="p-3 sm:p-4 bg-gray-800/50 border border-gray-600" style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}>
+                  <div className="font-bold text-yellow-400 mb-2 text-sm sm:text-base">{event.date} – {event.title}</div>
+                  <div className="text-gray-300 text-xs sm:text-sm mb-1">{event.time}</div>
+                  <div className="text-gray-400 text-xs sm:text-sm">{event.location}</div>
                 </div>
               ))}
               <a href="https://tr.ee/kXIev9hrt3" target="_blank" rel="noopener noreferrer" 
-                 className="block p-4 text-base text-center font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 transition-all" 
+                 className="block p-3 sm:p-4 text-sm sm:text-base text-center font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 transition-all" 
                  style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}>
                 📅 Add the NSBEUM Calendar
               </a>
@@ -633,12 +632,12 @@ function InfoSidebar() {
 
       case 'announcements':
         return (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <SectionTitle theme="green">📣 ANNOUNCEMENTS</SectionTitle>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {ANNOUNCEMENTS_DATA.map((announcement, index) => (
                 <a key={index} href={announcement.url} target="_blank" rel="noopener noreferrer" 
-                   className="block p-3 text-sm text-emerald-100 hover:text-emerald-200 transition-colors border border-gray-600 hover:bg-gray-800/30" 
+                   className="block p-2 sm:p-3 text-xs sm:text-sm text-emerald-100 hover:text-emerald-200 transition-colors border border-gray-600 hover:bg-gray-800/30" 
                    style={{ clipPath: SHARED_STYLES.clipPaths.button }}>
                   {announcement.title}
                 </a>
@@ -649,15 +648,15 @@ function InfoSidebar() {
 
       case 'contact':
         return (
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <SectionTitle theme="purple">📞 CONTACT US</SectionTitle>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {CONTACT_INFO.map((contact, index) => (
-                <div key={index} className="p-4 bg-gray-800/50 border border-gray-600" style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}>
-                  <span className="text-gray-300 text-base font-semibold">{contact.type}: </span>
+                <div key={index} className="p-3 sm:p-4 bg-gray-800/50 border border-gray-600" style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}>
+                  <span className="text-gray-300 text-sm sm:text-base font-semibold">{contact.type}: </span>
                   <div className="mt-1">
                     <a href={contact.url} target="_blank" rel="noopener noreferrer" 
-                       className="text-purple-300 hover:text-purple-200 transition-colors text-sm">
+                       className="text-purple-300 hover:text-purple-200 transition-colors text-xs sm:text-sm">
                       {contact.label}
                     </a>
                   </div>
@@ -677,12 +676,12 @@ function InfoSidebar() {
       {/* Sidebar Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 right-4 z-50 p-3 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold transition-all duration-300 shadow-lg"
+        className="fixed top-2 right-2 sm:top-4 sm:right-4 z-50 p-2 sm:p-3 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold transition-all duration-300 shadow-lg text-xs sm:text-sm"
         style={{
           clipPath: SHARED_STYLES.clipPaths.button
         }}
       >
-        {isOpen ? '✕' : '📋'} INFO
+        {isOpen ? '✕' : '📋'} <span className="hidden sm:inline">INFO</span>
       </button>
 
       {/* Sidebar Overlay */}
@@ -691,15 +690,15 @@ function InfoSidebar() {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed top-0 right-0 h-full w-96 z-40 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto`} style={{
+      <div className={`fixed top-0 right-0 h-full w-full sm:w-80 lg:w-96 z-40 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto`} style={{
         background: SHARED_STYLES.sectionBg,
         clipPath: 'polygon(20px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 20px)',
         border: '2px solid #4a5568',
         boxShadow: '0 0 20px rgba(255, 215, 0, 0.1)'
       }}>
-        <div className="p-6 pt-20">
+        <div className="p-4 sm:p-6 pt-16 sm:pt-20">
           {/* Menu Buttons */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 mb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4 sm:mb-6">
             {menuItems.map((item) => (
               <button
                 key={item.id}
@@ -713,14 +712,14 @@ function InfoSidebar() {
                   clipPath: 'polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px)'
                 }}
               >
-                <div className="text-base mb-1">{item.icon}</div>
+                <div className="text-sm sm:text-base mb-1">{item.icon}</div>
                 <div className="text-xs">{item.label}</div>
               </button>
             ))}
           </div>
 
           {/* Content */}
-          <div className="pt-6">
+          <div className="pt-4 sm:pt-6">
             {renderContent()}
           </div>
         </div>
@@ -731,24 +730,24 @@ function InfoSidebar() {
 
 function BadgeSection() {
   return (
-    <div className="flex space-x-6 mb-8">
+    <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
       {BADGES_CONFIG.map((badge, index) => (
         <div key={index} className={`bg-gradient-to-br ${badge.color} ${
           badge.active ? 'opacity-100' : 'opacity-40'
-        } p-6 text-center min-w-[140px] transform hover:scale-105 transition-all duration-300 relative`}
+        } p-3 sm:p-4 lg:p-6 text-center min-w-[100px] sm:min-w-[120px] lg:min-w-[140px] transform hover:scale-105 transition-all duration-300 relative`}
         style={{
-          clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-          border: `3px solid ${badge.active ? badge.border : '#4a5568'}`,
+          clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
+          border: `2px solid ${badge.active ? badge.border : '#4a5568'}`,
           boxShadow: badge.active ? `0 0 25px ${badge.border}40, inset 0 0 15px rgba(255,255,255,0.1)` : 'none'
         }}>
           {/* Inner glow effect */}
           {badge.active && (
             <div className="absolute inset-0" style={{
               background: `linear-gradient(135deg, transparent 0%, ${badge.border}20 50%, transparent 100%)`,
-              clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)'
+              clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)'
             }}></div>
           )}
-          <div className={`${badge.textColor} font-bold text-sm tracking-wider relative z-10`} style={{
+          <div className={`${badge.textColor} font-bold text-xs sm:text-sm tracking-wider relative z-10`} style={{
             fontFamily: 'Orbitron, monospace',
             textShadow: badge.active ? '0 0 10px rgba(0,0,0,0.5)' : 'none'
           }}>{badge.name}</div>
@@ -761,28 +760,28 @@ function BadgeSection() {
 function MentorshipSection({ onMentorshipClick }) {
   return (
     <StyledSection style={{
-      clipPath: 'polygon(30px 0%, 100% 0%, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0% 100%, 0% 30px)',
-    }} className="p-8 h-fit">
+      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+    }} className="p-4 sm:p-6 lg:p-8 h-fit">
       <div className="text-center">
-        <div className="w-24 h-24 mx-auto mb-6 relative" style={{
+        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-4 sm:mb-6 relative" style={{
           background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
           clipPath: SHARED_STYLES.clipPaths.badge,
           boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
         }}>
-          <div className="absolute inset-2 flex items-center justify-center" style={{
+          <div className="absolute inset-1 sm:inset-2 flex items-center justify-center" style={{
             background: 'linear-gradient(135deg, #1a1f2e, #16213e)',
             clipPath: SHARED_STYLES.clipPaths.badge
           }}>
-            <span className="text-3xl">👥</span>
+            <span className="text-xl sm:text-2xl lg:text-3xl">👥</span>
           </div>
         </div>
         <SectionTitle theme="blue">MENTORSHIP</SectionTitle>
-        <div className="p-4 mb-4 relative" style={{
+        <div className="p-3 sm:p-4 mb-3 sm:mb-4 relative" style={{
           background: 'rgba(55, 65, 81, 0.7)',
           clipPath: SHARED_STYLES.clipPaths.card,
           border: '1px solid #6b7280'
         }}>
-          <div className="font-bold text-xl mb-2" style={{
+          <div className="font-bold text-base sm:text-lg lg:text-xl mb-2" style={{
             background: SHARED_STYLES.gradients.gold,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
@@ -790,7 +789,7 @@ function MentorshipSection({ onMentorshipClick }) {
         </div>
         <button
           onClick={onMentorshipClick}
-          className="text-white text-lg font-semibold tracking-wide cursor-pointer hover:scale-105 transition-all duration-300 hover:text-yellow-400 hover:shadow-lg"
+          className="text-white text-sm sm:text-base lg:text-lg font-semibold tracking-wide cursor-pointer hover:scale-105 transition-all duration-300 hover:text-yellow-400 hover:shadow-lg"
           style={{
             fontFamily: 'Orbitron, monospace',
             background: 'none',
@@ -808,38 +807,38 @@ function MentorshipSection({ onMentorshipClick }) {
 function MemberStats({ userStats }) {
   return (
     <StyledSection style={{
-      clipPath: 'polygon(30px 0%, 100% 0%, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0% 100%, 0% 30px)',
-    }} className="p-8 h-fit">
+      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+    }} className="p-4 sm:p-6 lg:p-8 h-fit">
       <div className="text-center">
-        <div className="w-32 h-32 mx-auto mb-6 relative" style={{
+        <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 mx-auto mb-4 sm:mb-6 relative" style={{
           background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
           clipPath: SHARED_STYLES.clipPaths.badge,
           boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)'
         }}>
-          <div className="absolute inset-4 flex items-center justify-center" style={{
+          <div className="absolute inset-2 sm:inset-3 lg:inset-4 flex items-center justify-center" style={{
             background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
             clipPath: SHARED_STYLES.clipPaths.badge
           }}>
-            <div className="w-16 h-16 flex items-center justify-center relative" style={{
+            <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 flex items-center justify-center relative" style={{
               background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
               clipPath: SHARED_STYLES.clipPaths.badge
             }}>
-              <span className="text-black text-2xl font-bold">⚡</span>
+              <span className="text-black text-lg sm:text-xl lg:text-2xl font-bold">⚡</span>
             </div>
           </div>
         </div>
         <SectionTitle theme="gold">MEMBER STATS</SectionTitle>
         {userStats && userStats.rank && (
-          <div className="mt-6 space-y-2">
-            <div className="p-3 relative bg-gray-800/70 border border-gray-600" style={{
+          <div className="mt-4 sm:mt-6 space-y-2">
+            <div className="p-2 sm:p-3 relative bg-gray-800/70 border border-gray-600" style={{
               clipPath: SHARED_STYLES.clipPaths.button
             }}>
-              <div className="text-sm text-gray-300">Tier: <span className="text-yellow-400 font-bold">{userStats.tier}</span></div>
+              <div className="text-xs sm:text-sm text-gray-300">Tier: <span className="text-yellow-400 font-bold">{userStats.tier}</span></div>
             </div>
-            <div className="p-3 relative bg-gray-800/70 border border-gray-600" style={{
+            <div className="p-2 sm:p-3 relative bg-gray-800/70 border border-gray-600" style={{
               clipPath: SHARED_STYLES.clipPaths.button
             }}>
-              <div className="text-sm text-gray-300">Rank: <span className="text-yellow-400 font-bold">#{userStats.rank}</span></div>
+              <div className="text-xs sm:text-sm text-gray-300">Rank: <span className="text-yellow-400 font-bold">#{userStats.rank}</span></div>
             </div>
           </div>
         )}
@@ -960,27 +959,27 @@ function Leaderboard({ userName, onUserDataFound }) {
 
   return (
     <StyledSection style={{
-      clipPath: 'polygon(30px 0%, 100% 0%, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0% 100%, 0% 30px)',
-    }} className="p-8 h-fit">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-black font-futuristic tracking-wider" style={{
+      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+    }} className="p-4 sm:p-6 lg:p-8 h-fit">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-6 sm:mb-8 space-y-2 sm:space-y-0">
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-black font-futuristic tracking-wider text-center sm:text-left" style={{
           background: SHARED_STYLES.gradients.gold,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           textShadow: '0 0 30px rgba(255, 215, 0, 0.8)'
         }}>LEADERBOARD</h2>
         {loading && (
-          <div className="animate-spin w-6 h-6 border-2 border-yellow-400 border-t-transparent rounded-full"></div>
+          <div className="animate-spin w-5 h-5 sm:w-6 sm:h-6 border-2 border-yellow-400 border-t-transparent rounded-full"></div>
         )}
       </div>
       
       {error && (
-        <div className="text-red-400 text-center mb-4 p-2 bg-red-900/20 rounded-lg border border-red-600">
+        <div className="text-red-400 text-center mb-4 p-2 bg-red-900/20 rounded-lg border border-red-600 text-xs sm:text-sm">
           {error}
         </div>
       )}
       
-      <div className="space-y-4 max-h-96 overflow-y-auto">
+      <div className="space-y-3 sm:space-y-4 max-h-80 sm:max-h-96 overflow-y-auto">
         {leaders.map((leader, index) => {
           const isCurrentUser = userName && (
             leader.name.toLowerCase().includes(userName.toLowerCase()) ||
@@ -988,29 +987,29 @@ function Leaderboard({ userName, onUserDataFound }) {
           );
           
           return (
-            <div key={index} className={`flex justify-between items-center text-white p-4 border transition-all duration-300 ${
+            <div key={index} className={`flex justify-between items-center text-white p-3 sm:p-4 border transition-all duration-300 ${
               isCurrentUser 
                 ? 'bg-yellow-400/20 border-yellow-400 shadow-lg shadow-yellow-400/20' 
                 : 'bg-gray-800/30 border-gray-600 hover:bg-gray-700/30'
             }`} style={{
               clipPath: SHARED_STYLES.clipPaths.card
             }}>
-              <div className="flex items-center space-x-4">
-                <span className={`font-bold text-lg tracking-wide min-w-[20px] ${
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <span className={`font-bold text-base sm:text-lg tracking-wide min-w-[20px] ${
                   isCurrentUser ? 'text-yellow-400' : 'text-white'
                 }`}>{leader.rank}</span>
                 <div>
-                  <div className={`font-bold text-lg ${
+                  <div className={`font-bold text-sm sm:text-base lg:text-lg ${
                     isCurrentUser ? 'text-yellow-300' : 'text-white'
                   }`}>
                     {leader.name} {isCurrentUser && '(You)'}
                   </div>
-                  <div className={`text-sm font-semibold ${getTierColor(leader.tier)}`}>
+                  <div className={`text-xs sm:text-sm font-semibold ${getTierColor(leader.tier)}`}>
                     {leader.tier}
                   </div>
                 </div>
               </div>
-              <span className="font-black text-xl" style={{
+              <span className="font-black text-lg sm:text-xl" style={{
                 background: SHARED_STYLES.gradients.gold,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
@@ -1020,10 +1019,11 @@ function Leaderboard({ userName, onUserDataFound }) {
         })}
       </div>
       
-      <div className="mt-6 text-center">
+      <div className="mt-4 sm:mt-6 text-center">
         <StyledButton 
           onClick={fetchLeaderboardData}
           disabled={loading}
+          className="text-xs sm:text-sm py-2 px-4 sm:py-3 sm:px-6"
         >
           {loading ? 'Refreshing...' : 'Refresh Data'}
         </StyledButton>
@@ -1079,7 +1079,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen p-8 font-futuristic" style={{
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 font-futuristic" style={{
       background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%)'
     }}>
       <SkipNavigation />
@@ -1097,16 +1097,16 @@ function App() {
         
         {/* Show main dashboard content */}
         {hasUserData ? (
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <div className="xl:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <div className="lg:col-span-2 xl:col-span-2">
               <BadgeSection />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 <MentorshipSection onMentorshipClick={() => setMentorshipMode(true)} />
                 <MemberStats userStats={userStats} />
               </div>
             </div>
             
-            <div className="xl:col-span-1">
+            <div className="lg:col-span-2 xl:col-span-1">
               <div id="leaderboard-section">
                 <Leaderboard 
                   userName={userName}
@@ -1117,41 +1117,41 @@ function App() {
           </div>
         ) : (
           /* Show main dashboard without user-specific data */
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            <div className="xl:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <div className="lg:col-span-2 xl:col-span-2">
               <BadgeSection />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
                 <MentorshipSection onMentorshipClick={() => setMentorshipMode(true)} />
                 <StyledSection style={{
-                  clipPath: 'polygon(30px 0%, 100% 0%, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0% 100%, 0% 30px)',
-                }} className="p-8 h-fit">
+                  clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+                }} className="p-4 sm:p-6 lg:p-8 h-fit">
                   <div className="text-center">
-                    <div className="w-32 h-32 mx-auto mb-6 relative" style={{
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 mx-auto mb-4 sm:mb-6 relative" style={{
                       background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
                       clipPath: SHARED_STYLES.clipPaths.badge,
                       boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)'
                     }}>
-                      <div className="absolute inset-4 flex items-center justify-center" style={{
+                      <div className="absolute inset-2 sm:inset-3 lg:inset-4 flex items-center justify-center" style={{
                         background: 'linear-gradient(135deg, #1a1f2e, #16213e)',
                         clipPath: SHARED_STYLES.clipPaths.badge,
                         border: '2px solid #ffd700'
                       }}>
-                        <div className="w-16 h-16 flex items-center justify-center relative" style={{
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 flex items-center justify-center relative" style={{
                           background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
                           clipPath: SHARED_STYLES.clipPaths.badge
                         }}>
-                          <span className="text-black text-2xl font-bold">📋</span>
+                          <span className="text-black text-lg sm:text-xl lg:text-2xl font-bold">📋</span>
                         </div>
                       </div>
                     </div>
                     <SectionTitle theme="gold">BATTLE PASS INFO</SectionTitle>
-                    <p className="mt-4 text-gray-300">Click the INFO button in the top-right corner to view tiers, points system, events, and more!</p>
+                    <p className="mt-4 text-gray-300 text-sm sm:text-base">Click the INFO button in the top-right corner to view tiers, points system, events, and more!</p>
                   </div>
                 </StyledSection>
               </div>
             </div>
             
-            <div className="xl:col-span-1">
+            <div className="lg:col-span-2 xl:col-span-1">
               <div id="leaderboard-section">
                 <Leaderboard 
                   userName={userName}
@@ -1164,8 +1164,8 @@ function App() {
         
         {/* User stats display when name is entered */}
         {userName && userStats.rank && (
-          <StyledSection theme="gold" className="mt-8 text-center p-4">
-            <p className="text-yellow-400 font-bold text-xl" style={{
+          <StyledSection theme="gold" className="mt-6 sm:mt-8 text-center p-3 sm:p-4">
+            <p className="text-yellow-400 font-bold text-base sm:text-lg lg:text-xl" style={{
               fontFamily: 'Orbitron, monospace'
             }}>
               {userName} - Rank #{userStats.rank} | {userStats.tier} Tier | {userStats.xp} XP
@@ -1174,7 +1174,7 @@ function App() {
         )}
         
         {/* Debug info */}
-        <div className="mt-8 text-center text-gray-500 text-sm">
+        <div className="mt-6 sm:mt-8 text-center text-gray-500 text-xs sm:text-sm">
           <p>Connected to Google Sheet: {SHEET_CONFIG.SHEET_ID}</p>
           <p>Last updated: {new Date().toLocaleTimeString()}</p>
         </div>
@@ -1258,54 +1258,54 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
   const achievements = calculateAchievements(userData, eventData);
   
   return (
-    <div className="min-h-screen p-8 font-futuristic" style={{
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 font-futuristic" style={{
       background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%)'
     }}>
       {/* Back Button */}
       <button
         onClick={onBackClick}
-        className="fixed top-4 left-4 z-50 p-3 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold transition-all duration-300 shadow-lg"
+        className="fixed top-2 left-2 sm:top-4 sm:left-4 z-50 p-2 sm:p-3 bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold transition-all duration-300 shadow-lg text-xs sm:text-sm"
         style={{
           clipPath: SHARED_STYLES.clipPaths.button
         }}
       >
-        ← BACK TO DASHBOARD
+        ← <span className="hidden sm:inline">BACK TO DASHBOARD</span>
       </button>
 
-      <div className="max-w-6xl mx-auto pt-16">
+      <div className="max-w-6xl mx-auto pt-12 sm:pt-16">
         {/* Section Title Bar */}
-        <StyledSection theme="gold" className="mb-8 text-center p-8" style={{
-          clipPath: 'polygon(30px 0%, 100% 0%, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0% 100%, 0% 30px)',
-          border: '3px solid #ffd700',
+        <StyledSection theme="gold" className="mb-6 sm:mb-8 text-center p-4 sm:p-6 lg:p-8" style={{
+          clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+          border: '2px sm:border-3 solid #ffd700',
           boxShadow: '0 0 40px rgba(255, 215, 0, 0.4)'
         }}>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-wider mb-2 md:mb-4" style={{
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black tracking-wider mb-2 sm:mb-4" style={{
             background: SHARED_STYLES.gradients.gold,
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             fontFamily: 'Orbitron, monospace'
           }}>🔥 MENTORSHIP + DEVELOPMENT HUB</h1>
-          <p className="text-sm md:text-xl text-gray-300 mb-4 md:mb-6" style={{ fontFamily: 'Orbitron, monospace' }}>
+          <p className="text-xs sm:text-sm md:text-base lg:text-xl text-gray-300 mb-3 sm:mb-4 md:mb-6" style={{ fontFamily: 'Orbitron, monospace' }}>
             Powered by NSBE UofM × P-Zone × M-Zone
           </p>
-          <div className="flex justify-center items-center space-x-4 md:space-x-8 text-2xl md:text-4xl">
+          <div className="flex justify-center items-center space-x-4 sm:space-x-6 lg:space-x-8 text-lg sm:text-xl md:text-2xl lg:text-4xl">
             <div className="text-center">
               <div>🔥</div>
-              <div className="text-xs md:text-sm text-yellow-400 mt-1 md:mt-2">NSBE</div>
+              <div className="text-xs sm:text-sm text-yellow-400 mt-1 sm:mt-2">NSBE</div>
             </div>
             <div className="text-center">
               <div>🎓</div>
-              <div className="text-xs md:text-sm text-blue-400 mt-1 md:mt-2">Academic</div>
+              <div className="text-xs sm:text-sm text-blue-400 mt-1 sm:mt-2">Academic</div>
             </div>
             <div className="text-center">
               <div>🚀</div>
-              <div className="text-xs md:text-sm text-purple-400 mt-1 md:mt-2">P-Zone</div>
+              <div className="text-xs sm:text-sm text-purple-400 mt-1 sm:mt-2">P-Zone</div>
             </div>
           </div>
         </StyledSection>
 
         {/* Filter Buttons for Subsections */}
-        <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="mb-6 sm:mb-8 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
           {[
             { id: 'all', label: 'Progress', icon: '🌟', color: 'yellow' },
             { id: 'nsbe', label: 'NSBE Mentoring', icon: '🔥', color: 'red' },
@@ -1315,7 +1315,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
             <button
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
-              className={`p-4 text-sm font-semibold transition-all duration-300 border-2 ${
+              className={`p-2 sm:p-3 lg:p-4 text-xs sm:text-sm font-semibold transition-all duration-300 border-2 ${
                 activeFilter === filter.id 
                   ? `bg-${filter.color}-400/20 text-${filter.color}-300 border-${filter.color}-400 shadow-lg` 
                   : 'text-gray-300 hover:text-white hover:bg-gray-700/30 border-gray-600'
@@ -1325,7 +1325,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
                 fontFamily: 'Orbitron, monospace'
               }}
             >
-              <div className="text-xl mb-1">{filter.icon}</div>
+              <div className="text-base sm:text-lg lg:text-xl mb-1">{filter.icon}</div>
               <div className="text-xs">{filter.label}</div>
             </button>
           ))}
@@ -1336,18 +1336,18 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           <div>
             {/* Achievement Badges */}
             <div className="mb-6">
-              <h2 className="text-3xl font-bold text-yellow-400 mb-4 text-center">🏅 ACHIEVEMENT BADGES</h2>
-              <div className="text-center mb-6 p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
-                <p className="text-blue-200 text-sm">
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-400 mb-4 text-center">🏅 ACHIEVEMENT BADGES</h2>
+              <div className="text-center mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
+                <p className="text-blue-200 text-xs sm:text-sm">
                   🔗 <strong>Live Progress Tracking:</strong> Your achievements update automatically based on event attendance and XP earned. 
                   Complete more PD workshops, mentorship sessions, and academic activities to unlock new badges!
                 </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                 {achievements.map((achievement, index) => (
                   <div
                     key={index}
-                    className={`p-4 text-center transition-all cursor-pointer hover:scale-105 ${
+                    className={`p-3 sm:p-4 text-center transition-all cursor-pointer hover:scale-105 ${
                       achievement.status === 'completed' ? 'opacity-100' : 'opacity-60'
                     }`}
                     style={{
@@ -1355,11 +1355,11 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
                         ? 'linear-gradient(135deg, #1e293b, #334155)' 
                         : 'linear-gradient(135deg, #374151, #4b5563)',
                       clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)',
-                      border: `3px solid ${achievement.color}`,
+                      border: `2px solid ${achievement.color}`,
                       boxShadow: achievement.status === 'completed' ? `0 0 20px ${achievement.glow}` : 'none'
                     }}
                   >
-                    <div className="text-3xl mb-2">{achievement.icon}</div>
+                    <div className="text-2xl sm:text-3xl mb-2">{achievement.icon}</div>
                     <div className="text-xs font-bold text-white mb-1">{achievement.name}</div>
                     <div className="text-xs text-gray-300 mb-2">{achievement.desc}</div>
                     {achievement.status === 'completed' ? (
@@ -1376,30 +1376,30 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
 
         {/* NSBE Mentoring Section */}
         {activeFilter === 'nsbe' && (
-          <div className="space-y-8">
-            <StyledSection theme="gold" className="p-6" style={{
+          <div className="space-y-6 sm:space-y-8">
+            <StyledSection theme="gold" className="p-4 sm:p-6" style={{
               clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
               border: '2px solid #ffed4e',
               color: '#fff'
             }}>
-              <h3 className="text-xl font-bold mb-4 text-center text-white">🎯 NSBE UofM Mentorship Program 2025</h3>
-              <p className="text-sm mb-4 text-white">
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-center text-white">🎯 NSBE UofM Mentorship Program 2025</h3>
+              <p className="text-xs sm:text-sm mb-3 sm:mb-4 text-white">
                 The NSBE UofM Mentorship Program empowers students through intentional, community-driven relationships 
                 that promote academic excellence, professional growth, and a strong cultural foundation.
               </p>
-              <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div className="p-3 bg-black/20 rounded">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 bg-black/20 rounded">
                   <strong className="text-yellow-300">🔥 Mentorship Benefits:</strong>
-                  <ul className="text-sm mt-2 space-y-1 text-white">
+                  <ul className="text-xs sm:text-sm mt-2 space-y-1 text-white">
                     <li>• 1-on-1 career guidance</li>
                     <li>• Industry connections</li>
                     <li>• Personal development</li>
                     <li>• Academic support</li>
                   </ul>
                 </div>
-                <div className="p-3 bg-black/20 rounded">
+                <div className="p-2 sm:p-3 bg-black/20 rounded">
                   <strong className="text-yellow-300">🎯 Program Structure:</strong>
-                  <ul className="text-sm mt-2 space-y-1 text-white">
+                  <ul className="text-xs sm:text-sm mt-2 space-y-1 text-white">
                     <li>• Monthly mentor meetings</li>
                     <li>• Group activities</li>
                     <li>• Professional workshops</li>
@@ -1407,7 +1407,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
                   </ul>
                 </div>
               </div>
-              <button className="w-full p-3 text-center font-bold bg-gradient-to-r from-red-600 to-red-700 text-white transition-all duration-300 hover:from-red-700 hover:to-red-800">
+              <button className="w-full p-2 sm:p-3 text-center font-bold bg-gradient-to-r from-red-600 to-red-700 text-white transition-all duration-300 hover:from-red-700 hover:to-red-800 text-xs sm:text-sm">
                 🔥 Sign Up for Mentorship Program
               </button>
             </StyledSection>
@@ -1416,30 +1416,30 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
 
         {/* Professional Dev Section */}
         {activeFilter === 'pzone' && (
-          <StyledSection theme="blue" className="p-6" style={{
+          <StyledSection theme="blue" className="p-4 sm:p-6" style={{
             clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
             border: '2px solid #0ea5e9'
           }}>
-            <h3 className="text-xl font-bold text-sky-200 mb-4 text-center">🚀 PROFESSIONAL DEVELOPMENT</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h3 className="text-lg sm:text-xl font-bold text-sky-200 mb-3 sm:mb-4 text-center">🚀 PROFESSIONAL DEVELOPMENT</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <h4 className="text-lg font-bold text-yellow-300 mb-3">📝 Resume Resources</h4>
+                <h4 className="text-base sm:text-lg font-bold text-yellow-300 mb-2 sm:mb-3">📝 Resume Resources</h4>
                 <div className="space-y-2">
-                  <a href="https://careercenter.umich.edu/article/resume-resources" target="_blank" className="block p-2 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
+                  <a href="https://careercenter.umich.edu/article/resume-resources" target="_blank" className="block p-2 text-xs sm:text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
                     📄 Career Center Resources
                   </a>
-                  <a href="https://career.engin.umich.edu/resumes-cvs-cover-letters/" target="_blank" className="block p-2 text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
+                  <a href="https://career.engin.umich.edu/resumes-cvs-cover-letters/" target="_blank" className="block p-2 text-xs sm:text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
                     🔧 ECRC Resume Guide
                   </a>
                 </div>
               </div>
               <div>
-                <h4 className="text-lg font-bold text-yellow-300 mb-3">🎯 Interview Prep</h4>
+                <h4 className="text-base sm:text-lg font-bold text-yellow-300 mb-2 sm:mb-3">🎯 Interview Prep</h4>
                 <div className="space-y-2">
-                  <button className="w-full p-2 text-left text-sm text-sky-100 hover:bg-sky-800/30 border border-sky-600 rounded">
+                  <button className="w-full p-2 text-left text-xs sm:text-sm text-sky-100 hover:bg-sky-800/30 border border-sky-600 rounded">
                     🎤 Mock Interviews
                   </button>
-                  <button className="w-full p-2 text-left text-sm text-sky-100 hover:bg-sky-800/30 border border-sky-600 rounded">
+                  <button className="w-full p-2 text-left text-xs sm:text-sm text-sky-100 hover:bg-sky-800/30 border border-sky-600 rounded">
                     💡 Technical Prep
                   </button>
                 </div>
@@ -1450,22 +1450,22 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
 
         {/* Academic Corner */}
         {activeFilter === 'academic' && (
-          <StyledSection theme="red" className="p-6" style={{
+          <StyledSection theme="red" className="p-4 sm:p-6" style={{
             clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
             border: '2px solid #ef4444'
           }}>
-            <h3 className="text-xl font-bold text-red-200 mb-4 text-center">📚 ACADEMIC EXCELLENCE CORNER</h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="p-4 bg-red-900/50 border border-red-400">
-                <div className="text-yellow-300 font-bold mb-2">🌟 Current Recognition</div>
-                <div className="text-red-100">"Study Star" - Top 10% GPA in your cohort</div>
+            <h3 className="text-lg sm:text-xl font-bold text-red-200 mb-3 sm:mb-4 text-center">📚 ACADEMIC EXCELLENCE CORNER</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+              <div className="p-3 sm:p-4 bg-red-900/50 border border-red-400">
+                <div className="text-yellow-300 font-bold mb-2 text-sm sm:text-base">🌟 Current Recognition</div>
+                <div className="text-red-100 text-xs sm:text-sm">"Study Star" - Top 10% GPA in your cohort</div>
               </div>
-              <div className="p-4 bg-red-900/50 border border-red-400">
-                <div className="text-yellow-300 font-bold mb-2">💡 Tip of the Week</div>
-                <div className="text-red-100 text-sm">Schedule study sessions during peak focus hours (9-11 AM)</div>
+              <div className="p-3 sm:p-4 bg-red-900/50 border border-red-400">
+                <div className="text-yellow-300 font-bold mb-2 text-sm sm:text-base">💡 Tip of the Week</div>
+                <div className="text-red-100 text-xs sm:text-sm">Schedule study sessions during peak focus hours (9-11 AM)</div>
               </div>
-              <div className="p-4 bg-red-900/50 border border-red-400">
-                <button className="w-full p-3 bg-red-400/30 text-red-100 hover:bg-red-400/40 transition-all font-bold">
+              <div className="p-3 sm:p-4 bg-red-900/50 border border-red-400">
+                <button className="w-full p-2 sm:p-3 bg-red-400/30 text-red-100 hover:bg-red-400/40 transition-all font-bold text-xs sm:text-sm">
                   📖 Access Study Resources
                 </button>
               </div>

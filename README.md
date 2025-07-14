@@ -202,7 +202,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### **Development Team**
 - **Lead Developer**: [Jaleel Drones](https://github.com/JaleelADA)
 - **NSBE UofM Chapter**: Mentorship program design
-- **P-Zone Partnership**: Professional development content
+- **P-Zone Partnership**: Professional development & Academic content
 
 ### **Special Thanks**
 - NSBE UofM Executive Board
@@ -220,7 +220,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Email: [nsbe.uofm@umich.edu](mailto:nsbe.uofm@umich.edu)
 
 ### **Professional Development Partners**
-- **P-Zone**: Professional development workshops
+- **P-Zone**: Professional development workshops, Academic excellence tips
 - **M-Zone**: Mentorship program coordination
 
 ---

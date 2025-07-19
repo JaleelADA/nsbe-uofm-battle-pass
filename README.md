@@ -101,16 +101,11 @@ nsbe-uofm-battle-pass/
 
 ## 📱 Mobile App
 
-A React Native mobile application is available in the `/mobile` directory with:
-
 - **Full leaderboard search** - Find any user in the complete database
 - **Real-time data sync** - Same Google Sheets integration as web app
 - **Mobile-optimized UI** - Touch-friendly interface with native components
 - **Core features** - User stats, badges, events, announcements, and leaderboard
 
-See [`/mobile/README.md`](./mobile/README.md) for setup instructions.
-
-## 🎨 Customization
 
 ### **Styling**
 - Edit `tailwind.config.js` for theme colors

@@ -232,8 +232,7 @@ async function fetchLeaderboardCSV() {
         tier: values[2]?.replace(/"/g, '') || 'Participant'
       };
     }).filter(item => item.name && item.name !== 'Unknown')
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
+      .sort((a, b) => b.score - a.score);
   } catch (error) {
     console.error('CSV fetch failed:', error);
     throw error;
@@ -848,11 +847,9 @@ function MemberStats({ userStats }) {
 }
 
 function Leaderboard({ userName, onUserDataFound }) {
-  const [leaders, setLeaders] = useState([
-    { rank: 1, name: 'Loading...', score: '---', tier: 'Participant' },
-    { rank: 2, name: 'Loading...', score: '---', tier: 'Participant' },
-    { rank: 3, name: 'Loading...', score: '---', tier: 'Participant' }
-  ]);
+  const [leaders, setLeaders] = useState([]);
+  // All entries for search
+  const [allLeaders, setAllLeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -864,30 +861,37 @@ function Leaderboard({ userName, onUserDataFound }) {
   }, []);
 
   useEffect(() => {
-    // Find user data when name changes
-    if (userName && leaders.length > 0) {
-      const userEntry = leaders.find(leader => 
+    // Update displayed leaders based on search input
+    if (!userName.trim()) {
+      // No search: show top 10
+      setLeaders(allLeaders.slice(0, 10));
+      return;
+    }
+    if (allLeaders.length > 0) {
+      // Filter full list for matches
+      const matches = allLeaders.filter(leader => 
         leader.name.toLowerCase().includes(userName.toLowerCase()) ||
         userName.toLowerCase().includes(leader.name.toLowerCase())
       );
-      
-      if (userEntry && onUserDataFound) {
-        // Calculate level based on XP (15 XP per level)
+      // Display matches
+      setLeaders(matches);
+      // If first match exists, notify parent for stats
+      if (matches.length > 0 && onUserDataFound) {
+        const userEntry = matches[0];
         const level = Math.floor(userEntry.score / 15) + 1;
         const currentLevelXP = userEntry.score % 15;
         const nextLevelXP = 15;
-        
         onUserDataFound({
-          level: level,
+          level,
           xp: userEntry.score,
-          currentLevelXP: currentLevelXP,
-          nextLevelXP: nextLevelXP,
+          currentLevelXP,
+          nextLevelXP,
           tier: userEntry.tier,
           rank: userEntry.rank
         });
       }
     }
-  }, [userName, leaders, onUserDataFound]);
+  }, [userName, allLeaders, onUserDataFound]);
 
   const fetchLeaderboardData = async () => {
     try {
@@ -897,7 +901,8 @@ function Leaderboard({ userName, onUserDataFound }) {
       try {
         const csvData = await fetchLeaderboardCSV();
         if (csvData.length > 0) {
-          setLeaders(csvData);
+          setAllLeaders(csvData);
+          setLeaders(csvData.slice(0, 10));
           setLoading(false);
           setError(null);
           return;
@@ -914,9 +919,9 @@ function Leaderboard({ userName, onUserDataFound }) {
       const jsonText = text.substring(47).slice(0, -2);
       const data = JSON.parse(jsonText);
       
-      if (data.table && data.table.rows) {
+        if (data.table && data.table.rows) {
         const rows = data.table.rows.slice(1); // Skip header row
-        const leaderboardData = rows
+        const fullData = rows
           .filter(row => row.c && row.c[0] && row.c[1]) // Filter out empty rows
           .map((row, index) => ({
             rank: index + 1,
@@ -925,9 +930,9 @@ function Leaderboard({ userName, onUserDataFound }) {
             tier: row.c[2]?.v || 'Participant'
           }))
           .sort((a, b) => b.score - a.score) // Sort by score descending
-          .slice(0, 10); // Take top 10
-
-        setLeaders(leaderboardData.length > 0 ? leaderboardData : [
+        const top10 = fullData.slice(0, 10);
+        setAllLeaders(fullData);
+        setLeaders(top10.length > 0 ? top10 : [
           { rank: 1, name: 'No data available', score: 0, tier: 'Participant' }
         ]);
       }

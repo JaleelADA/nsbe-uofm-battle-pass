@@ -1296,7 +1296,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           <div className="flex justify-center items-center space-x-4 sm:space-x-6 lg:space-x-8 text-lg sm:text-xl md:text-2xl lg:text-4xl">
             <div className="text-center">
               <div>🔥</div>
-              <div className="text-xs sm:text-sm text-yellow-400 mt-1 sm:mt-2">M-Zone</div>
+              <div className="text-xs sm:text-sm text-yellow-400 mt-1 sm:mt-2">NSBE</div>
             </div>
             <div className="text-center">
               <div>🎓</div>

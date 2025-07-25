@@ -1197,12 +1197,12 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
     // Default achievements when no user data is available
     const defaultAchievements = [
       { name: 'Resume Workshop', status: 'locked', icon: '📝', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Attend PD Workshop (0/1)', xp: 25, category: 'pzone', requirement: 1, current: 0 },
-      { name: 'Brand Revamp', status: 'locked', icon: '💼', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Attend 2+ PD Events (0/2)', xp: 20, category: 'pzone', requirement: 2, current: 0 },
-      { name: 'Resume Reviewed', status: 'locked', icon: '✅', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Submit Resume (0/1)', xp: 10, category: 'pzone', requirement: 1, current: 0 },
+      { name: 'LinkedIn Revamp', status: 'locked', icon: '💼', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Attend 2+ PD Events (0/2)', xp: 20, category: 'pzone', requirement: 2, current: 0 },
+      { name: 'Resume Reviewed', status: 'locked', icon: '✅', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'PD Power User (0/3)', xp: 30, category: 'pzone', requirement: 3, current: 0 },
       { name: 'Pod Meeting', status: 'locked', icon: '👥', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Join Pod Meeting (0/1)', xp: 15, category: 'nsbe', requirement: 1, current: 0 },
       { name: 'Study Jam', status: 'locked', icon: '📚', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Academic Session (0/1)', xp: 20, category: 'academic', requirement: 1, current: 0 },
-      { name: 'GPA ≥ 3.0', status: 'locked', icon: '🎯', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Academic Excellence (0/100 XP)', xp: 40, category: 'academic', requirement: 100, current: 0 },
-      { name: 'Career Mixer', status: 'locked', icon: '🎤', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Interview Ready (0/4)', xp: 35, category: 'pzone', requirement: 4, current: 0 },
+      { name: 'GPA ≥ 3.5', status: 'locked', icon: '🎯', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Academic Excellence (0/100 XP)', xp: 40, category: 'academic', requirement: 100, current: 0 },
+      { name: "" Interview', status: 'locked', icon: '🎤', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Interview Ready (0/4)', xp: 35, category: 'pzone', requirement: 4, current: 0 },
       { name: '1-on-1 Mentorship', status: 'locked', icon: '🔥', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Mentorship Master (0/3)', xp: 50, category: 'nsbe', requirement: 3, current: 0 }
     ];
 
@@ -1296,7 +1296,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           <div className="flex justify-center items-center space-x-4 sm:space-x-6 lg:space-x-8 text-lg sm:text-xl md:text-2xl lg:text-4xl">
             <div className="text-center">
               <div>🔥</div>
-              <div className="text-xs sm:text-sm text-yellow-400 mt-1 sm:mt-2">M-Zone</div>
+              <div className="text-xs sm:text-sm text-yellow-400 mt-1 sm:mt-2">NSBE</div>
             </div>
             <div className="text-center">
               <div>🎓</div>

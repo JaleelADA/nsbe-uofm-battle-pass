@@ -1379,7 +1379,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           </div>
         )}
 
-        {/* NSBE Mentoring Section*/} 
+        // NSBE Mentoring Section 
           {activeFilter === 'nsbe' && (
             <div className="space-y-6 sm:space-y-8">
               <StyledSection theme="gold" className="p-4 sm:p-6" style={{

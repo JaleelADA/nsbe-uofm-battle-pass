@@ -1379,52 +1379,47 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           </div>
         )}
 
-        {/* NSBE Mentoring Section*/} 
-          {activeFilter === 'nsbe' && (
-            <div className="space-y-6 sm:space-y-8">
-              <StyledSection theme="gold" className="p-4 sm:p-6" style={{
-                clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
-                border: '2px solid #ffed4e',
-                color: '#fff'
-              }}>
-                <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-center text-white">🎯 NSBE UofM Mentorship Program 2025</h3>
-                <p className="text-xs sm:text-sm mb-3 sm:mb-4 text-white">
-            The NSBE UofM Mentorship Program empowers students through intentional, community-driven relationships 
-            that promote academic excellence, professional growth, and a strong cultural foundation.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
-            <div className="p-2 sm:p-3 bg-black/20 rounded">
-              <strong className="text-yellow-300">🔥 Mentorship Benefits:</strong>
-              <ul className="text-xs sm:text-sm mt-2 space-y-1 text-white">
-                <li>• 1-on-1 career guidance</li>
-                <li>• Industry connections</li>
-                <li>• Personal development</li>
-                <li>• Academic support</li>
-              </ul>
-            </div>
-            <div className="p-2 sm:p-3 bg-black/20 rounded">
-              <strong className="text-yellow-300">🎯 Program Structure:</strong>
-              <ul className="text-xs sm:text-sm mt-2 space-y-1 text-white">
-                <li>• Monthly mentor meetings</li>
-                <li>• Group activities</li>
-                <li>• Professional workshops</li>
-                <li>• Networking events</li>
-              </ul>
-            </div>
+        {/* NSBE Mentoring Section */}
+        {activeFilter === 'nsbe' && (
+          <div className="space-y-6 sm:space-y-8">
+            <StyledSection theme="gold" className="p-4 sm:p-6" style={{
+              clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
+              border: '2px solid #ffed4e',
+              color: '#fff'
+            }}>
+              <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-center text-white">🎯 NSBE UofM Mentorship Program 2025</h3>
+              <p className="text-xs sm:text-sm mb-3 sm:mb-4 text-white">
+                The NSBE UofM Mentorship Program empowers students through intentional, community-driven relationships 
+                that promote academic excellence, professional growth, and a strong cultural foundation.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="p-2 sm:p-3 bg-black/20 rounded">
+                  <strong className="text-yellow-300">🔥 Mentorship Benefits:</strong>
+                  <ul className="text-xs sm:text-sm mt-2 space-y-1 text-white">
+                    <li>• 1-on-1 career guidance</li>
+                    <li>• Industry connections</li>
+                    <li>• Personal development</li>
+                    <li>• Academic support</li>
+                  </ul>
                 </div>
-                <a 
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc0oAEFKY8soIdmfZRztUfULO7n8hKvmSGZpXm4xQr_L_pkyQ/viewform" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="w-full block p-2 sm:p-3 text-center font-bold bg-gradient-to-r from-red-600 to-red-700 text-white transition-all duration-300 hover:from-red-700 hover:to-red-800 text-xs sm:text-sm"
-                >
-            🔥 Sign Up for Mentorship Program
-                </a>
-              </StyledSection>
-            </div>
-          )}
+                <div className="p-2 sm:p-3 bg-black/20 rounded">
+                  <strong className="text-yellow-300">🎯 Program Structure:</strong>
+                  <ul className="text-xs sm:text-sm mt-2 space-y-1 text-white">
+                    <li>• Monthly mentor meetings</li>
+                    <li>• Group activities</li>
+                    <li>• Professional workshops</li>
+                    <li>• Networking events</li>
+                  </ul>
+                </div>
+              </div>
+              <button className="w-full p-2 sm:p-3 text-center font-bold bg-gradient-to-r from-red-600 to-red-700 text-white transition-all duration-300 hover:from-red-700 hover:to-red-800 text-xs sm:text-sm">
+                🔥 Sign Up for Mentorship Program
+              </button>
+            </StyledSection>
+          </div>
+        )}
 
-          {/* Professional Dev Section */}
+        {/* Professional Dev Section */}
         {activeFilter === 'pzone' && (
           <StyledSection theme="blue" className="p-4 sm:p-6" style={{
             clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
@@ -1446,12 +1441,12 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
               <div>
                 <h4 className="text-base sm:text-lg font-bold text-yellow-300 mb-2 sm:mb-3">🎯 Internship Prep</h4>
                 <div className="space-y-2">
-                   <a href="https://docs.google.com/spreadsheets/d/1MTxHzpXYLvEsUvbZDw6YH8CoI-xZo4JrflNCy1vWkRc/edit?gid=2125915776#gid=2125915776" target="_blank" className="block p-2 text-xs sm:text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
-                    📄 Internship List
+                  <a href="https://careercenter.umich.edu/article/resume-resources" target="_blank" className="block p-2 text-xs sm:text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
+                    📄 Career Center Resources
                   </a>
-                   <a href="https://docs.google.com/spreadsheets/d/1MTxHzpXYLvEsUvbZDw6YH8CoI-xZo4JrflNCy1vWkRc/edit?gid=2125915776#gid=2125915776" target="_blank" className="block p-2 text-xs sm:text-sm text-sky-100 hover:text-sky-200 border border-sky-600 transition-colors rounded">
-                    📄 Scholarship List
-                  </a>
+                  <button className="w-full p-2 text-left text-xs sm:text-sm text-sky-100 hover:bg-sky-800/30 border border-sky-600 rounded">
+                    💡 Technical Prep
+                  </button>
                 </div>
               </div>
             </div>

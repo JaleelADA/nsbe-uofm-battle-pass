@@ -1379,7 +1379,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
           </div>
         )}
 
-        {/* NSBE Mentoring Section*/} 
+        /* NSBE Mentoring Section */
           {activeFilter === 'nsbe' && (
             <div className="space-y-6 sm:space-y-8">
               <StyledSection theme="gold" className="p-4 sm:p-6" style={{
@@ -1422,9 +1422,7 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
                 </a>
               </StyledSection>
             </div>
-          )}
-
-          {/* Professional Dev Section */}
+          )}}
         {activeFilter === 'pzone' && (
           <StyledSection theme="blue" className="p-4 sm:p-6" style={{
             clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',

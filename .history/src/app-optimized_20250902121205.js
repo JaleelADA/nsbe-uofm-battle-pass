@@ -47,8 +47,8 @@ const EVENTS_DATA = [
   {
     title: "GBM w/ Ford",
     date: "Sept 12th",
-    time: "5:30 PM", 
-    location: "IOE 1610"
+    time: "5:30", 
+    location: "NSBE Alumni career paths discussion"
   }
 ];
 

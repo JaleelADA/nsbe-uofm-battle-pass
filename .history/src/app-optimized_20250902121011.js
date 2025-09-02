@@ -35,20 +35,20 @@ const EVENTS_DATA = [
   {
     title: "Corporate Mixer", 
     date: "Sept 7th",
-    time: "TBD",
+    time: "7:00 PM",
     location: "GG Brown Building"
   },
   {
     title: "Networking Social",
-    date: "Sept 8th", 
-    time: "TBD",
-    location: "Trotter"
+    date: "Jul 18", 
+    time: "5:30 PM",
+    location: "North Quad Lounge"
   },
   {
-    title: "GBM w/ Ford",
-    date: "Sept 12th",
-    time: "5:30 PM", 
-    location: "IOE 1610"
+    title: "Industry Panel",
+    date: "Jul 22",
+    time: "6:30 PM", 
+    location: "NSBE Alumni career paths discussion"
   }
 ];
 

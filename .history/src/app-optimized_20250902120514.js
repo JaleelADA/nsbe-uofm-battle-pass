@@ -27,28 +27,28 @@ const DOCUMENTATION_LINKS = [
 // Events data
 const EVENTS_DATA = [
   {
-    title: "PD: Resume Workshop",
-    date: "Sept 5",
+    title: "Workshop: Resume + LinkedIn",
+    date: "Jul 10",
     time: "6:00 PM",
-    location: "Mason Hall, Rm 3356"
+    location: "Duderstadt Center, Rm 1200"
   },
   {
-    title: "Corporate Mixer", 
-    date: "Sept 7th",
-    time: "TBD",
-    location: "GG Brown Building"
+    title: "GBM: Mock Interview Night", 
+    date: "Jul 14",
+    time: "7:00 PM",
+    location: "EECS Bldg, Rm 3110"
   },
   {
     title: "Networking Social",
-    date: "Sept 8th", 
-    time: "TBD",
-    location: "Trotter"
+    date: "Jul 18", 
+    time: "5:30 PM",
+    location: "North Quad Lounge"
   },
   {
-    title: "GBM w/ Ford",
-    date: "Sept 12th",
-    time: "5:30 PM", 
-    location: "IOE 1610"
+    title: "Industry Panel",
+    date: "Jul 22",
+    time: "6:30 PM", 
+    location: "NSBE Alumni career paths discussion"
   }
 ];
 

@@ -45,10 +45,10 @@ const EVENTS_DATA = [
     location: "Trotter"
   },
   {
-    title: "GBM w/ Ford",
-    date: "Sept 12th",
-    time: "5:30 PM", 
-    location: "IOE 1610"
+    title: "Industry Panel",
+    date: "Jul 22",
+    time: "6:30 PM", 
+    location: "NSBE Alumni career paths discussion"
   }
 ];
 

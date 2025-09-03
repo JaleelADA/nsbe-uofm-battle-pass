@@ -1,243 +1,25 @@
+
+// Expect globals injected by separate scripts (Data-Constants.js, Shared-style.js, helpers.js)
+const {
+  SHEET_CONFIG,
+  DOCUMENTATION_LINKS,
+  EVENTS_DATA,
+  ANNOUNCEMENTS_DATA,
+  TIER_DEFINITIONS,
+  POINT_SYSTEM,
+  BADGES_CONFIG,
+  CONTACT_INFO,
+  SHARED_STYLES,
+  checkSheetAccess,
+  fetchLeaderboardCSV
+} = window;
+
+// Basic runtime guard
+if (!SHEET_CONFIG || !SHARED_STYLES) {
+  console.warn('Global dependencies not loaded before app-optimized.js');
+}
+
 const { useState, useEffect } = React;
-
-// ===== CENTRALIZED DATA CONSTANTS =====
-
-// Google Sheets configuration
-const SHEET_CONFIG = {
-  SHEET_ID: '1EkyzaNjTQ-5sKvqex5SnTTJ6SCdq-WYIJ_Y_wU34JIU',
-  get SHEET_URL() { return `https://docs.google.com/spreadsheets/d/${this.SHEET_ID}/edit#gid=0`; }
-};
-
-// Documentation links
-const DOCUMENTATION_LINKS = [
-  {
-    title: "Point System Overview",
-    url: "https://docs.google.com/document/d/1KNJ2CdsHd_fytD1nkW5MPc2LrK17E9LwsHBcc9r0ZXA/edit?usp=sharing"
-  },
-  {
-    title: "Battle Pass FAQs", 
-    url: "https://docs.google.com/document/d/1Ss6W_MWxAeWA_UB8k2aZE67oa5kc4bTCWBI3B4Kvit8/edit?usp=sharing"
-  },
-  {
-    title: "Battle Pass Guide",
-    url: "https://docs.google.com/document/d/1k3yd2x2q0Th0Wo3jQKbvrSCagguMuAmpKG2ARvOVqAg/edit?usp=sharing"
-  }
-];
-
-// Events data
-const EVENTS_DATA = [
-  {
-    title: "PD: Resume Workshop",
-    date: "Sept 5th",
-    time: "6:00 PM",
-    location: "Mason Hall, Rm 3356"
-  },
-  {
-    title: "Corporate Mixer", 
-    date: "Sept 7th",
-    time: "TBD",
-    location: "GG Brown Building"
-  },
-  {
-    title: "Networking Social",
-    date: "Sept 8th", 
-    time: "TBD",
-    location: "Trotter"
-  },
-  {
-    title: "GBM w/ Ford",
-    date: "Sept 12th",
-    time: "5:30 PM", 
-    location: "IOE 1610"
-  }
-];
-
-// Announcements data
-const ANNOUNCEMENTS_DATA = [
-  { title: "Pay NSBE Dues", url: "https://mynsbe.nsbe.org/s/joinprocess" },
-  { title: "Conference Info", url: "https://convention.nsbe.org/" },
-  { title: "Scholarship Opportunities", url: "https://nsbe.org/scholarships/" },
-  { title: "Resume Book", url: "https://docs.google.com/forms/d/e/1FAIpQLSfsQfpp76QkK9HdEAi0DQJftrnV3r1Gv8PsLmIJlLHIQVYnKA/viewform" },
-  { title: "Mentorship Sign-ups", url: "#" },
-  { title: "Committee Applications", url: "#" },
-  { title: "Collab with NSBEUM!", url: "#" }
-];
-
-// Tier definitions
-const TIER_DEFINITIONS = [
-  { 
-    tier: 'GOLD', 
-    range: 'Top 25%', 
-    desc: 'NSBE Elite! Priority Conference RSVP, GBM shoutouts.', 
-    bg: 'linear-gradient(135deg, #ffd700, #ffa500)', 
-    color: '#000', 
-    icon: '🥇' 
-  },
-  { 
-    tier: 'SILVER', 
-    range: '25–50%', 
-    desc: 'Consistent contributors. Prize raffles, mentorship perks, Free NSBE Swag.', 
-    bg: 'linear-gradient(135deg, #c0c0c0, #a0a0a0)', 
-    color: '#000', 
-    icon: '🥈' 
-  },
-  { 
-    tier: 'BRONZE', 
-    range: '50–75%', 
-    desc: 'Active participants. Early invites to NSBE events.', 
-    bg: 'linear-gradient(135deg, #cd7f32, #b8860b)', 
-    color: '#fff', 
-    icon: '🥉' 
-  },
-  { 
-    tier: 'PARTICIPANT', 
-    range: 'Below 75%', 
-    desc: 'You\'re on the board! Keep showing up to level up.', 
-    bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', 
-    color: '#fff', 
-    icon: '🏅' 
-  }
-];
-
-// Point system data
-const POINT_SYSTEM = [
-  { activity: '📚 PD & Mentoring', points: '+10 pts' },
-  { activity: '🎉 General Attendance', points: '+7 pts' },
-  { activity: '🎯 P or M-Zone', points: '+5 pts' },
-  { activity: '🏆 Convention', points: '+15 pts' },
-  { activity: '👥 Referral', points: '+3 pts' }
-];
-
-// Badges configuration
-const BADGES_CONFIG = [
-  { name: 'PARTICIPANT', color: 'from-blue-500 to-blue-700', active: true, textColor: 'text-white', border: '#3b82f6' },
-  { name: 'BRONZE', color: 'from-yellow-600 to-orange-700', active: true, textColor: 'text-white', border: '#d97706' },
-  { name: 'SILVER', color: 'from-gray-300 to-gray-500', active: true, textColor: 'text-black', border: '#6b7280' },
-  { name: 'GOLD', color: 'from-yellow-400 to-yellow-600', active: false, textColor: 'text-black', border: '#fbbf24' }
-];
-
-// Contact information
-const CONTACT_INFO = [
-  {
-    type: "Email",
-    label: "nsbe.membership@umich.edu",
-    url: "mailto:nsbe.membership@umich.edu"
-  },
-  {
-    type: "Instagram", 
-    label: "@nsbeum",
-    url: "https://instagram.com/nsbeum"
-  },
-  {
-    type: "Linktree",
-    label: "NSBE UMich", 
-    url: "https://linktr.ee/nsbe_um"
-  }
-];
-
-// ===== SHARED STYLE CONSTANTS =====
-
-const SHARED_STYLES = {
-  // Section backgrounds
-  sectionBg: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-  
-  // Clip paths
-  clipPaths: {
-    section: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-    button: 'polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px)',
-    card: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
-    badge: 'polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%)'
-  },
-  
-  // Gradients
-  gradients: {
-    gold: 'linear-gradient(135deg, #ffd700, #ffed4e)',
-    blue: 'linear-gradient(135deg, #60a5fa, #3b82f6)',
-    green: 'linear-gradient(135deg, #34d399, #10b981)',
-    purple: 'linear-gradient(135deg, #a78bfa, #8b5cf6)',
-    progress: 'linear-gradient(90deg, #34d399, #10b981)'
-  },
-  
-  // Borders
-  borders: {
-    gold: '2px solid #ffd700',
-    blue: '2px solid #3b82f6', 
-    green: '2px solid #10b981',
-    purple: '2px solid #8b5cf6'
-  },
-  
-  // Shadows
-  shadows: {
-    gold: '0 0 20px rgba(255, 215, 0, 0.2)',
-    blue: '0 0 20px rgba(59, 130, 246, 0.2)',
-    green: '0 0 20px rgba(16, 185, 129, 0.2)',
-    purple: '0 0 20px rgba(139, 92, 246, 0.2)'
-  },
-  
-  // Add responsive utilities
-  responsive: {
-    mobile: 'max-width: 640px',
-    tablet: 'max-width: 1024px', 
-    desktop: 'min-width: 1025px'
-  },
-  
-  // Responsive spacing
-  spacing: {
-    mobile: {
-      padding: '1rem',
-      margin: '0.5rem',
-      gap: '0.5rem'
-    },
-    tablet: {
-      padding: '1.5rem',
-      margin: '1rem', 
-      gap: '1rem'
-    },
-    desktop: {
-      padding: '2rem',
-      margin: '1.5rem',
-      gap: '1.5rem'
-    }
-  }
-};
-
-// ===== HELPER FUNCTIONS =====
-
-// Helper function to check sheet accessibility
-async function checkSheetAccess() {
-  try {
-    const response = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=Leaderboard`);
-    return response.ok;
-  } catch (error) {
-    console.error('Sheet access check failed:', error);
-    return false;
-  }
-}
-
-// Alternative fetch method using CSV export (more reliable)
-async function fetchLeaderboardCSV() {
-  try {
-    const response = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_CONFIG.SHEET_ID}/export?format=csv&gid=0`);
-    const csvText = await response.text();
-    
-    const lines = csvText.split('\n').filter(line => line.trim());
-    const headers = lines[0].split(',');
-    
-    return lines.slice(1).map((line, index) => {
-      const values = line.split(',');
-      return {
-        rank: index + 1,
-        name: values[0]?.replace(/"/g, '') || 'Unknown',
-        score: parseInt(values[1]) || 0,
-        tier: values[2]?.replace(/"/g, '') || 'Participant'
-      };
-    }).filter(item => item.name && item.name !== 'Unknown')
-      .sort((a, b) => b.score - a.score);
-  } catch (error) {
-    console.error('CSV fetch failed:', error);
-    throw error;
-  }
-}
 
 // ===== REUSABLE UI COMPONENTS =====
 
@@ -1487,5 +1269,6 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
   );
 }
 
+// Mount App once scripts are loaded
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);

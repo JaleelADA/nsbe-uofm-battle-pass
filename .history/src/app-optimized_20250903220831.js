@@ -35,13 +35,13 @@ const EVENTS_DATA = [
   {
     title: "Corporate Mixer", 
     date: "Sept 7th",
-    time: "12-4 PM",
+    time: "TBD",
     location: "GG Brown Building"
   },
   {
-    title: "Study Jamz: SHPE x NSBE",
+    title: "Networking Social",
     date: "Sept 8th", 
-    time: "5-8 PM",
+    time: "TBD",
     location: "Trotter"
   },
   {
@@ -58,9 +58,9 @@ const ANNOUNCEMENTS_DATA = [
   { title: "Conference Info", url: "https://convention.nsbe.org/" },
   { title: "Scholarship Opportunities", url: "https://nsbe.org/scholarships/" },
   { title: "Resume Book", url: "https://docs.google.com/forms/d/e/1FAIpQLSfsQfpp76QkK9HdEAi0DQJftrnV3r1Gv8PsLmIJlLHIQVYnKA/viewform" },
-  { title: "Mentorship Sign-ups", url: "https://docs.google.com/forms/d/e/1FAIpQLSc0oAEFKY8soIdmfZRztUfULO7n8hKvmSGZpXm4xQr_L_pkyQ/viewform?usp=share_link&ouid=105119752436265794522" },
-  { title: "Committee Applications", url: "#", onClick: () => alert("Coming soon!") },
-  { title: "Collab with NSBEUM!", url: "https://docs.google.com/forms/d/e/1FAIpQLSdVzBy08R3Ex8FMrmlJQ1uCq-TJdHzwr_wGk0cvxztrTL_6ng/viewform?usp=share_link&ouid=105119752436265794522" }
+  { title: "Mentorship Sign-ups", url: "#" },
+  { title: "Committee Applications", url: "#" },
+  { title: "Collab with NSBEUM!", url: "" }
 ];
 
 // Tier definitions

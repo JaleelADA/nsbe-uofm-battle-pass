@@ -35,13 +35,13 @@ const EVENTS_DATA = [
   {
     title: "Corporate Mixer", 
     date: "Sept 7th",
-    time: "12-4 PM",
+    time: "12-",
     location: "GG Brown Building"
   },
   {
-    title: "Study Jamz: SHPE x NSBE",
+    title: "Networking Social",
     date: "Sept 8th", 
-    time: "5-8 PM",
+    time: "TBD",
     location: "Trotter"
   },
   {

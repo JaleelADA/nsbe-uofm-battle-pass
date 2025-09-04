@@ -39,9 +39,9 @@ const EVENTS_DATA = [
     location: "GG Brown Building"
   },
   {
-    title: "Study Jamz: SHPE x NSBE",
+    title: "Networking Social",
     date: "Sept 8th", 
-    time: "5-8 PM",
+    time: "",
     location: "Trotter"
   },
   {

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Raw Data Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .output { background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 5px; overflow: auto; }
+        .btn { background: #007acc; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Raw Data Debug</h1>
+    
+    <button class="btn" onclick="testRawResponse()">Test Raw API Response</button>
+    <button class="btn" onclick="testParsedData()">Test Parsed Data</button>
+    
+    <div id="output"></div>
+    
+    <script src="src/LocalDataManager.js"></script>
+    <script>
+        async function testRawResponse() {
+            try {
+                const config = window.NEW_DATA_CONFIG;
+                const url = `https://docs.google.com/spreadsheets/d/${config.SIGNIN_FORM_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(config.SIGNIN_SHEET_NAME)}`;
+                
+                document.getElementById('output').innerHTML = `<div class="output">Fetching from: ${url}</div>`;
+                
+                const response = await fetch(url);
+                const text = await response.text();
+                
+                document.getElementById('output').innerHTML += `
+                    <div class="output">
+                        <h3>Raw Response (first 500 chars):</h3>
+                        <pre>${text.substring(0, 500)}...</pre>
+                    </div>
+                `;
+                
+                // Parse it
+                const jsonText = text.substring(47).slice(0, -2);
+                const data = JSON.parse(jsonText);
+                
+                document.getElementById('output').innerHTML += `
+                    <div class="output">
+                        <h3>Parsed JSON Structure:</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+                
+            } catch (error) {
+                document.getElementById('output').innerHTML += `
+                    <div class="output" style="color: red;">
+                        <h3>Error:</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+        
+        async function testParsedData() {
+            try {
+                const signInData = await window.LocalDataManager.fetchSignInData();
+                
+                document.getElementById('output').innerHTML = `
+                    <div class="output">
+                        <h3>Parsed Sign-in Data (${signInData.length} entries):</h3>
+                        <pre>${JSON.stringify(signInData, null, 2)}</pre>
+                    </div>
+                `;
+                
+                if (signInData.length > 0) {
+                    document.getElementById('output').innerHTML += `
+                        <div class="output">
+                            <h3>First Entry Analysis:</h3>
+                            <pre>
+Timestamp: "${signInData[0]['Timestamp']}"
+Email Address: "${signInData[0]['Email Address']}"
+Uniqname: "${signInData[0]['Uniqname']}"
+Full Name: "${signInData[0]['Full Name (First & Last)']}"
+Event: "${signInData[0]['Event']}"
+                            </pre>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                document.getElementById('output').innerHTML = `
+                    <div class="output" style="color: red;">
+                        <h3>Error:</h3>
+                        <pre>${error.message}</pre>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

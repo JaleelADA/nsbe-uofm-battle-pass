@@ -4,36 +4,45 @@
 [![GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-blue)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A gamified mentorship and professional development platform for the National Society of Black Engineers (NSBE) University of Michigan chapter. Track progress, earn achievements, and unlock career development opportunities through an interactive Battle Pass system.
+A gamified mentorship and professional development platform for the National Society of Black Engineers (NSBE) University of Michigan chapter. Track progress, earn achievements, and unlock career development opportunities through an interactive Battle Pass system with dynamic tier ranking and real-time trackable badges.
 
 
 ## 🚀 Features
 
 ### 🎯 **Core Functionality**
-- **Real-time Leaderboard** - Live ranking system with Google Sheets integration
-- **Achievement System** - Unlock badges for professional development milestones
-- **Progress Tracking** - XP-based progression with visual feedback
-- **Smart Search** - Find any student in the complete leaderboard
-- **User Recognition** - Highlight your position and rank
+- **Dynamic Tier System** - Quartile-based competitive ranking (Gold, Silver, Bronze, Participant)
+- **Real-time Trackable Badges** - Achievement system with live progress tracking
+- **Local Data Management** - Complete Google Sheets integration with local calculations
+- **Smart Leaderboard** - Live ranking with tier thresholds and member statistics
+- **User Recognition** - Personal progress tracking with tier placement
 
-### 🔥 **Mentorship Hub**
+### 🏅 **Advanced Badge System**
+- **Trackable Achievements** - Real-time progress monitoring for all badge requirements
+- **Dynamic Tier Badges** - Special achievements based on leaderboard quartile performance
+- **Category-based Tracking** - Professional Development, Engagement, P-Zone, Mentorship events
+- **Progress Visualization** - See completion percentage and next milestone requirements
+
+### 🔥 **Mentorship Hub (Modular)**
 - **NSBE Mentoring** - Program details and sign-up portal
-- **Professional Development** - Resume resources and interview prep
-- **Academic Corner** - study resources
+- **Professional Development** - Resume resources and interview prep  
+- **Academic Corner** - Study resources and academic support
 - **Interactive Filters** - Navigate between different development areas
 
-### 📊 **Data Integration**
-- **Google Sheets API** - Live data synchronization
-- **Dynamic Updates** - Real-time achievement calculation
-- **Responsive Design** - Works on desktop, tablet, and mobile
+### 📊 **Data Integration & Architecture**
+- **LocalDataManager** - Centralized data processing with Google Sheets API
+- **Dynamic Tier Calculation** - Automatic quartile-based tier assignment
+- **Real-time Synchronization** - Live updates from form submissions and member verification
+- **Modular Components** - InfoSidebar, MentorshipHUB, and reusable UI components
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18 (via CDN), HTML5, CSS3
+- **Architecture**: Modular component system with LocalDataManager
 - **Styling**: Tailwind CSS, Custom CSS animations
-- **Data**: Google Sheets API integration
-- **Deployment**: GitHub Pages / Netlify / Vercel
-- **Build Tools**: Live Server (development), Babel (JSX compilation)
+- **Data Processing**: Google Sheets API with local calculations and dynamic tier system
+- **Badge System**: Real-time trackable achievements with progress monitoring
+- **Deployment**: GitHub Pages optimized
+- **Development**: Live Server, Modern JavaScript (ES6+)
 
 ## 📦 Installation & Setup
 
@@ -57,80 +66,112 @@ python -m http.server 8000
 ```
 
 ### **Google Sheets Setup**
-1. Create a Google Sheet with columns: `Name`, `XP`, `Tier`, `Recruits`
-2. Make the sheet publicly viewable
-3. Copy the sheet ID from the URL
-4. Update the `GOOGLE_SHEET_URL` in `src/app-optimized.js`
+1. **Sign-in Form Sheet**: Create a form that logs event attendance
+2. **Paid Members Sheet**: Maintain a list of current paid NSBE members
+3. **Make sheets publicly accessible** for read-only access
+4. **Update sheet IDs** in `src/LocalDataManager.js`:
+   ```javascript
+   SIGNIN_FORM_SHEET_ID: 'your-form-sheet-id',
+   PAID_MEMBERS_SHEET_ID: 'your-members-sheet-id'
+   ```
 
 ## 🎮 Usage
 
 ### **For Students**
-1. **Enter your name** to see your progress and rank
-2. **View achievements** - See unlocked badges and XP earned
-3. **Check leaderboard** - See where you rank among peers
-4. **Explore mentorship** - Access development resources
+1. **Enter your uniqname** to see your progress, tier, and rank
+2. **View trackable badges** - See real-time progress on all achievements
+3. **Check dynamic leaderboard** - See quartile-based tier rankings
+4. **Monitor tier placement** - Track your position in Gold, Silver, Bronze, or Participant tiers
+5. **Access mentorship resources** - Explore development opportunities
 
 ### **For Administrators**
-1. **Update Google Sheet** - Add new students, update XP, change tiers
-2. **Monitor engagement** - Track participation through the leaderboard
-3. **Manage achievements** - Achievements auto-update based on XP thresholds
+1. **Monitor Google Sheets** - Form responses automatically update member points
+2. **Track engagement metrics** - View participation through dynamic leaderboard
+3. **Manage tier thresholds** - Automatic quartile calculation adjusts competition
+4. **Badge system oversight** - All achievements calculate automatically from attendance data
 
 ## 🏗️ Project Structure
 
 ```
 nsbe-uofm-battle-pass/
-├── index.html              # Web app main entry point
-├── src/                    # Web application source
-│   ├── app-optimized.js    # Main React application (optimized)
-│   ├── app.js             # Original application (full-featured)
-│   ├── App.jsx            # Alternative React component
-│   ├── main.jsx           # React entry point
-│   └── index.css          # Custom styles
-├── mobile/                 # 📱 React Native mobile app
-│   ├── src/
-│   │   ├── App.js         # Main mobile app component
-│   │   ├── components/    # Mobile UI components
-│   │   ├── services/      # Google Sheets integration
-│   │   ├── styles/        # Mobile styling and theme
-│   │   └── utils/         # Utilities and static data
-│   ├── package.json       # Mobile app dependencies
-│   └── README.md          # Mobile setup instructions
-├── tailwind.config.js     # Tailwind configuration
-└── README.md              # Project documentation
+├── index.html                  # Main application entry point
+├── src/                        # Application source code
+│   ├── app-optimized.js       # Main React application with dynamic tier integration
+│   ├── LocalDataManager.js    # Core data processing and Google Sheets integration
+│   ├── MentorshipHUB.js      # Trackable badge system and mentorship features
+│   ├── InfoSidebar.js        # Modular info sidebar component
+│   ├── Data-Constants.js     # Centralized configuration and badge definitions
+│   ├── Reuseable-UI.JS       # Shared UI components
+│   ├── Shared-style.js       # Common styling utilities
+│   ├── helpers.js            # Utility functions
+│   ├── main.jsx              # React component definitions
+│   └── index.css             # Custom styles and animations
+├── tailwind.config.js         # Tailwind CSS configuration
+├── CNAME                      # Custom domain configuration
+└── LICENSE                    # MIT License
 ```
 
-## 📱 Mobile App
+### **Key Components**
+- **LocalDataManager**: Handles all Google Sheets integration and dynamic tier calculations
+- **MentorshipHUB**: Manages trackable badge system with real-time progress
+- **InfoSidebar**: Modular component for information display
+- **Dynamic Tier System**: Automatic quartile-based competitive ranking
 
-- **Full leaderboard search** - Find any user in the complete database
-- **Real-time data sync** - Same Google Sheets integration as web app
-- **Mobile-optimized UI** - Touch-friendly interface with native components
-- **Core features** - User stats, badges, events, announcements, and leaderboard
 
+## ⚙️ Configuration & Customization
 
-### **Styling**
-- Edit `tailwind.config.js` for theme colors
-- Modify NSBE brand colors in `src/app-optimized.js`
-- Add custom animations in the `<style>` section
-
-### **Achievement System**
+### **Dynamic Tier System**
+The tier system automatically calculates quartile-based rankings:
 ```javascript
-// Add new achievements in src/app-optimized.js
-const achievements = [
-  {
-    name: "New Achievement",
-    desc: "Description here",
-    icon: "🏆",
-    xp: 100,
-    category: "professional",
-    status: "locked"
+// In LocalDataManager.js - automatically calculated
+Gold Tier: Top 25% of members
+Silver Tier: 25th-50th percentile  
+Bronze Tier: 50th-75th percentile
+Participant Tier: Bottom 25%
+```
+
+### **Badge System Configuration**
+Add new trackable badges in `src/Data-Constants.js`:
+```javascript
+window.TRACKABLE_BADGES_CONFIG = {
+  "badge-id": {
+    name: "Badge Name",
+    icon: "🏆", 
+    color: "#3b82f6",
+    desc: "Badge description",
+    xp: 25,
+    category: "engagement",
+    type: "count", // or "status", "tier"
+    requirement: { field: "event_type", value: 5 }
   }
-];
+};
 ```
 
-### **Google Sheets Integration**
+### **Google Sheets Data Sources**
+Update sheet configuration in `src/LocalDataManager.js`:
 ```javascript
-// Update sheet URL in src/app-optimized.js
-const GOOGLE_SHEET_URL = "your-google-sheet-url-here";
+window.NEW_DATA_CONFIG = {
+  SIGNIN_FORM_SHEET_ID: 'your-form-sheet-id',
+  PAID_MEMBERS_SHEET_ID: 'your-members-sheet-id',
+  SIGNIN_SHEET_NAME: 'Form Responses 1',
+  PAID_MEMBERS_SHEET_NAME: 'Sheet1'
+};
+```
+
+### **Point System**
+Customize event point values in `src/LocalDataManager.js`:
+```javascript
+window.NEW_POINT_SYSTEM = {
+  activities: {
+    'GBM': 7,
+    'Professional Development': 10,
+    'P-Zone': 5,
+    'Mentorship Events': 7
+  },
+  bonuses: {
+    'paid_member_multiplier': 1.5
+  }
+};
 ```
 
 ## 🚀 Deployment
@@ -172,32 +213,46 @@ We welcome contributions from NSBE members and the broader community!
 
 ## 📋 Roadmap
 
-### **Version 2.0**
-- [x] User authentication system
-- [x] Mobile UI
-- [ ] Push notifications for events
-- [ ] Social features (friend connections)
-- [ ] Advanced analytics dashboard
+### **Recently Completed ✅**
+- [x] Dynamic quartile-based tier system
+- [x] Real-time trackable badge system  
+- [x] Complete Google Sheets integration with local processing
+- [x] Modular component architecture (InfoSidebar, MentorshipHUB)
+- [x] Production-ready codebase cleanup
 
-### **Integration Goals**
-- [ ] Canvas LMS integration
-- [ ] University career services API
-- [ ] NSBE national database sync
-- [ ] Calendar integration for events
+### **Version 2.1 (In Progress)**
+- [ ] Enhanced badge progress visualization
+- [ ] Tier achievement celebrations and animations
+- [ ] Advanced leaderboard filtering options
+- [ ] Historical progress tracking
 
-## 🐛 Known Issues
+### **Future Enhancements**
+- [ ] Push notifications for tier changes
+- [ ] Social features (peer comparisons)
+- [ ] Advanced analytics dashboard for administrators
+- [ ] Integration with University career services
 
-- **Large datasets**: Performance may slow with 500+ students
-- **IE compatibility**: Not supported (requires modern browser)
+## 🐛 Known Issues & Limitations
+
+- **Performance**: Large datasets (500+ members) may experience slight delays during tier calculation
+- **Browser Support**: Requires modern browsers with ES6+ support (IE not supported)
+- **Real-time Updates**: Google Sheets API has rate limits; very frequent updates may be delayed
+- **Badge Progress**: Some complex badge requirements may need manual verification
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ### **Development Team**
-- **Lead Developer**: [Jaleel Drones](https://github.com/JaleelADA)
-- **NSBE UofM Chapter**: Mentorship program design
-- **P-Zone Partnership**: Professional development & Academic content
+- **Lead Developer**: [Jaleel Drones](https://github.com/JaleelADA) - Full-stack development, architecture design
+- **NSBE UofM Chapter**: Mentorship program design and requirements
+- **System Architecture**: Dynamic tier system, trackable badge implementation, modular components
+
+### **Technical Achievements**
+- **Dynamic Tier System**: Quartile-based competitive ranking with real-time calculation
+- **Trackable Badge System**: Live progress monitoring with Google Sheets integration
+- **Modular Architecture**: Scalable component system for easy maintenance and updates
+- **Production Optimization**: Clean, efficient codebase with proper separation of concerns
 
 ### **Special Thanks**
 - NSBE UofM Executive Board
@@ -222,8 +277,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Built with ❤️ for NSBE UofM | Empowering Excellence Through Technology**
+**Built with ❤️ for NSBE UofM | Empowering Excellence Through Dynamic Competition**
 
-[🔗 Live site](https://nsbeum.live) • [📧 Contact](mailto:jaleeldrones1@gmail.com) • [🐛 Report Bug](https://github.com/JaleelADA/BP-Game/issues)
+**🏆 Dynamic Tiers • 🏅 Trackable Badges • 📊 Real-time Data**
+
+[🔗 Live site](https://nsbeum.live) • [📧 Contact](mailto:jaleeldrones1@gmail.com) • [🐛 Report Bug](https://github.com/JaleelADA/nsbe-uofm-battle-pass/issues)
 
 </div>

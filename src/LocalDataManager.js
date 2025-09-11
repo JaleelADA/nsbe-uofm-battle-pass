@@ -1,17 +1,22 @@
 // Local Data Manager - Handles fetching from Google Sheets and local calculations
 // New system: Form responses + Paid member verification + Local point calculations
 
-// Configuration for new data sources
+// Enhanced configuration for new data sources with email-uniqname linking
 window.NEW_DATA_CONFIG = {
   // Your actual sheet IDs
   SIGNIN_FORM_SHEET_ID: '1ckiwFLGI_bBsZ0Zs6EIP4IZaX1tVtwBzs84VPB1lqb4',
   PAID_MEMBERS_SHEET_ID: '1INkzEpMsH8Ow85FtKv6DnbKxI1ysu6SKYsmu3JcXDKg',
   
-  // Sheet tab names
-  SIGNIN_SHEET_NAME: 'Form Responses 1',
-  PAID_MEMBERS_SHEET_NAME: 'Sheet1', // Update if different
+  // Sheet tab names (corrected)
+  SIGNIN_SHEET_NAME: 'Sign-ins',
+  PAID_MEMBERS_SHEET_NAME: 'PaidMembers',
   SIGNIN_SHEET_GID: '554738007'
 };
+
+// Email-to-Uniqname mapping system
+// This will be built dynamically from sign-in data to link dues (email) with points (uniqname)
+window.EMAIL_UNIQNAME_MAPPING = new Map();
+window.EMAIL_UNIQNAME_MAPPING = new Map();
 
 // New Point System Logic based on your specifications
 window.NEW_POINT_SYSTEM = {
@@ -29,11 +34,12 @@ window.NEW_POINT_SYSTEM = {
     'Mentorship Program Participation': 10 // Active mentorship engagement
   },
   
-  // Multipliers
+  // Multipliers and bonuses
   multipliers: {
     'VOLUNTEERING_BONUS': 1.5,  // 1.5x for next two events after volunteering
     'BRING_FRIEND_FIRST': 3,    // 3 points for first friend brought
-    'BRING_FRIEND_ADDITIONAL': 1 // 1 point for each additional friend
+    'BRING_FRIEND_ADDITIONAL': 1, // 1 point for each additional friend
+    'PAID_MEMBER_BONUS': 1.5    // 1.5x multiplier for paid NSBE members
   },
   
   // Tier thresholds (points needed for each tier)
@@ -44,6 +50,79 @@ window.NEW_POINT_SYSTEM = {
     'PARTICIPANT': 0 // Everyone else
   }
 };
+
+// Build email-to-uniqname mapping from sign-in data
+function buildEmailUniqnameMapping(signInData) {
+  // Clear existing mapping
+  window.EMAIL_UNIQNAME_MAPPING.clear();
+  
+  // Build mapping from all sign-in entries
+  signInData.forEach(entry => {
+    const email = (entry['Email Address'] || entry['Email'] || '').toLowerCase().trim();
+    const uniqname = (entry['Uniqname'] || entry['uniqname'] || '').toLowerCase().trim();
+    const fullName = entry['Full Name (First & Last)'] || entry['Full Name'] || '';
+    
+    if (email && uniqname) {
+      // Store the most recent full name and uniqname for this email
+      if (!window.EMAIL_UNIQNAME_MAPPING.has(email) || 
+          new Date(entry['Timestamp'] || 0) > new Date(window.EMAIL_UNIQNAME_MAPPING.get(email).lastSeen)) {
+        
+        window.EMAIL_UNIQNAME_MAPPING.set(email, {
+          uniqname: uniqname,
+          fullName: fullName,
+          lastSeen: entry['Timestamp'] || new Date().toISOString()
+        });
+      }
+    }
+  });
+  
+  return window.EMAIL_UNIQNAME_MAPPING;
+}
+
+// Enhanced paid member verification using email-uniqname mapping
+function isPaidMemberEnhanced(uniqname, email, paidMembersList) {
+  if (!paidMembersList || paidMembersList.length === 0) return false;
+  
+  // Try direct email match first
+  if (email) {
+    const directMatch = paidMembersList.some(member => {
+      const memberEmail = (member.Email || member['Email'] || '').toLowerCase().trim();
+      const isPaid = member['Paid AC Chapter Fee? (Y / N)'] || member['Paid AC Chapter Fee'];
+      
+      return memberEmail === email.toLowerCase().trim() &&
+             (isPaid === 'Y' || isPaid === 'Yes' || isPaid === 'yes');
+    });
+    
+    if (directMatch) return true;
+  }
+  
+  // Try to find email through uniqname mapping
+  if (uniqname && window.EMAIL_UNIQNAME_MAPPING) {
+    for (const [mappedEmail, mappingData] of window.EMAIL_UNIQNAME_MAPPING) {
+      if (mappingData.uniqname === uniqname.toLowerCase().trim()) {
+        // Found the email for this uniqname, check if that email is paid
+        const emailMatch = paidMembersList.some(member => {
+          const memberEmail = (member.Email || member['Email'] || '').toLowerCase().trim();
+          const isPaid = member['Paid AC Chapter Fee? (Y / N)'] || member['Paid AC Chapter Fee'];
+          
+          return memberEmail === mappedEmail &&
+                 (isPaid === 'Y' || isPaid === 'Yes' || isPaid === 'yes');
+        });
+        
+        if (emailMatch) return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+// Check if a member is a paid member (legacy function - now uses enhanced version)
+function isPaidMember(email, paidMembersList) {
+  if (!email || !paidMembersList) return false;
+  
+  return isPaidMemberEnhanced(null, email, paidMembersList);
+}
 
 // Fetch data from Google Sheets
 async function fetchSheetData(sheetId, sheetName) {
@@ -59,17 +138,28 @@ async function fetchSheetData(sheetId, sheetName) {
     
     if (data.table && data.table.rows) {
       const headers = data.table.cols.map(col => col.label || col.id);
-      const rows = data.table.rows.slice(1); // Skip header row
+      // Don't skip any rows - let the data speak for itself
+      const rows = data.table.rows;
       
       return rows
         .filter(row => row.c && row.c.some(cell => cell && cell.v)) // Filter empty rows
         .map(row => {
           const rowData = {};
+          let isHeaderRow = false;
+          
           headers.forEach((header, index) => {
-            rowData[header] = row.c[index]?.v || '';
+            const cellValue = row.c[index]?.v || '';
+            // Check if this looks like a header row
+            if (cellValue === 'Timestamp' || cellValue === 'Email Address') {
+              isHeaderRow = true;
+            }
+            rowData[header] = cellValue;
           });
-          return rowData;
-        });
+          
+          // Return null for header rows
+          return isHeaderRow ? null : rowData;
+        })
+        .filter(row => row !== null && Object.values(row).some(val => val && val !== '')); // Filter out null rows and completely empty rows
     }
     
     return [];
@@ -93,21 +183,6 @@ async function fetchPaidMembers() {
     window.NEW_DATA_CONFIG.PAID_MEMBERS_SHEET_ID, 
     window.NEW_DATA_CONFIG.PAID_MEMBERS_SHEET_NAME
   );
-}
-
-// Check if uniqname is in paid members list (using email for verification)
-function isPaidMember(email, paidMembersList) {
-  if (!email || !paidMembersList) return false;
-  
-  return paidMembersList.some(member => {
-    // Check email column and Paid AC Chapter Fee status
-    const memberEmail = member.Email || member['Email'];
-    const isPaid = member['Paid AC Chapter Fee? (Y / N)'] || member['Paid AC Chapter Fee'];
-    
-    return memberEmail && 
-           memberEmail.toLowerCase().trim() === email.toLowerCase().trim() &&
-           (isPaid === 'Y' || isPaid === 'Yes' || isPaid === 'yes');
-  });
 }
 
 // Calculate points for a member based on their activities
@@ -208,6 +283,12 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
     }
   }
   
+  // Apply paid member bonus (1.5x multiplier for all points)
+  const isPaid = isPaidMemberEnhanced(uniqname, email, paidMembersList);
+  if (isPaid) {
+    eventPoints *= window.NEW_POINT_SYSTEM.multipliers.PAID_MEMBER_BONUS;
+  }
+  
   const totalEventPoints = Math.round(eventPoints + friendPoints);
   
   return {
@@ -228,6 +309,9 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
 
 // Generate leaderboard from processed data
 function generateLeaderboard(signInData, paidMembersList) {
+  // Build email-uniqname mapping from sign-in data
+  buildEmailUniqnameMapping(signInData);
+  
   const memberStats = {};
   
   // First pass: collect all activities by uniqname
@@ -288,7 +372,7 @@ function generateLeaderboard(signInData, paidMembersList) {
       uniqname: uniqname,
       totalPoints: Math.round(totalPoints),
       activities: processedActivities,
-      isPaid: isPaidMember(member.email, paidMembersList),
+      isPaid: isPaidMemberEnhanced(uniqname, member.email, paidMembersList),
       eventCount: member.activities.length
     };
   });
@@ -398,6 +482,8 @@ async function getLocalLeaderboard() {
 window.fetchSignInData = fetchSignInData;
 window.fetchPaidMembers = fetchPaidMembers;
 window.isPaidMember = isPaidMember;
+window.isPaidMemberEnhanced = isPaidMemberEnhanced;
+window.buildEmailUniqnameMapping = buildEmailUniqnameMapping;
 window.calculateMemberPoints = calculateMemberPoints;
 window.generateLeaderboard = generateLeaderboard;
 window.calculateTier = calculateTier;
@@ -409,9 +495,12 @@ window.LocalDataManager = {
   fetchSignInData,
   fetchPaidMembers,
   isPaidMember,
+  isPaidMemberEnhanced,
+  buildEmailUniqnameMapping,
   calculateMemberPoints,
   generateLeaderboard,
   calculateTier,
   calculateDynamicTierThresholds,
-  getLocalLeaderboard
+  getLocalLeaderboard,
+  getEmailUniqnameMapping: () => window.EMAIL_UNIQNAME_MAPPING
 };

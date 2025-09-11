@@ -32,22 +32,22 @@ window.EVENTS_DATA = [
     location: "IOE 1610"
   },
   {
-    title: "Study Jamz", 
-    date: "Sept 15th",
-    time: "TBD",
-    location: "GG Brown Building"
+    title: "Golfing with Ford", 
+    date: "Sept 18th",
+    time: "5 - 7:30pm",
+    location: "Indian Trails Golf Center"
   },
   {
-    title: "Networking Social",
-    date: "Sept 8th", 
-    time: "TBD",
-    location: "Trotter"
+    title: "Study Jamz",
+    date: "Sept 22th", 
+    time: "5:30 - 8pm",
+    location: "LSA BLDG 3254"
   },
   {
-    title: "GBM w/ Ford",
-    date: "Sept 12th",
+    title: "Mentorship Mixer",
+    date: "Sept 23rd",
     time: "5:30 PM", 
-    location: "IOE 1610"
+    location: "TBA"
   }
 ];
 
@@ -58,7 +58,6 @@ window.ANNOUNCEMENTS_DATA = [
   { title: "🏆 Conference Info", url: "https://convention.nsbe.org/" },
   { title: "💰 Scholarship Opportunities", url: "https://nsbe.org/scholarships/" },
   { title: "📄 Resume Book", url: "https://docs.google.com/forms/d/e/1FAIpQLSfQgLB--SZ40hznFcCxUTUbAyz_dWQB4klCIvaZDPD29ibnLg/viewform?usp=header" },
-  { title: "👥 Mentorship Sign-ups", url: "#" },
   { title: "📋 Committee Applications", url: "#" },
   { title: "🏅 JEB Application", url: "https://docs.google.com/forms/d/e/1FAIpQLSeG1fifIlWu3M5S9OijspVQZ1IL2xycFHe-XGJ44RV0eMbsAg/viewform?usp=share_link&ouid=105119752436265794522" },
   { title: "🤝 Collab with NSBEUM!", url: "https://docs.google.com/forms/d/e/1FAIpQLSdVzBy08R3Ex8FMrmlJQ1uCq-TJdHzwr_wGk0cvxztrTL_6ng/viewform?usp=share_link&ouid=105119752436265794522" }

@@ -1,19 +1,12 @@
 
 // Expect globals injected by separate scripts (Data-Constants.js, Shared-style.js, helpers.js)
 const {
-  SHEET_CONFIG,
-  DOCUMENTATION_LINKS,
-  EVENTS_DATA,
-  ANNOUNCEMENTS_DATA,
-  TIER_DEFINITIONS,
-  POINT_SYSTEM,
   BADGES_CONFIG,
-  CONTACT_INFO,
   SHARED_STYLES
 } = window;
 
 // Basic runtime guard
-if (!SHEET_CONFIG || !SHARED_STYLES) {
+if (!SHARED_STYLES) {
   console.warn('Global dependencies not loaded before app-optimized.js');
 }
 
@@ -226,95 +219,6 @@ function SkipNavigation() {
     </nav>
   );
 }
-
-function DocumentationSection() {
-  return (
-    <StyledSection theme="blue" className="mb-8">
-      <SectionTitle theme="blue">📄 DOCUMENTATION</SectionTitle>
-      <div className="space-y-3">
-        {DOCUMENTATION_LINKS.map((doc, index) => (
-          <StyledLink key={index} href={doc.url}>
-            {doc.title}
-          </StyledLink>
-        ))}
-      </div>
-    </StyledSection>
-  );
-}
-
-function UpcomingEventsSection() {
-  return (
-    <StyledSection id="events-section" theme="gold">
-      <SectionTitle theme="gold">📅 UPCOMING EVENTS</SectionTitle>
-      
-      <div className="space-y-4 mb-6">
-        {EVENTS_DATA.map((event, index) => (
-          <div key={index} className="p-3 bg-gray-800/50 border border-gray-600" style={{
-            clipPath: SHARED_STYLES.clipPaths.button
-          }}>
-            <div className="font-bold text-yellow-400">{event.date} – {event.title}</div>
-            <div className="text-sm text-gray-300">{event.time} · {event.location}</div>
-          </div>
-        ))}
-      </div>
-      
-      <a 
-        href="https://tr.ee/kXIev9hrt3" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="block p-3 text-center font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300"
-        style={{
-          clipPath: SHARED_STYLES.clipPaths.button
-        }}
-      >
-        📅 Add the NSBEUM Calendar
-      </a>
-    </StyledSection>
-  );
-}
-
-function AnnouncementsSection() {
-  return (
-    <StyledSection theme="green" className="mb-8">
-      <SectionTitle theme="green">📣 ANNOUNCEMENTS</SectionTitle>
-      
-      <div className="space-y-3">
-        {ANNOUNCEMENTS_DATA.map((announcement, index) => (
-          <StyledLink 
-            key={index}
-            href={announcement.url}
-            className="text-emerald-100 hover:text-emerald-200"
-          >
-            {announcement.title}
-          </StyledLink>
-        ))}
-      </div>
-    </StyledSection>
-  );
-}
-
-function ContactSection() {
-  return (
-    <StyledSection theme="purple">
-      <SectionTitle theme="purple">📞 CONTACT US</SectionTitle>
-      
-      <div className="space-y-3">
-        {CONTACT_INFO.map((contact, index) => (
-          <div key={index} className="p-3 bg-gray-800/50 border border-gray-600" style={{
-            clipPath: SHARED_STYLES.clipPaths.button
-          }}>
-            <span className="text-gray-300">{contact.type}: </span>
-            <a href={contact.url} className="text-purple-300 hover:text-purple-200 transition-colors">
-              {contact.label}
-            </a>
-          </div>
-        ))}
-      </div>
-    </StyledSection>
-  );
-}
-
-
 
 function BadgeSection() {
   return (

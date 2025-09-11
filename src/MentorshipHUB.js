@@ -1,77 +1,225 @@
-// Standalone MentorshipHub component (was mixed into app-optimized previously)
-const { useState } = React;
-function MentorshipHub({ onBackClick, userData, eventData }) {
+// Standalone MentorshipHub component with live badge tracking
+const { useState, useEffect } = React;
+function MentorshipHub({ onBackClick, userData, eventData, localDataManager }) {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [trackableAchievements, setTrackableAchievements] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Calculate achievements based on user data and attendance
-  const calculateAchievements = (userData, eventData) => {
-    // Default achievements when no user data is available
-    const defaultAchievements = [
-      { name: 'Resume Workshop', status: 'locked', icon: '📝', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Attend PD Workshop (0/1)', xp: 25, category: 'pzone', requirement: 1, current: 0 },
-      { name: 'Brand Revamp', status: 'locked', icon: '💼', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Attend 2+ PD Events (0/2)', xp: 20, category: 'pzone', requirement: 2, current: 0 },
-      { name: 'Resume Reviewed', status: 'locked', icon: '✅', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Submit Resume (0/1)', xp: 10, category: 'pzone', requirement: 1, current: 0 },
-      { name: 'Pod Meeting', status: 'locked', icon: '👥', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Join Pod Meeting (0/1)', xp: 15, category: 'nsbe', requirement: 1, current: 0 },
-      { name: 'Study Jam', status: 'locked', icon: '📚', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Academic Session (0/1)', xp: 20, category: 'academic', requirement: 1, current: 0 },
-      { name: 'GPA ≥ 3.0', status: 'locked', icon: '🎯', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Academic Excellence (0/100 XP)', xp: 40, category: 'academic', requirement: 100, current: 0 },
-      { name: 'Career Mixer', status: 'locked', icon: '🎤', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Interview Ready (0/4)', xp: 35, category: 'pzone', requirement: 4, current: 0 },
-      { name: '1-on-1 Mentorship', status: 'locked', icon: '🔥', color: '#6b7280', glow: 'rgba(75, 85, 99, 0.3)', desc: 'Mentorship Master (0/3)', xp: 50, category: 'nsbe', requirement: 3, current: 0 }
-    ];
+  // Use trackable badges from global configuration
+  const TRACKABLE_BADGES = window.TRACKABLE_BADGES_CONFIG || [];
 
-    if (!userData) return defaultAchievements;
-
-    // Count different types of events attended
-    const pdEvents = eventData?.filter(event => 
-      event.type?.toLowerCase().includes('professional') || 
-      event.type?.toLowerCase().includes('workshop') ||
-      event.type?.toLowerCase().includes('resume') ||
-      event.type?.toLowerCase().includes('interview')
-    ).length || 0;
-
-    const mentorshipEvents = eventData?.filter(event => 
-      event.type?.toLowerCase().includes('mentorship') || 
-      event.type?.toLowerCase().includes('pod') ||
-      event.type?.toLowerCase().includes('mentor')
-    ).length || 0;
-
-    const academicEvents = eventData?.filter(event => 
-      event.type?.toLowerCase().includes('study') || 
-      event.type?.toLowerCase().includes('academic') ||
-      event.type?.toLowerCase().includes('gpa')
-    ).length || 0;
-
-    return defaultAchievements.map(achievement => {
-      let current = 0;
-      let status = 'locked';
-      let color = '#6b7280';
-      let glow = 'rgba(75, 85, 99, 0.3)';
-
-      if (achievement.category === 'pzone') {
-        current = pdEvents;
-      } else if (achievement.category === 'nsbe') {
-        current = mentorshipEvents;
-      } else if (achievement.category === 'academic') {
-        current = academicEvents;
+  // Load and process user data for badge tracking
+  useEffect(() => {
+    async function loadUserData() {
+      if (!localDataManager) {
+        setIsLoading(false);
+        return;
       }
 
-      if (current >= achievement.requirement) {
-        status = 'completed';
-        color = '#22c55e';
-        glow = 'rgba(34, 197, 94, 0.5)';
-      }
+      try {
+        setIsLoading(true);
+        
+        // Get current user from localStorage or user input
+        const storedUser = localStorage.getItem('currentUserUniqname');
+        if (!storedUser) {
+          // Prompt user for uniqname if not stored
+          const userUniqname = prompt("Enter your uniqname to track your badges:");
+          if (userUniqname) {
+            localStorage.setItem('currentUserUniqname', userUniqname.trim().toLowerCase());
+            setCurrentUser(userUniqname.trim().toLowerCase());
+          }
+        } else {
+          setCurrentUser(storedUser);
+        }
 
-      return {
-        ...achievement,
-        current,
-        status,
-        color,
-        glow,
-        desc: achievement.desc.replace(/\(\d+\/\d+\)/, `(${current}/${achievement.requirement})`)
-      };
-    });
+        // Calculate achievements for current user
+        if (storedUser || currentUser) {
+          const achievements = await calculateTrackableAchievements(storedUser || currentUser);
+          setTrackableAchievements(achievements);
+        }
+        
+      } catch (error) {
+        console.error('Error loading user data for badges:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadUserData();
+  }, [localDataManager, currentUser]);
+
+  // Calculate trackable achievements based on real data
+  const calculateTrackableAchievements = async (userUniqname) => {
+    if (!userUniqname || !localDataManager) {
+      return TRACKABLE_BADGES.map(badge => ({
+        ...badge,
+        status: 'locked',
+        current: 0,
+        progress: 0
+      }));
+    }
+
+    try {
+      // Fetch live data including leaderboard for dynamic tier calculation
+      const leaderboardResult = await localDataManager.getLocalLeaderboard();
+      const signInData = await localDataManager.fetchSignInData();
+      const paidMembers = await localDataManager.fetchPaidMembers();
+      
+      // Filter user's activities
+      const userActivities = signInData.filter(entry => {
+        const entryUniqname = (entry['Uniqname'] || entry['uniqname'] || '').toLowerCase().trim();
+        return entryUniqname === userUniqname.toLowerCase().trim();
+      });
+
+      // Process user statistics
+      const userStats = processUserStats(userActivities, paidMembers, userUniqname);
+      
+      // Get all member points for dynamic tier calculation
+      const allMemberPoints = leaderboardResult.leaderboard ? 
+        leaderboardResult.leaderboard.map(member => member.score) : [];
+      
+      // Calculate badge progress with dynamic tier info
+      return TRACKABLE_BADGES.map(badge => {
+        const progress = calculateBadgeProgress(badge, userStats, userActivities, allMemberPoints, leaderboardResult.tierThresholds);
+        return {
+          ...badge,
+          ...progress
+        };
+      });
+
+    } catch (error) {
+      console.error('Error calculating achievements:', error);
+      return TRACKABLE_BADGES.map(badge => ({
+        ...badge,
+        status: 'locked',
+        current: 0,
+        progress: 0
+      }));
+    }
   };
 
-  // Calculate dynamic achievements based on current user data
-  const achievements = calculateAchievements(userData, eventData);
+  // Process user statistics from activities
+  const processUserStats = (userActivities, paidMembers, userUniqname) => {
+    const stats = {
+      total_events: userActivities.length,
+      total_points: 0,
+      friends_brought: 0,
+      event_categories: new Set(),
+      is_paid_member: false
+    };
+
+    // Initialize event type counters
+    Object.keys(window.NEW_POINT_SYSTEM.activities).forEach(eventType => {
+      stats[eventType] = 0;
+    });
+
+    // Process each activity
+    userActivities.forEach(activity => {
+      const pointsCalc = localDataManager.calculateMemberPoints(activity, paidMembers, userActivities);
+      stats.total_points += pointsCalc.totalPoints;
+      
+      if (pointsCalc.friendCount > 0) {
+        stats.friends_brought += pointsCalc.friendCount;
+      }
+
+      if (pointsCalc.eventType) {
+        stats[pointsCalc.eventType] = (stats[pointsCalc.eventType] || 0) + 1;
+        stats.event_categories.add(pointsCalc.eventType);
+      }
+    });
+
+    // Check paid member status
+    if (userActivities.length > 0) {
+      const userEmail = userActivities[0]['Email Address'] || userActivities[0]['Email'];
+      stats.is_paid_member = localDataManager.isPaidMember(userEmail, paidMembers);
+    }
+
+    stats.event_categories = stats.event_categories.size;
+    return stats;
+  };
+
+  // Calculate individual badge progress with dynamic tier support
+  const calculateBadgeProgress = (badge, userStats, userActivities, allMemberPoints = [], tierThresholds = null) => {
+    let current = 0;
+    let status = 'locked';
+    let progress = 0;
+    let requirement = badge.requirement?.value || 1;
+
+    switch (badge.type) {
+      case 'status':
+        if (badge.requirement === 'paid_status') {
+          current = userStats.is_paid_member ? 1 : 0;
+          progress = current * 100;
+          requirement = 1;
+        }
+        break;
+
+      case 'count':
+        current = userStats[badge.requirement.field] || 0;
+        progress = Math.min((current / badge.requirement.value) * 100, 100);
+        requirement = badge.requirement.value;
+        break;
+
+      case 'points':
+        current = userStats[badge.requirement.field] || 0;
+        
+        // Use dynamic tier thresholds for point-based badges
+        if (tierThresholds && badge.id === 'bronze_tier') {
+          requirement = tierThresholds.BRONZE;
+        } else if (tierThresholds && badge.id === 'silver_tier') {
+          requirement = tierThresholds.SILVER;
+        } else if (tierThresholds && badge.id === 'gold_tier') {
+          requirement = tierThresholds.GOLD;
+        } else {
+          requirement = badge.requirement.value; // Fallback to fixed requirement
+        }
+        
+        progress = requirement > 0 ? Math.min((current / requirement) * 100, 100) : 0;
+        break;
+
+      case 'variety':
+        current = userStats[badge.requirement.field] || 0;
+        progress = Math.min((current / badge.requirement.value) * 100, 100);
+        requirement = badge.requirement.value;
+        break;
+    }
+
+    // Determine status
+    if (progress >= 100) {
+      status = 'completed';
+    } else if (progress > 0) {
+      status = 'in_progress';
+    }
+
+    // Update description with current progress and dynamic requirements
+    let updatedDesc = badge.desc;
+    if (badge.type === 'points' && tierThresholds) {
+      // Update point badge descriptions with dynamic thresholds
+      if (badge.id === 'bronze_tier') {
+        updatedDesc = `Earn ${Math.round(requirement)}+ Points (${current}/${Math.round(requirement)})`;
+      } else if (badge.id === 'silver_tier') {
+        updatedDesc = `Earn ${Math.round(requirement)}+ Points (${current}/${Math.round(requirement)})`;
+      } else if (badge.id === 'gold_tier') {
+        updatedDesc = `Earn ${Math.round(requirement)}+ Points (${current}/${Math.round(requirement)})`;
+      }
+    } else {
+      // Standard description update
+      updatedDesc = badge.desc.includes('(') 
+        ? badge.desc.replace(/\(.*?\)/, `(${current}/${requirement})`)
+        : `${badge.desc} (${current}/${requirement})`;
+    }
+
+    return {
+      status,
+      current,
+      progress: Math.round(progress),
+      desc: updatedDesc,
+      requirement: Math.round(requirement),
+      color: status === 'completed' ? badge.color : (status === 'in_progress' ? '#fbbf24' : '#6b7280'),
+      glow: status === 'completed' ? badge.glow : (status === 'in_progress' ? 'rgba(251, 191, 36, 0.5)' : 'rgba(75, 85, 99, 0.3)')
+    };
+  };
   
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8 font-futuristic" style={{
@@ -150,43 +298,135 @@ function MentorshipHub({ onBackClick, userData, eventData }) {
         {/* Content based on active filter */}
         {activeFilter === 'all' && (
           <div>
-            {/* Achievement Badges */}
-            <div className="mb-6">
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-400 mb-4 text-center">🏅 ACHIEVEMENT BADGES</h2>
-              <div className="text-center mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-900/30 border border-blue-500/50 rounded-lg">
-                <p className="text-blue-200 text-xs sm:text-sm">
-                  🔗 <strong>Live Progress Tracking:</strong> Your achievements update automatically based on event attendance and XP earned. 
-                  Complete more PD workshops, mentorship sessions, and academic activities to unlock new badges!
-                </p>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                {achievements.map((achievement, index) => (
-                  <div
-                    key={index}
-                    className={`p-3 sm:p-4 text-center transition-all cursor-pointer hover:scale-105 ${
-                      achievement.status === 'completed' ? 'opacity-100' : 'opacity-60'
-                    }`}
-                    style={{
-                      background: achievement.status === 'completed' 
-                        ? 'linear-gradient(135deg, #1e293b, #334155)' 
-                        : 'linear-gradient(135deg, #374151, #4b5563)',
-                      clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)',
-                      border: `2px solid ${achievement.color}`,
-                      boxShadow: achievement.status === 'completed' ? `0 0 20px ${achievement.glow}` : 'none'
-                    }}
-                  >
-                    <div className="text-2xl sm:text-3xl mb-2">{achievement.icon}</div>
-                    <div className="text-xs font-bold text-white mb-1">{achievement.name}</div>
-                    <div className="text-xs text-gray-300 mb-2">{achievement.desc}</div>
-                    {achievement.status === 'completed' ? (
-                      <div className="text-xs text-yellow-400 font-bold">+{achievement.xp} XP ✓</div>
-                    ) : (
-                      <div className="text-xs text-gray-500">+{achievement.xp} XP 🔒</div>
-                    )}
+            {/* User Info Section */}
+            {currentUser && (
+              <div className="mb-6 p-4 bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-blue-500/50 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-bold text-white">🎯 Tracking Progress for: {currentUser}</h3>
+                    <p className="text-sm text-blue-200">Live data updates automatically from event sign-ins</p>
                   </div>
-                ))}
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem('currentUserUniqname');
+                      setCurrentUser(null);
+                      window.location.reload();
+                    }}
+                    className="px-3 py-1 bg-red-500/20 border border-red-400 text-red-200 text-xs rounded hover:bg-red-500/30 transition-colors"
+                  >
+                    Switch User
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Loading State */}
+            {isLoading && (
+              <div className="text-center py-8">
+                <div className="text-2xl">⚡</div>
+                <div className="text-yellow-400 font-bold">Loading your achievements...</div>
+              </div>
+            )}
+
+            {/* Achievement Badges */}
+            {!isLoading && (
+              <div className="mb-6">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-400 mb-4 text-center">🏅 TRACKABLE ACHIEVEMENTS</h2>
+                <div className="text-center mb-4 sm:mb-6 p-3 sm:p-4 bg-green-900/30 border border-green-500/50 rounded-lg">
+                  <p className="text-green-200 text-xs sm:text-sm">
+                    🚀 <strong>Real-Time Badge Tracking:</strong> Your achievements sync automatically with Google Sheets data from event sign-ins, 
+                    paid member verification, and point calculations. Your progress is always up-to-date!
+                  </p>
+                </div>
+                
+                {/* Dynamic Tier Notice */}
+                <div className="text-center mb-4 sm:mb-6 p-3 sm:p-4 bg-purple-900/30 border border-purple-500/50 rounded-lg">
+                  <p className="text-purple-200 text-xs sm:text-sm">
+                    ⚡ <strong>Dynamic Tier System:</strong> Bronze, Silver, and Gold point thresholds adjust automatically based on all members' performance. 
+                    Top 25% = Gold, 25-50% = Silver, 50-75% = Bronze. Compete for your spot!
+                  </p>
+                </div>
+                
+                {/* Badge Summary Stats */}
+                {trackableAchievements.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6 text-center">
+                    <div className="p-3 bg-green-900/30 border border-green-500/50 rounded">
+                      <div className="text-2xl text-green-400">{trackableAchievements.filter(a => a.status === 'completed').length}</div>
+                      <div className="text-xs text-green-200">Completed</div>
+                    </div>
+                    <div className="p-3 bg-yellow-900/30 border border-yellow-500/50 rounded">
+                      <div className="text-2xl text-yellow-400">{trackableAchievements.filter(a => a.status === 'in_progress').length}</div>
+                      <div className="text-xs text-yellow-200">In Progress</div>
+                    </div>
+                    <div className="p-3 bg-gray-900/30 border border-gray-500/50 rounded">
+                      <div className="text-2xl text-gray-400">{trackableAchievements.filter(a => a.status === 'locked').length}</div>
+                      <div className="text-xs text-gray-200">Locked</div>
+                    </div>
+                    <div className="p-3 bg-purple-900/30 border border-purple-500/50 rounded">
+                      <div className="text-2xl text-purple-400">{trackableAchievements.filter(a => a.status === 'completed').reduce((sum, a) => sum + a.xp, 0)}</div>
+                      <div className="text-xs text-purple-200">Total XP</div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                  {trackableAchievements.map((achievement, index) => (
+                    <div
+                      key={achievement.id}
+                      className={`p-3 sm:p-4 text-center transition-all cursor-pointer hover:scale-105 ${
+                        achievement.status === 'completed' ? 'opacity-100' : 
+                        achievement.status === 'in_progress' ? 'opacity-90' : 'opacity-60'
+                      }`}
+                      style={{
+                        background: achievement.status === 'completed' 
+                          ? 'linear-gradient(135deg, #1e293b, #334155)' 
+                          : achievement.status === 'in_progress'
+                          ? 'linear-gradient(135deg, #451a03, #78350f)'
+                          : 'linear-gradient(135deg, #374151, #4b5563)',
+                        clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)',
+                        border: `2px solid ${achievement.color}`,
+                        boxShadow: achievement.status === 'completed' ? `0 0 20px ${achievement.glow}` : 
+                                  achievement.status === 'in_progress' ? `0 0 15px ${achievement.glow}` : 'none'
+                      }}
+                    >
+                      <div className="text-2xl sm:text-3xl mb-2">{achievement.icon}</div>
+                      <div className="text-xs font-bold text-white mb-1">{achievement.name}</div>
+                      <div className="text-xs text-gray-300 mb-2">{achievement.desc}</div>
+                      
+                      {/* Progress Bar for In Progress Badges */}
+                      {achievement.status === 'in_progress' && achievement.progress < 100 && (
+                        <div className="w-full bg-gray-700 h-2 rounded-full mb-2">
+                          <div 
+                            className="h-2 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400"
+                            style={{ width: `${achievement.progress}%` }}
+                          ></div>
+                        </div>
+                      )}
+
+                      {/* XP Display */}
+                      {achievement.status === 'completed' ? (
+                        <div className="text-xs text-yellow-400 font-bold">+{achievement.xp} XP ✓</div>
+                      ) : achievement.status === 'in_progress' ? (
+                        <div className="text-xs text-orange-400 font-bold">{achievement.progress}% Complete</div>
+                      ) : (
+                        <div className="text-xs text-gray-500">+{achievement.xp} XP 🔒</div>
+                      )}
+
+                      {/* Category Tag */}
+                      <div className={`text-xs mt-2 px-2 py-1 rounded-full ${
+                        achievement.category === 'membership' ? 'bg-blue-900/50 text-blue-200' :
+                        achievement.category === 'engagement' ? 'bg-green-900/50 text-green-200' :
+                        achievement.category === 'pzone' ? 'bg-purple-900/50 text-purple-200' :
+                        achievement.category === 'nsbe' ? 'bg-red-900/50 text-red-200' :
+                        'bg-yellow-900/50 text-yellow-200'
+                      }`}>
+                        {achievement.category.charAt(0).toUpperCase() + achievement.category.slice(1)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

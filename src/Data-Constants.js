@@ -26,14 +26,14 @@ window.DOCUMENTATION_LINKS = [
 // Events data
 window.EVENTS_DATA = [
   {
-    title: "PD: Resume Workshop",
-    date: "Sept 5th",
-    time: "6:00 PM",
-    location: "Mason Hall, Rm 3356"
+    title: "GBM w/ Ford",
+    date: "Sept 12th",
+    time: "5:30 PM", 
+    location: "IOE 1610"
   },
   {
-    title: "Corporate Mixer", 
-    date: "Sept 7th",
+    title: "Study Jamz", 
+    date: "Sept 15th",
     time: "TBD",
     location: "GG Brown Building"
   },
@@ -53,13 +53,15 @@ window.EVENTS_DATA = [
 
 // Announcements data
 window.ANNOUNCEMENTS_DATA = [
-  { title: "Pay NSBE Dues", url: "https://mynsbe.nsbe.org/s/joinprocess" },
-  { title: "Conference Info", url: "https://convention.nsbe.org/" },
-  { title: "Scholarship Opportunities", url: "https://nsbe.org/scholarships/" },
-  { title: "Resume Book", url: "https://docs.google.com/forms/d/e/1FAIpQLSfsQfpp76QkK9HdEAi0DQJftrnV3r1Gv8PsLmIJlLHIQVYnKA/viewform" },
-  { title: "Mentorship Sign-ups", url: "#" },
-  { title: "Committee Applications", url: "#" },
-  { title: "Collab with NSBEUM!", url: "#" }
+  { title: "📝 Sign In to Events", url: "https://docs.google.com/forms/d/e/1FAIpQLSe81BszYqfzLxpaZn-CyBaP3YnPuktAYRMHh517p5kwQ5Qg0Q/viewform?usp=header" },
+  { title: "💳 Pay NSBE Dues", url: "https://mynsbe.nsbe.org/s/joinprocess" },
+  { title: "🏆 Conference Info", url: "https://convention.nsbe.org/" },
+  { title: "💰 Scholarship Opportunities", url: "https://nsbe.org/scholarships/" },
+  { title: "📄 Resume Book", url: "https://docs.google.com/forms/d/e/1FAIpQLSfQgLB--SZ40hznFcCxUTUbAyz_dWQB4klCIvaZDPD29ibnLg/viewform?usp=header" },
+  { title: "👥 Mentorship Sign-ups", url: "#" },
+  { title: "📋 Committee Applications", url: "#" },
+  { title: "🏅 JEB Application", url: "https://docs.google.com/forms/d/e/1FAIpQLSeG1fifIlWu3M5S9OijspVQZ1IL2xycFHe-XGJ44RV0eMbsAg/viewform?usp=share_link&ouid=105119752436265794522" },
+  { title: "🤝 Collab with NSBEUM!", url: "https://docs.google.com/forms/d/e/1FAIpQLSdVzBy08R3Ex8FMrmlJQ1uCq-TJdHzwr_wGk0cvxztrTL_6ng/viewform?usp=share_link&ouid=105119752436265794522" }
 ];
 
 // Tier definitions
@@ -100,19 +102,178 @@ window.TIER_DEFINITIONS = [
 
 // Point system data
 window.POINT_SYSTEM = [
-  { activity: '📚 PD & Mentoring', points: '+10 pts' },
-  { activity: '🎉 General Attendance', points: '+7 pts' },
-  { activity: '🎯 P or M-Zone', points: '+5 pts' },
-  { activity: '🏆 Convention', points: '+15 pts' },
-  { activity: '👥 Referral', points: '+3 pts' }
+  { activity: '🏛️ General Body Meeting (GBM)', points: '+7 pts' },
+  { activity: '🎉 Social Events', points: '+7 pts' },
+  { activity: '📚 Professional Development', points: '+10 pts' },
+  { activity: '👥 Mentorship Program', points: '+10 pts' },
+  { activity: '🤝 Mentorship Events', points: '+7 pts' },
+  { activity: '⚡ P-Zone / M-Zone', points: '+5 pts' },
+  { activity: '🏆 Convention Attendance', points: '+15 pts' },
+  { activity: '🤝 Community Service', points: '+3 pts (first), +1 each extra' },
+  { activity: '👫 Bring a Friend', points: '+3 (first), +1 per extra' }
 ];
 
-// Badges configuration
+// Badges configuration - Legacy static badges for dashboard
 window.BADGES_CONFIG = [
   { name: 'PARTICIPANT', color: 'from-blue-500 to-blue-700', active: true, textColor: 'text-white', border: '#3b82f6' },
   { name: 'BRONZE', color: 'from-yellow-600 to-orange-700', active: true, textColor: 'text-white', border: '#d97706' },
   { name: 'SILVER', color: 'from-gray-300 to-gray-500', active: true, textColor: 'text-black', border: '#6b7280' },
   { name: 'GOLD', color: 'from-yellow-400 to-yellow-600', active: false, textColor: 'text-black', border: '#fbbf24' }
+];
+
+// New Trackable Badges Configuration for MentorshipHub
+window.TRACKABLE_BADGES_CONFIG = [
+  // Membership Status Badges
+  { 
+    id: 'paid_member', 
+    name: 'Paid Member', 
+    icon: '💎', 
+    color: '#3b82f6', 
+    glow: 'rgba(59, 130, 246, 0.5)', 
+    desc: 'Active Paid NSBE Member', 
+    xp: 50, 
+    category: 'membership', 
+    type: 'status',
+    requirement: 'paid_status'
+  },
+  
+  // Event Attendance Badges  
+  { 
+    id: 'first_event', 
+    name: 'First Steps', 
+    icon: '🌟', 
+    color: '#10b981', 
+    glow: 'rgba(16, 185, 129, 0.5)', 
+    desc: 'Attend Your First Event', 
+    xp: 15, 
+    category: 'engagement', 
+    type: 'count',
+    requirement: { field: 'total_events', value: 1 }
+  },
+  { 
+    id: 'gbm_regular', 
+    name: 'GBM Regular', 
+    icon: '📅', 
+    color: '#8b5cf6', 
+    glow: 'rgba(139, 92, 246, 0.5)', 
+    desc: 'Attend 3 GBMs', 
+    xp: 25, 
+    category: 'engagement', 
+    type: 'count',
+    requirement: { field: 'GBM', value: 3 }
+  },
+  { 
+    id: 'pd_champion', 
+    name: 'PD Champion', 
+    icon: '🚀', 
+    color: '#f59e0b', 
+    glow: 'rgba(245, 158, 11, 0.5)', 
+    desc: 'Attend 5 Professional Development Events', 
+    xp: 35, 
+    category: 'pzone', 
+    type: 'count',
+    requirement: { field: 'Professional Development', value: 5 }
+  },
+  { 
+    id: 'mentor_master', 
+    name: 'Mentor Master', 
+    icon: '🔥', 
+    color: '#ef4444', 
+    glow: 'rgba(239, 68, 68, 0.5)', 
+    desc: 'Attend 3 Mentorship Events', 
+    xp: 30, 
+    category: 'nsbe', 
+    type: 'count',
+    requirement: { field: 'Mentorship Events', value: 3 }
+  },
+  { 
+    id: 'volunteer_hero', 
+    name: 'Volunteer Hero', 
+    icon: '🤝', 
+    color: '#06b6d4', 
+    glow: 'rgba(6, 182, 212, 0.5)', 
+    desc: 'Complete 2 Community Service Events', 
+    xp: 25, 
+    category: 'engagement', 
+    type: 'count',
+    requirement: { field: 'Community Service', value: 2 }
+  },
+  { 
+    id: 'convention_attendee', 
+    name: 'Convention Explorer', 
+    icon: '✈️', 
+    color: '#ec4899', 
+    glow: 'rgba(236, 72, 153, 0.5)', 
+    desc: 'Attend Regional/National Convention', 
+    xp: 50, 
+    category: 'nsbe', 
+    type: 'count',
+    requirement: { field: 'Convention Attendance', value: 1 }
+  },
+  
+  // Point Milestone Badges
+  { 
+    id: 'bronze_tier', 
+    name: 'Bronze Achiever', 
+    icon: '🥉', 
+    color: '#cd7f32', 
+    glow: 'rgba(205, 127, 50, 0.5)', 
+    desc: 'Earn 25+ Points', 
+    xp: 20, 
+    category: 'achievement', 
+    type: 'points',
+    requirement: { field: 'total_points', value: 25 }
+  },
+  { 
+    id: 'silver_tier', 
+    name: 'Silver Star', 
+    icon: '🥈', 
+    color: '#c0c0c0', 
+    glow: 'rgba(192, 192, 192, 0.5)', 
+    desc: 'Earn 50+ Points', 
+    xp: 30, 
+    category: 'achievement', 
+    type: 'points',
+    requirement: { field: 'total_points', value: 50 }
+  },
+  { 
+    id: 'gold_tier', 
+    name: 'Gold Legend', 
+    icon: '🥇', 
+    color: '#ffd700', 
+    glow: 'rgba(255, 215, 0, 0.5)', 
+    desc: 'Earn 75+ Points', 
+    xp: 50, 
+    category: 'achievement', 
+    type: 'points',
+    requirement: { field: 'total_points', value: 75 }
+  },
+  
+  // Social Impact Badges
+  { 
+    id: 'friend_recruiter', 
+    name: 'Friend Recruiter', 
+    icon: '👥', 
+    color: '#84cc16', 
+    glow: 'rgba(132, 204, 22, 0.5)', 
+    desc: 'Bring 3 Friends to Events', 
+    xp: 20, 
+    category: 'engagement', 
+    type: 'count',
+    requirement: { field: 'friends_brought', value: 3 }
+  },
+  { 
+    id: 'consistent_contributor', 
+    name: 'Consistent Contributor', 
+    icon: '⚡', 
+    color: '#a855f7', 
+    glow: 'rgba(168, 85, 247, 0.5)', 
+    desc: 'Attend Events in 3 Different Categories', 
+    xp: 40, 
+    category: 'engagement', 
+    type: 'variety',
+    requirement: { field: 'event_categories', value: 3 }
+  }
 ];
 
 // Contact information

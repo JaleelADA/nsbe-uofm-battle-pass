@@ -432,17 +432,7 @@ function generateLeaderboard(signInData, paidMembersList) {
     
     // Calculate badge XP for this member
     const badgeXP = calculateBadgeXP(member, totalPoints, paidMembersList);
-    let finalTotalPoints = totalPoints + badgeXP;
-    
-    // Apply manual override if one exists
-    const manualOverrides = getManualOverrides();
-    const overrideData = manualOverrides[member.email];
-    let manualAdjustment = 0;
-    
-    if (overrideData) {
-      manualAdjustment = overrideData.adjustment || 0;
-      finalTotalPoints += manualAdjustment;
-    }
+    const finalTotalPoints = totalPoints + badgeXP;
     
     memberStats[uniqname] = {
       name: member.fullName,
@@ -451,8 +441,6 @@ function generateLeaderboard(signInData, paidMembersList) {
       totalPoints: Math.round(finalTotalPoints),
       eventPoints: Math.round(totalPoints),
       badgeXP: Math.round(badgeXP),
-      manualAdjustment: Math.round(manualAdjustment),
-      overrideReason: overrideData?.reason || null,
       activities: processedActivities,
       isPaid: isPaidMemberEnhanced(uniqname, member.email, paidMembersList),
       eventCount: member.activities.length
@@ -614,10 +602,5 @@ window.LocalDataManager = {
   calculateTier,
   calculateDynamicTierThresholds,
   getLocalLeaderboard,
-  getEmailUniqnameMapping: () => window.EMAIL_UNIQNAME_MAPPING,
-  // Manual override functions
-  getManualOverrides,
-  setManualOverride,
-  removeManualOverride,
-  clearAllOverrides
+  getEmailUniqnameMapping: () => window.EMAIL_UNIQNAME_MAPPING
 };

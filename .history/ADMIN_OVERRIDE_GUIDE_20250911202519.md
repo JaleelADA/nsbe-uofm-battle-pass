@@ -2,32 +2,41 @@
 
 ## 🔐 Security & Authentication
 
-### Simple Password Access
-- **Default Password**: `nsbe2024`
+### Default Access
+- **Default Password**: Empty (just press Enter or click "Access Admin")
 - **Keyboard Shortcut**: `Ctrl + Shift + A` to open admin panel
 - **Console Access**: `AdminPanel.show()` 
 
-### Changing the Password
+### Setting a Custom Password
 
-1. **Open AdminPanel.js** in your code editor
-
-2. **Find this line** (around line 6):
+1. **Generate Password Hash**:
    ```javascript
-   const ADMIN_PASSWORD = 'nsbe2024';
+   // In browser console, run this to generate a hash for your password:
+   async function generateHash(password) {
+     const encoder = new TextEncoder();
+     const data = encoder.encode(password);
+     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+     const hashArray = Array.from(new Uint8Array(hashBuffer));
+     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+   }
+   
+   // Example: Generate hash for password "nsbe2024"
+   generateHash("nsbe2024").then(hash => console.log("Hash:", hash));
    ```
 
-3. **Change to your desired password**:
+2. **Update AdminPanel.js**:
    ```javascript
-   const ADMIN_PASSWORD = 'your_new_password_here';
+   // Replace this line in AdminPanel.js:
+   const ADMIN_PASSWORD_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+   
+   // With your generated hash:
+   const ADMIN_PASSWORD_HASH = 'your_generated_hash_here';
    ```
 
-4. **Recommended passwords**:
-   - `nsbe2024` (default)
-   - `umichnsbe2024`
-   - `battlepass2024`
-   - Or any password your team agrees on
-
-**That's it!** No complex hashing or generation needed.
+3. **Recommended Passwords**:
+   - Use organization-specific passwords like "nsbe2024", "umichnsbe", etc.
+   - Change password periodically
+   - Don't share the hash publicly
 
 ---
 

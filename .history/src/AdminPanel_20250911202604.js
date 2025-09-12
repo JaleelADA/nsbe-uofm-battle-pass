@@ -2,18 +2,28 @@
 
 window.AdminPanel = (() => {
   
-  // Admin authentication - Simple password (change this!)
-  const ADMIN_PASSWORD = 'nsbe2024';
+  // Admin authentication
+  const ADMIN_PASSWORD_HASH = 'IVleague2026'; // Password
   let isAuthenticated = false;
+  
+  // Simple SHA-256 hash function (for demo - in production use proper crypto)
+  async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
   
   // Check if user is authenticated
   function checkAuth() {
     return isAuthenticated;
   }
   
-  // Authenticate user - Simple password check
-  function authenticate(password) {
-    if (password === ADMIN_PASSWORD) {
+  // Authenticate user
+  async function authenticate(password) {
+    const hashedInput = await hashPassword(password);
+    if (hashedInput === ADMIN_PASSWORD_HASH) {
       isAuthenticated = true;
       return true;
     }
@@ -89,8 +99,8 @@ window.AdminPanel = (() => {
             font-size: 12px;
             color: #9ca3af;
           ">
-            💡 Default password: "nsbe2024"<br>
-            Change ADMIN_PASSWORD in AdminPanel.js to customize
+            💡 Default password is empty (just click "Access Admin")<br>
+            Change ADMIN_PASSWORD_HASH in AdminPanel.js for security
           </div>
         </div>
       </div>
@@ -111,12 +121,12 @@ window.AdminPanel = (() => {
   }
   
   // Submit password
-  function submitPassword() {
+  async function submitPassword() {
     const passwordInput = document.getElementById('admin-password-input');
     const errorDiv = document.getElementById('password-error');
     const password = passwordInput.value;
     
-    if (authenticate(password)) {
+    if (await authenticate(password)) {
       // Remove password prompt
       const prompt = document.getElementById('admin-password-prompt');
       if (prompt) {
@@ -405,8 +415,11 @@ Examples:
   AdminPanel.removeOverride('jdoe@umich.edu')
 
 🔑 Security Note:
-  Default password: "nsbe2024"
-  Change ADMIN_PASSWORD in AdminPanel.js to customize.
+  Default password is empty (just press Enter). 
+  Change ADMIN_PASSWORD_HASH in AdminPanel.js for production use.
+  
+🔧 Generate Password Hash:
+  AdminPanel.generatePasswordHash('yourpassword').then(hash => console.log(hash))
     `);
   }
   
@@ -489,7 +502,9 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate
+    authenticate,
+    // Utility functions
+    generatePasswordHash: hashPassword
   };
 })();
 

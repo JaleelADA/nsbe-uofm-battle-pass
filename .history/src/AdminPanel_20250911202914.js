@@ -489,7 +489,9 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate
+    authenticate,
+    // Utility functions
+    generatePasswordHash: hashPassword
   };
 })();
 

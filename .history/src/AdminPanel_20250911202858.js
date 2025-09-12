@@ -89,8 +89,8 @@ window.AdminPanel = (() => {
             font-size: 12px;
             color: #9ca3af;
           ">
-            💡 Default password: "nsbe2024"<br>
-            Change ADMIN_PASSWORD in AdminPanel.js to customize
+            💡 Default password is empty (just click "Access Admin")<br>
+            Change ADMIN_PASSWORD_HASH in AdminPanel.js for security
           </div>
         </div>
       </div>
@@ -405,8 +405,11 @@ Examples:
   AdminPanel.removeOverride('jdoe@umich.edu')
 
 🔑 Security Note:
-  Default password: "nsbe2024"
-  Change ADMIN_PASSWORD in AdminPanel.js to customize.
+  Default password is empty (just press Enter). 
+  Change ADMIN_PASSWORD_HASH in AdminPanel.js for production use.
+  
+🔧 Generate Password Hash:
+  AdminPanel.generatePasswordHash('yourpassword').then(hash => console.log(hash))
     `);
   }
   
@@ -489,7 +492,9 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate
+    authenticate,
+    // Utility functions
+    generatePasswordHash: hashPassword
   };
 })();
 

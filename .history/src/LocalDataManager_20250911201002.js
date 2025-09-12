@@ -303,8 +303,9 @@ function calculateBadgeXP(member, eventPoints, paidMembersList) {
   }
   
   let totalBadgeXP = 0;
+  const uniqname = member.uniqname;
   const email = member.email;
-  const isPaid = isPaidMemberEnhanced(null, email, paidMembersList);
+  const isPaid = isPaidMemberEnhanced(uniqname, email, paidMembersList);
   
   // Process user activities to get stats needed for badge calculation
   const userStats = {

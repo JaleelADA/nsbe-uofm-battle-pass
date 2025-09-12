@@ -38,7 +38,8 @@ window.NEW_POINT_SYSTEM = {
   multipliers: {
     'VOLUNTEERING_BONUS': 1.5,  // 1.5x for next two events after volunteering
     'BRING_FRIEND_FIRST': 3,    // 3 points for first friend brought
-    'BRING_FRIEND_ADDITIONAL': 1 // 1 point for each additional friend
+    'BRING_FRIEND_ADDITIONAL': 1, // 1 point for each additional friend
+    'PAID_MEMBER_BONUS': 1.5    // 1.5x multiplier for paid NSBE members
   },
   
   // Tier thresholds (points needed for each tier)
@@ -235,9 +236,19 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
   // Get base points for event type
   eventPoints = window.NEW_POINT_SYSTEM.activities[normalizedEventType] || 0;
   
-  // Community service events are always 3 points each
+  // Handle community service with incremental logic
   if (normalizedEventType === 'Community Service') {
-    eventPoints = 3; // All community service events worth 3 points
+    // Count previous community service events for this member
+    const previousVolunteering = memberHistory.filter(event => 
+      event.eventType === 'Community Service' && 
+      new Date(event.timestamp) < new Date(timestamp)
+    ).length;
+    
+    if (previousVolunteering === 0) {
+      eventPoints = 3; // First volunteering event
+    } else {
+      eventPoints = 1; // Additional volunteering events
+    }
   }
   
   // Add friend referral points
@@ -272,10 +283,10 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
     }
   }
   
-  // Apply 5-point cap for unpaid members (except for community service which stays at 3)
+  // Apply paid member bonus (1.5x multiplier for all points)
   const isPaid = isPaidMemberEnhanced(uniqname, email, paidMembersList);
-  if (!isPaid && normalizedEventType !== 'Community Service') {
-    eventPoints = Math.min(eventPoints, 5); // Cap at 5 points for unpaid members
+  if (isPaid) {
+    eventPoints *= window.NEW_POINT_SYSTEM.multipliers.PAID_MEMBER_BONUS;
   }
   
   const totalEventPoints = Math.round(eventPoints + friendPoints);
@@ -294,81 +305,6 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
     friendCount: friendCount || 0,
     broughtFriend: broughtFriend === 'yes' || broughtFriend === 'Y'
   };
-}
-
-// Calculate badge XP for a member based on their achievements
-function calculateBadgeXP(member, eventPoints, paidMembersList) {
-  if (!window.TRACKABLE_BADGES_CONFIG) {
-    return 0;
-  }
-  
-  let totalBadgeXP = 0;
-  const email = member.email;
-  const isPaid = isPaidMemberEnhanced(null, email, paidMembersList);
-  
-  // Process user activities to get stats needed for badge calculation
-  const userStats = {
-    total_events: member.activities.length,
-    total_points: eventPoints,
-    friends_brought: 0,
-    event_categories: new Set(),
-    is_paid_member: isPaid
-  };
-  
-  // Count activities by type and other stats
-  member.activities.forEach(activity => {
-    const entry = activity.rawEntry;
-    
-    // Count different event types
-    if (entry['Select Event Type:']) {
-      const eventType = entry['Select Event Type:'].trim();
-      userStats.event_categories.add(eventType);
-      userStats[eventType] = (userStats[eventType] || 0) + 1;
-    }
-    
-    // Count friends brought
-    const friendsField = entry['How many friends did you bring? (First friend +3 points, each additional +1 point)'];
-    if (friendsField && !isNaN(friendsField)) {
-      userStats.friends_brought += parseInt(friendsField);
-    }
-  });
-  
-  // Convert Set to count for event_categories
-  userStats.event_categories = userStats.event_categories.size;
-  
-  // Check each badge and award XP if earned
-  window.TRACKABLE_BADGES_CONFIG.forEach(badge => {
-    let isEarned = false;
-    
-    switch (badge.type) {
-      case 'status':
-        if (badge.requirement === 'paid_status') {
-          isEarned = userStats.is_paid_member;
-        }
-        break;
-        
-      case 'count':
-        const countValue = userStats[badge.requirement.field] || 0;
-        isEarned = countValue >= badge.requirement.value;
-        break;
-        
-      case 'points':
-        const pointsValue = userStats[badge.requirement.field] || 0;
-        isEarned = pointsValue >= badge.requirement.value;
-        break;
-        
-      case 'variety':
-        const varietyValue = userStats[badge.requirement.field] || 0;
-        isEarned = varietyValue >= badge.requirement.value;
-        break;
-    }
-    
-    if (isEarned) {
-      totalBadgeXP += badge.xp || 0;
-    }
-  });
-  
-  return totalBadgeXP;
 }
 
 // Generate leaderboard from processed data
@@ -430,17 +366,11 @@ function generateLeaderboard(signInData, paidMembersList) {
       processedActivities.push(activityData);
     });
     
-    // Calculate badge XP for this member
-    const badgeXP = calculateBadgeXP(member, totalPoints, paidMembersList);
-    const finalTotalPoints = totalPoints + badgeXP;
-    
     memberStats[uniqname] = {
       name: member.fullName,
       email: member.email,
       uniqname: uniqname,
-      totalPoints: Math.round(finalTotalPoints),
-      eventPoints: Math.round(totalPoints),
-      badgeXP: Math.round(badgeXP),
+      totalPoints: Math.round(totalPoints),
       activities: processedActivities,
       isPaid: isPaidMemberEnhanced(uniqname, member.email, paidMembersList),
       eventCount: member.activities.length

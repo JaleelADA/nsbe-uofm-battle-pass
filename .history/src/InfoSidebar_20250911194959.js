@@ -67,6 +67,7 @@ function InfoSidebar() {
 							}}>
 								<div className="font-bold text-sm sm:text-base mb-1">⚡ SPECIAL BONUSES</div>
 								<div className="font-semibold text-xs sm:text-sm">1.5× Multiplier for Next 2 Events After Volunteering</div>
+								<div className="font-semibold text-xs sm:text-sm mt-1">Paid Members Get Priority & Special Recognition</div>
 							</div>
 						</div>
 					</div>

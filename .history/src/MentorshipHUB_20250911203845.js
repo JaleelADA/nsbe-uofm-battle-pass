@@ -511,17 +511,16 @@ function MentorshipHub({ onBackClick, userData, eventData, localDataManager }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
               <div className="p-3 sm:p-4 bg-red-900/50 border border-red-400">
                 <div className="text-yellow-300 font-bold mb-2 text-sm sm:text-base">🌟 Study Jamz</div>
-                <div className="text-red-100 text-xs sm:text-sm">Every week, Trotter & LSA BLDG 3254</div>
+                <div className="text-red-100 text-xs sm:text-sm">Every week, Trotter &b L</div>
               </div>
               <div className="p-3 sm:p-4 bg-red-900/50 border border-red-400">
                 <div className="text-yellow-300 font-bold mb-2 text-sm sm:text-base">💡 Tip of the Week</div>
                 <div className="text-red-100 text-xs sm:text-sm">Schedule study sessions during peak focus hours (9-11 AM)</div>
               </div>
               <div className="p-3 sm:p-4 bg-red-900/50 border border-red-400">
-                 <a href="https://docs.google.com/spreadsheets/d/1QgiEN9uvriVSFjM0cr66UQFiCq2w08Qfmijlx4yfs6Q/edit?gid=0#gid=0" target="_blank" className=" block text-yellow-300 font-bold mb-2 text-sm sm:text-base">
-                   📖 Access Wisdom Doc
-                  </a>
-                <div className="text-red-100 text-xs sm:text-sm">Comprehensive resource for academic success</div>
+                <button className="w-full p-2 sm:p-3 bg-red-400/30 text-red-100 hover:bg-red-400/40 transition-all font-bold text-xs sm:text-sm">
+                  📖 Access Study Resources
+                </button>
               </div>
             </div>
           </StyledSection>

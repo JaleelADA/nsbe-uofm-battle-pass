@@ -521,7 +521,6 @@ function MentorshipHub({ onBackClick, userData, eventData, localDataManager }) {
                  <a href="https://docs.google.com/spreadsheets/d/1QgiEN9uvriVSFjM0cr66UQFiCq2w08Qfmijlx4yfs6Q/edit?gid=0#gid=0" target="_blank" className=" block text-yellow-300 font-bold mb-2 text-sm sm:text-base">
                    📖 Access Wisdom Doc
                   </a>
-                <div className="text-red-100 text-xs sm:text-sm">Comprehensive resource for academic success</div>
               </div>
             </div>
           </StyledSection>

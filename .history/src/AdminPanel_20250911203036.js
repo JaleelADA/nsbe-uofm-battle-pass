@@ -2,8 +2,8 @@
 
 window.AdminPanel = (() => {
   
-  // Admin authentication - Simple password 
-  const ADMIN_PASSWORD = 'IVLEAGUE2026';
+  // Admin authentication - Simple password (change this!)
+  const ADMIN_PASSWORD = 'IV';
   let isAuthenticated = false;
   
   // Check if user is authenticated

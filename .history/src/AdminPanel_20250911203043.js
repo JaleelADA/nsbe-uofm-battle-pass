@@ -2,7 +2,7 @@
 
 window.AdminPanel = (() => {
   
-  // Admin authentication - Simple password 
+  // Admin authentication - Simple password (change this!)
   const ADMIN_PASSWORD = 'IVLEAGUE2026';
   let isAuthenticated = false;
   

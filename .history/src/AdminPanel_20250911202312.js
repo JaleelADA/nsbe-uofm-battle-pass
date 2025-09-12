@@ -398,38 +398,22 @@ window.AdminPanel = (() => {
     console.log(`
 🔧 NSBE Admin Panel Commands:
   
-🔐 Authentication:
-AdminPanel.show()                                 - Show admin interface (with password prompt)
-AdminPanel.checkAuth()                           - Check if authenticated
-
-📊 Override Management (requires authentication):
+AdminPanel.show()                                 - Show admin interface
+AdminPanel.hide()                                 - Hide admin interface
 AdminPanel.setOverride(email, points, reason)    - Set point override via console
 AdminPanel.removeOverride(email)                 - Remove override via console
 AdminPanel.listOverrides()                       - List all current overrides
 AdminPanel.clearAll()                            - Clear all overrides
 
 Examples:
-  AdminPanel.show()                               - Opens password prompt, then admin panel
   AdminPanel.setOverride('jdoe@umich.edu', 15, 'Bonus for leadership')
   AdminPanel.setOverride('jane@umich.edu', -5, 'Penalty for late submission')
   AdminPanel.removeOverride('jdoe@umich.edu')
-
-🔑 Security Note:
-  Default password is empty (just press Enter). 
-  Change ADMIN_PASSWORD_HASH in AdminPanel.js for production use.
-  
-🔧 Generate Password Hash:
-  AdminPanel.generatePasswordHash('yourpassword').then(hash => console.log(hash))
     `);
   }
   
   // Console-friendly override functions
   function setOverride(email, points, reason = '') {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     try {
       LocalDataManager.setManualOverride(email, points, reason);
       console.log(`✅ Override applied: ${points > 0 ? '+' : ''}${points} points for ${email}`);
@@ -440,11 +424,6 @@ Examples:
   }
   
   function removeOverrideConsole(email) {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     try {
       LocalDataManager.removeManualOverride(email);
       console.log(`✅ Override removed for ${email}`);
@@ -454,11 +433,6 @@ Examples:
   }
   
   function listOverrides() {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     const overrides = LocalDataManager.getManualOverrides();
     if (Object.keys(overrides).length === 0) {
       console.log('📋 No active overrides');
@@ -474,11 +448,6 @@ Examples:
   }
   
   function clearAll() {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     if (confirm('Clear all overrides? This cannot be undone.')) {
       LocalDataManager.clearAllOverrides();
       console.log('✅ All overrides cleared');
@@ -502,9 +471,7 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate,
-    // Utility functions
-    generatePasswordHash: hashPassword
+    authenticate
   };
 })();
 

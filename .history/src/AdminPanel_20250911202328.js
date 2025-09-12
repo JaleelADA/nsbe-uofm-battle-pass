@@ -398,28 +398,17 @@ window.AdminPanel = (() => {
     console.log(`
 🔧 NSBE Admin Panel Commands:
   
-🔐 Authentication:
-AdminPanel.show()                                 - Show admin interface (with password prompt)
-AdminPanel.checkAuth()                           - Check if authenticated
-
-📊 Override Management (requires authentication):
+AdminPanel.show()                                 - Show admin interface
+AdminPanel.hide()                                 - Hide admin interface
 AdminPanel.setOverride(email, points, reason)    - Set point override via console
 AdminPanel.removeOverride(email)                 - Remove override via console
 AdminPanel.listOverrides()                       - List all current overrides
 AdminPanel.clearAll()                            - Clear all overrides
 
 Examples:
-  AdminPanel.show()                               - Opens password prompt, then admin panel
   AdminPanel.setOverride('jdoe@umich.edu', 15, 'Bonus for leadership')
   AdminPanel.setOverride('jane@umich.edu', -5, 'Penalty for late submission')
   AdminPanel.removeOverride('jdoe@umich.edu')
-
-🔑 Security Note:
-  Default password is empty (just press Enter). 
-  Change ADMIN_PASSWORD_HASH in AdminPanel.js for production use.
-  
-🔧 Generate Password Hash:
-  AdminPanel.generatePasswordHash('yourpassword').then(hash => console.log(hash))
     `);
   }
   
@@ -502,9 +491,7 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate,
-    // Utility functions
-    generatePasswordHash: hashPassword
+    authenticate
   };
 })();
 

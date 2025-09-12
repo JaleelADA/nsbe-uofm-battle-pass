@@ -2,156 +2,8 @@
 
 window.AdminPanel = (() => {
   
-  // Admin authentication
-  const ADMIN_PASSWORD_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'; // Default: empty string, change this!
-  let isAuthenticated = false;
-  
-  // Simple SHA-256 hash function (for demo - in production use proper crypto)
-  async function hashPassword(password) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-  
-  // Check if user is authenticated
-  function checkAuth() {
-    return isAuthenticated;
-  }
-  
-  // Authenticate user
-  async function authenticate(password) {
-    const hashedInput = await hashPassword(password);
-    if (hashedInput === ADMIN_PASSWORD_HASH) {
-      isAuthenticated = true;
-      return true;
-    }
-    return false;
-  }
-  
-  // Create password prompt
-  function showPasswordPrompt() {
-    const promptHTML = `
-      <div id="admin-password-prompt" style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 20000;
-        font-family: system-ui;
-      ">
-        <div style="
-          background: white;
-          padding: 30px;
-          border-radius: 8px;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-          text-align: center;
-          max-width: 400px;
-          width: 90%;
-        ">
-          <h3 style="margin: 0 0 20px 0; color: #1f2937;">🔐 Admin Access Required</h3>
-          <p style="color: #6b7280; margin-bottom: 20px;">Enter admin password to access the control panel</p>
-          <input type="password" id="admin-password-input" placeholder="Admin Password" style="
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 2px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
-          ">
-          <div id="password-error" style="
-            color: #ef4444;
-            margin-bottom: 15px;
-            font-size: 14px;
-            display: none;
-          ">Incorrect password. Please try again.</div>
-          <div style="display: flex; gap: 10px; justify-content: center;">
-            <button onclick="AdminPanel.submitPassword()" style="
-              background: #3b82f6;
-              color: white;
-              border: none;
-              padding: 12px 24px;
-              border-radius: 6px;
-              cursor: pointer;
-              font-size: 16px;
-            ">Access Admin</button>
-            <button onclick="AdminPanel.cancelAuth()" style="
-              background: #6b7280;
-              color: white;
-              border: none;
-              padding: 12px 24px;
-              border-radius: 6px;
-              cursor: pointer;
-              font-size: 16px;
-            ">Cancel</button>
-          </div>
-          <div style="
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 12px;
-            color: #9ca3af;
-          ">
-            💡 Default password is empty (just click "Access Admin")<br>
-            Change ADMIN_PASSWORD_HASH in AdminPanel.js for security
-          </div>
-        </div>
-      </div>
-    `;
-    
-    document.body.insertAdjacentHTML('beforeend', promptHTML);
-    
-    // Focus on password input
-    const passwordInput = document.getElementById('admin-password-input');
-    passwordInput.focus();
-    
-    // Handle Enter key
-    passwordInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        AdminPanel.submitPassword();
-      }
-    });
-  }
-  
-  // Submit password
-  async function submitPassword() {
-    const passwordInput = document.getElementById('admin-password-input');
-    const errorDiv = document.getElementById('password-error');
-    const password = passwordInput.value;
-    
-    if (await authenticate(password)) {
-      // Remove password prompt
-      const prompt = document.getElementById('admin-password-prompt');
-      if (prompt) {
-        prompt.remove();
-      }
-      // Show admin panel
-      showAdminPanel();
-    } else {
-      // Show error
-      errorDiv.style.display = 'block';
-      passwordInput.value = '';
-      passwordInput.focus();
-    }
-  }
-  
-  // Cancel authentication
-  function cancelAuth() {
-    const prompt = document.getElementById('admin-password-prompt');
-    if (prompt) {
-      prompt.remove();
-    }
-  }
-  
   // Create admin interface HTML
-  function showAdminPanel() {
+  function createAdminInterface() {
     const adminHTML = `
       <div id="admin-panel" style="
         position: fixed;
@@ -261,14 +113,8 @@ window.AdminPanel = (() => {
   
   // Show admin panel
   function show() {
-    // Check if already authenticated
-    if (!checkAuth()) {
-      showPasswordPrompt();
-      return;
-    }
-    
     if (!document.getElementById('admin-panel')) {
-      showAdminPanel();
+      createAdminInterface();
     }
     document.getElementById('admin-panel').style.display = 'block';
     refreshOverridesList();
@@ -398,38 +244,22 @@ window.AdminPanel = (() => {
     console.log(`
 🔧 NSBE Admin Panel Commands:
   
-🔐 Authentication:
-AdminPanel.show()                                 - Show admin interface (with password prompt)
-AdminPanel.checkAuth()                           - Check if authenticated
-
-📊 Override Management (requires authentication):
+AdminPanel.show()                                 - Show admin interface
+AdminPanel.hide()                                 - Hide admin interface
 AdminPanel.setOverride(email, points, reason)    - Set point override via console
 AdminPanel.removeOverride(email)                 - Remove override via console
 AdminPanel.listOverrides()                       - List all current overrides
 AdminPanel.clearAll()                            - Clear all overrides
 
 Examples:
-  AdminPanel.show()                               - Opens password prompt, then admin panel
   AdminPanel.setOverride('jdoe@umich.edu', 15, 'Bonus for leadership')
   AdminPanel.setOverride('jane@umich.edu', -5, 'Penalty for late submission')
   AdminPanel.removeOverride('jdoe@umich.edu')
-
-🔑 Security Note:
-  Default password is empty (just press Enter). 
-  Change ADMIN_PASSWORD_HASH in AdminPanel.js for production use.
-  
-🔧 Generate Password Hash:
-  AdminPanel.generatePasswordHash('yourpassword').then(hash => console.log(hash))
     `);
   }
   
   // Console-friendly override functions
   function setOverride(email, points, reason = '') {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     try {
       LocalDataManager.setManualOverride(email, points, reason);
       console.log(`✅ Override applied: ${points > 0 ? '+' : ''}${points} points for ${email}`);
@@ -440,11 +270,6 @@ Examples:
   }
   
   function removeOverrideConsole(email) {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     try {
       LocalDataManager.removeManualOverride(email);
       console.log(`✅ Override removed for ${email}`);
@@ -454,11 +279,6 @@ Examples:
   }
   
   function listOverrides() {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     const overrides = LocalDataManager.getManualOverrides();
     if (Object.keys(overrides).length === 0) {
       console.log('📋 No active overrides');
@@ -474,11 +294,6 @@ Examples:
   }
   
   function clearAll() {
-    if (!checkAuth()) {
-      console.warn('🔐 Admin authentication required. Use AdminPanel.show() to authenticate.');
-      return;
-    }
-    
     if (confirm('Clear all overrides? This cannot be undone.')) {
       LocalDataManager.clearAllOverrides();
       console.log('✅ All overrides cleared');
@@ -497,14 +312,7 @@ Examples:
     setOverride,
     removeOverride: removeOverrideConsole,
     listOverrides,
-    clearAll,
-    // Authentication functions
-    submitPassword,
-    cancelAuth,
-    checkAuth,
-    authenticate,
-    // Utility functions
-    generatePasswordHash: hashPassword
+    clearAll
   };
 })();
 

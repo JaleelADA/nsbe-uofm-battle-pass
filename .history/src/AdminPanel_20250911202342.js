@@ -417,9 +417,6 @@ Examples:
 🔑 Security Note:
   Default password is empty (just press Enter). 
   Change ADMIN_PASSWORD_HASH in AdminPanel.js for production use.
-  
-🔧 Generate Password Hash:
-  AdminPanel.generatePasswordHash('yourpassword').then(hash => console.log(hash))
     `);
   }
   
@@ -502,9 +499,7 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate,
-    // Utility functions
-    generatePasswordHash: hashPassword
+    authenticate
   };
 })();
 

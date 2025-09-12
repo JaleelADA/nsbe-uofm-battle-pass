@@ -1,46 +1,4 @@
-# NSBE Battle Pass - Admin Override System
-
-## 🔐 Security & Authentication
-
-### Default Access
-- **Default Password**: Empty (just press Enter or click "Access Admin")
-- **Keyboard Shortcut**: `Ctrl + Shift + A` to open admin panel
-- **Console Access**: `AdminPanel.show()` 
-
-### Setting a Custom Password
-
-1. **Generate Password Hash**:
-   ```javascript
-   // In browser console, run this to generate a hash for your password:
-   async function generateHash(password) {
-     const encoder = new TextEncoder();
-     const data = encoder.encode(password);
-     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-     const hashArray = Array.from(new Uint8Array(hashBuffer));
-     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-   }
-   
-   // Example: Generate hash for password "nsbe2024"
-   generateHash("nsbe2024").then(hash => console.log("Hash:", hash));
-   ```
-
-2. **Update AdminPanel.js**:
-   ```javascript
-   // Replace this line in AdminPanel.js:
-   const ADMIN_PASSWORD_HASH = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
-   
-   // With your generated hash:
-   const ADMIN_PASSWORD_HASH = 'your_generated_hash_here';
-   ```
-
-3. **Recommended Passwords**:
-   - Use organization-specific passwords like "nsbe2024", "umichnsbe", etc.
-   - Change password periodically
-   - Don't share the hash publicly
-
----
-
-## 📊 Manual Point Override System
+# Manual Point Override System
 
 ## Overview
 The manual override system allows administrators to adjust member points for special circumstances, corrections, or bonus awards.

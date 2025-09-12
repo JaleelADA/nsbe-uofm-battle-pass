@@ -270,7 +270,7 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
     }
   }
   
-  // Apply 5-point cap for unpaid members (community service already at 5, so no change needed)
+  // Apply 5-point cap for unpaid members (except for community service which stays at 3)
   const isPaid = isPaidMemberEnhanced(uniqname, email, paidMembersList);
   if (!isPaid && normalizedEventType !== 'Community Service') {
     eventPoints = Math.min(eventPoints, 5); // Cap at 5 points for unpaid members

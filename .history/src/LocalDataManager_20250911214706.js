@@ -235,10 +235,12 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
   // Get base points for event type
   eventPoints = window.NEW_POINT_SYSTEM.activities[normalizedEventType] || 0;
   
-  // Special case: Community Service is always worth 5 points regardless of other factors
+  // Community service events are always 3 points each
   if (normalizedEventType === 'Community Service') {
-    eventPoints = 5; // All community service events worth 5 points
-  }  // Add friend referral points
+    eventPoints = 3; // All community service events worth 3 points
+  }
+  
+  // Add friend referral points
   let friendPoints = 0;
   if (broughtFriend && (broughtFriend.toLowerCase() === 'yes' || broughtFriend === 'Y') && friendCount > 0) {
     friendPoints = window.NEW_POINT_SYSTEM.multipliers.BRING_FRIEND_FIRST; // 3 points for first friend
@@ -270,7 +272,7 @@ function calculateMemberPoints(memberData, paidMembersList = [], memberHistory =
     }
   }
   
-  // Apply 5-point cap for unpaid members (community service already at 5, so no change needed)
+  // Apply 5-point cap for unpaid members (except for community service which stays at 3)
   const isPaid = isPaidMemberEnhanced(uniqname, email, paidMembersList);
   if (!isPaid && normalizedEventType !== 'Community Service') {
     eventPoints = Math.min(eventPoints, 5); // Cap at 5 points for unpaid members

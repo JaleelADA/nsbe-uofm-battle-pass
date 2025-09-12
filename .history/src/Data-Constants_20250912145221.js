@@ -58,7 +58,7 @@ window.ANNOUNCEMENTS_DATA = [
   { title: "🏆 Conference Info", url: "https://convention.nsbe.org/" },
   { title: "💰 Scholarship Opportunities", url: "https://nsbe.org/scholarships/" },
   { title: "📄 Resume Book", url: "https://docs.google.com/forms/d/e/1FAIpQLSfQgLB--SZ40hznFcCxUTUbAyz_dWQB4klCIvaZDPD29ibnLg/viewform?usp=header" },
-  { title: "📋 Committee Applications", url: "https://forms.gle/yR66CddtQbMK4FZV8" },
+  { title: "📋 Committee Applications", url: "" },
   { title: "🏅 JEB Application", url: "https://docs.google.com/forms/d/e/1FAIpQLSeG1fifIlWu3M5S9OijspVQZ1IL2xycFHe-XGJ44RV0eMbsAg/viewform?usp=share_link&ouid=105119752436265794522" },
   { title: "🤝 Collab with NSBEUM!", url: "https://docs.google.com/forms/d/e/1FAIpQLSdVzBy08R3Ex8FMrmlJQ1uCq-TJdHzwr_wGk0cvxztrTL_6ng/viewform?usp=share_link&ouid=105119752436265794522" }
 ];

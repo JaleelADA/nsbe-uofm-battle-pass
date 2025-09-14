@@ -180,14 +180,13 @@ function MentorshipHub({ onBackClick, userData, eventData, localDataManager }) {
           requirement = badge.requirement.value; // Use the fixed thresholds (35, 75, 150)
           
           progress = requirement > 0 ? Math.min((current / requirement) * 100, 100) : 0;
-          break;
+        break;
 
-        case 'variety':
-          current = userStats[badge.requirement.field] || 0;
-          progress = Math.min((current / badge.requirement.value) * 100, 100);
-          requirement = badge.requirement.value;
-          break;
-      }
+      case 'variety':
+        current = userStats[badge.requirement.field] || 0;
+        progress = Math.min((current / badge.requirement.value) * 100, 100);
+        requirement = badge.requirement.value;
+        break;
     }
 
     // Determine status

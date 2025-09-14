@@ -609,10 +609,7 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate,
-    // Badge override functions
-    applyBadgeOverride,
-    removeBadgeOverride
+    authenticate
   };
 })();
 

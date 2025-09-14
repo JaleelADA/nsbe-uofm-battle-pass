@@ -655,10 +655,5 @@ window.LocalDataManager = {
   getManualOverrides,
   setManualOverride,
   removeManualOverride,
-  clearAllOverrides,
-  // Badge progress override functions
-  getBadgeOverrides,
-  setBadgeOverride,
-  removeBadgeOverride,
-  clearAllBadgeOverrides
+  clearAllOverrides
 };

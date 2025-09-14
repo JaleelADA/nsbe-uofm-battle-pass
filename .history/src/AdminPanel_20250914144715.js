@@ -410,66 +410,6 @@ window.AdminPanel = (() => {
     }
   }
   
-  // Apply badge override
-  function applyBadgeOverride() {
-    const email = document.getElementById('badge-override-email').value.trim();
-    const badgeId = document.getElementById('badge-override-id').value;
-    const progress = parseInt(document.getElementById('badge-override-progress').value);
-    const reason = document.getElementById('badge-override-reason').value.trim();
-    
-    if (!email || !badgeId || isNaN(progress)) {
-      alert('Please enter a valid email, select a badge, and enter progress value');
-      return;
-    }
-    
-    try {
-      LocalDataManager.setBadgeOverride(email, badgeId, progress, reason);
-      alert(`Badge override applied: ${badgeId} progress set to ${progress} for ${email}`);
-      
-      // Clear form
-      document.getElementById('badge-override-email').value = '';
-      document.getElementById('badge-override-id').value = '';
-      document.getElementById('badge-override-progress').value = '';
-      document.getElementById('badge-override-reason').value = '';
-      
-      // Trigger leaderboard refresh if the app has the capability
-      if (window.refreshLeaderboard) {
-        window.refreshLeaderboard();
-      }
-    } catch (error) {
-      alert('Error applying badge override: ' + error.message);
-    }
-  }
-  
-  // Remove badge override
-  function removeBadgeOverride() {
-    const email = document.getElementById('badge-override-email').value.trim();
-    const badgeId = document.getElementById('badge-override-id').value;
-    
-    if (!email || !badgeId) {
-      alert('Please enter an email address and select a badge');
-      return;
-    }
-    
-    try {
-      LocalDataManager.removeBadgeOverride(email, badgeId);
-      alert(`Badge override removed for ${badgeId} on ${email}`);
-      
-      // Clear form
-      document.getElementById('badge-override-email').value = '';
-      document.getElementById('badge-override-id').value = '';
-      document.getElementById('badge-override-progress').value = '';
-      document.getElementById('badge-override-reason').value = '';
-      
-      // Trigger leaderboard refresh if the app has the capability
-      if (window.refreshLeaderboard) {
-        window.refreshLeaderboard();
-      }
-    } catch (error) {
-      alert('Error removing badge override: ' + error.message);
-    }
-  }
-  
   // Refresh the overrides list display
   function refreshOverridesList() {
     const container = document.getElementById('current-overrides');
@@ -609,10 +549,7 @@ Examples:
     submitPassword,
     cancelAuth,
     checkAuth,
-    authenticate,
-    // Badge override functions
-    applyBadgeOverride,
-    removeBadgeOverride
+    authenticate
   };
 })();
 

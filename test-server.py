@@ -25,7 +25,7 @@ def start_server():
         print(f"🚀 NSBE Battle Pass Test Server")
         print(f"📍 Serving at: http://localhost:{PORT}")
         print(f"📱 Main App: http://localhost:{PORT}/index.html")
-        print(f"🔍 Debug Tool: http://localhost:{PORT}/raw-data-debug.html")
+        print(f"🧪 Test Suite: http://localhost:{PORT}/test-suite.html")
         print(f"\n💡 Press Ctrl+C to stop the server")
         
         try:

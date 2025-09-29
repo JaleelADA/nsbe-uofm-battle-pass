@@ -26,34 +26,34 @@ window.DOCUMENTATION_LINKS = [
 // Events data
 window.EVENTS_DATA = [
   {
-    title: "GBM w/ Ford",
-    date: "Sept 12th",
-    time: "5:30 PM", 
-    location: "IOE 1610"
+    title: "Study Jamz",
+    date: "Sept 29th",
+    time: "5 - 8 PM", 
+    location: "MH 1448"
   },
   {
-    title: "Golfing with Ford", 
-    date: "Sept 18th",
-    time: "5 - 7:30pm",
-    location: "Indian Trails Golf Center"
+    title: "Grad School Declassified w/ GSBES", 
+    date: "Sept 30th",
+    time: "5:30 - 7pm",
+    location: "1005 DOW"
+  },
+  {
+    title: "Mentorship Kickoff: The Estimathon",
+    date: "Oct 1st", 
+    time: "6:00 - 7:30pm",
+    location: "MH 1448"
   },
   {
     title: "Study Jamz",
-    date: "Sept 22th", 
-    time: "5:30 - 8pm",
-    location: "LSA BLDG 3254"
-  },
-  {
-    title: "Mentorship Mixer",
-    date: "Sept 23rd",
-    time: "5:30 PM", 
-    location: "TBA"
+    date: "Oct 6th",
+    time: "5 - 8 PM", 
+    location: "Trotter"
   }
 ];
 
 // Announcements data
 window.ANNOUNCEMENTS_DATA = [
-  { title: "📝 Sign In to Events", url: "https://docs.google.com/forms/d/e/1FAIpQLSe81BszYqfzLxpaZn-CyBaP3YnPuktAYRMHh517p5kwQ5Qg0Q/viewform?usp=header" },
+  { title: "📝 Sign In to Events", url: "https://docs.google.com/forms/d/e/1FAIpQLSfXgbgogJ_yIhwgmjH6N--WQLRF2ewLf7KkJZTQSCndZCaiNQ/viewform?usp=share_link&ouid=105119752436265794522" },
   { title: "💳 Pay NSBE Dues", url: "https://mynsbe.nsbe.org/s/joinprocess" },
   { title: "🏆 Conference Info", url: "https://convention.nsbe.org/" },
   { title: "💰 Scholarship Opportunities", url: "https://nsbe.org/scholarships/" },
@@ -120,11 +120,11 @@ window.BADGES_CONFIG = [
   { name: 'GOLD', color: 'from-yellow-400 to-yellow-600', active: false, textColor: 'text-black', border: '#fbbf24' }
 ];
 
-// New Trackable Badges Configuration for MentorshipHub
+// Trackable Badges Configuration - Realistic semester achievements
 window.TRACKABLE_BADGES_CONFIG = [
-  // Membership Status Badges
+  // Membership Status
   { 
-    id: 'paid_member', 
+    id: 'paid-member', 
     name: 'Paid Member', 
     icon: '💎', 
     color: '#3b82f6', 
@@ -136,21 +136,21 @@ window.TRACKABLE_BADGES_CONFIG = [
     requirement: 'paid_status'
   },
   
-  // Event Attendance Badges  
+  // GBM Attendance
   { 
-    id: 'first_event', 
-    name: 'First Steps', 
+    id: 'gbm-starter', 
+    name: 'GBM Starter', 
     icon: '🌟', 
     color: '#10b981', 
     glow: 'rgba(16, 185, 129, 0.5)', 
-    desc: 'Attend Your First Event', 
+    desc: 'Attend Your First GBM', 
     xp: 15, 
     category: 'engagement', 
     type: 'count',
-    requirement: { field: 'total_events', value: 1 }
+    requirement: { field: 'GBM', value: 1 }
   },
   { 
-    id: 'gbm_regular', 
+    id: 'gbm-regular', 
     name: 'GBM Regular', 
     icon: '📅', 
     color: '#8b5cf6', 
@@ -162,116 +162,138 @@ window.TRACKABLE_BADGES_CONFIG = [
     requirement: { field: 'GBM', value: 3 }
   },
   { 
-    id: 'pd_champion', 
-    name: 'PD Champion', 
-    icon: '🚀', 
+    id: 'gbm-champion', 
+    name: 'GBM Champion', 
+    icon: '👑', 
     color: '#f59e0b', 
     glow: 'rgba(245, 158, 11, 0.5)', 
-    desc: 'Attend 5 Professional Development Events', 
+    desc: 'Attend All Semester GBMs (5+)', 
+    xp: 50, 
+    category: 'engagement', 
+    type: 'count',
+    requirement: { field: 'GBM', value: 5 }
+  },
+  
+  // Professional Development
+  { 
+    id: 'pd-explorer', 
+    name: 'PD Explorer', 
+    icon: '🚀', 
+    color: '#06b6d4', 
+    glow: 'rgba(6, 182, 212, 0.5)', 
+    desc: 'Attend 3 Professional Development Events', 
     xp: 35, 
-    category: 'pzone', 
+    category: 'professional', 
+    type: 'count',
+    requirement: { field: 'Professional Development', value: 3 }
+  },
+  { 
+    id: 'pd-master', 
+    name: 'PD Master', 
+    icon: '🎯', 
+    color: '#8b5cf6', 
+    glow: 'rgba(139, 92, 246, 0.5)', 
+    desc: 'Attend 5+ Professional Development Events', 
+    xp: 60, 
+    category: 'professional', 
     type: 'count',
     requirement: { field: 'Professional Development', value: 5 }
   },
+  
+  // Conference and Major Events
   { 
-    id: 'mentor_master', 
-    name: 'Mentor Master', 
-    icon: '🔥', 
-    color: '#ef4444', 
-    glow: 'rgba(239, 68, 68, 0.5)', 
-    desc: 'Attend 3 Mentorship Events', 
-    xp: 30, 
-    category: 'nsbe', 
-    type: 'count',
-    requirement: { field: 'Mentorship Events', value: 3 }
-  },
-  { 
-    id: 'volunteer_hero', 
-    name: 'Volunteer Hero', 
-    icon: '🤝', 
-    color: '#06b6d4', 
-    glow: 'rgba(6, 182, 212, 0.5)', 
-    desc: 'Complete 2 Community Service Events', 
-    xp: 25, 
-    category: 'engagement', 
-    type: 'count',
-    requirement: { field: 'Community Service', value: 2 }
-  },
-  { 
-    id: 'convention_attendee', 
-    name: 'Convention Explorer', 
-    icon: '✈️', 
-    color: '#ec4899', 
-    glow: 'rgba(236, 72, 153, 0.5)', 
+    id: 'conference-attendee', 
+    name: 'Conference Attendee', 
+    icon: '🏆', 
+    color: '#dc2626', 
+    glow: 'rgba(220, 38, 38, 0.5)', 
     desc: 'Attend Regional/National Convention', 
-    xp: 50, 
-    category: 'nsbe', 
+    xp: 75, 
+    category: 'achievement', 
     type: 'count',
     requirement: { field: 'Convention Attendance', value: 1 }
   },
   
-  // Point Milestone Badges
+  // Community and Service
   { 
-    id: 'bronze_tier', 
-    name: 'Bronze Achiever', 
-    icon: '🥉', 
-    color: '#cd7f32', 
-    glow: 'rgba(205, 127, 50, 0.5)', 
-    desc: 'Earn 35+ Points', 
-    xp: 20, 
-    category: 'achievement', 
-    type: 'points',
-    requirement: { field: 'total_points', value: 35 }
-  },
-  { 
-    id: 'silver_tier', 
-    name: 'Silver Star', 
-    icon: '🥈', 
-    color: '#c0c0c0', 
-    glow: 'rgba(192, 192, 192, 0.5)', 
-    desc: 'Earn 75+ Points', 
-    xp: 30, 
-    category: 'achievement', 
-    type: 'points',
-    requirement: { field: 'total_points', value: 75 }
-  },
-  { 
-    id: 'gold_tier', 
-    name: 'Gold Legend', 
-    icon: '🥇', 
-    color: '#ffd700', 
-    glow: 'rgba(255, 215, 0, 0.5)', 
-    desc: 'Earn 150+ Points', 
-    xp: 50, 
-    category: 'achievement', 
-    type: 'points',
-    requirement: { field: 'total_points', value: 150 }
+    id: 'community-helper', 
+    name: 'Community Helper', 
+    icon: '🤝', 
+    color: '#16a34a', 
+    glow: 'rgba(22, 163, 74, 0.5)', 
+    desc: 'Complete 2 Community Service Events', 
+    xp: 25, 
+    category: 'service', 
+    type: 'count',
+    requirement: { field: 'Community Service', value: 2 }
   },
   
-  // Social Impact Badges
+  // Social Engagement
   { 
-    id: 'friend_recruiter', 
-    name: 'Friend Recruiter', 
-    icon: '👥', 
-    color: '#84cc16', 
-    glow: 'rgba(132, 204, 22, 0.5)', 
-    desc: 'Bring 3 Friends to Events', 
+    id: 'social-connector', 
+    name: 'Social Connector', 
+    icon: '🎉', 
+    color: '#ec4899', 
+    glow: 'rgba(236, 72, 153, 0.5)', 
+    desc: 'Attend 3 Social Events', 
     xp: 20, 
-    category: 'engagement', 
+    category: 'social', 
     type: 'count',
-    requirement: { field: 'friends_brought', value: 3 }
+    requirement: { field: 'Social Events', value: 3 }
+  },
+  
+  // Academic Excellence
+  { 
+    id: 'study-warrior', 
+    name: 'Study Warrior', 
+    icon: '📚', 
+    color: '#7c3aed', 
+    glow: 'rgba(124, 58, 237, 0.5)', 
+    desc: 'Attend 5 P-Zone Study Sessions', 
+    xp: 25, 
+    category: 'academic', 
+    type: 'count',
+    requirement: { field: 'P-Zone', value: 5 }
+  },
+  
+  // Mentorship
+  { 
+    id: 'mentorship-seeker', 
+    name: 'Mentorship Seeker', 
+    icon: '🌱', 
+    color: '#0891b2', 
+    glow: 'rgba(8, 145, 178, 0.5)', 
+    desc: 'Attend 2 Mentorship Events', 
+    xp: 30, 
+    category: 'mentorship', 
+    type: 'count',
+    requirement: { field: 'Mentorship Events', value: 2 }
+  },
+  
+  // Leadership and Participation
+  { 
+    id: 'consistent-member', 
+    name: 'Consistent Member', 
+    icon: '⚡', 
+    color: '#f59e0b', 
+    glow: 'rgba(245, 158, 11, 0.5)', 
+    desc: 'Attend 4 Different Event Types', 
+    xp: 35, 
+    category: 'achievement', 
+    type: 'variety',
+    requirement: { field: 'event_categories', value: 4 }
   },
   { 
-    id: 'consistent_contributor', 
-    name: 'Consistent Contributor', 
-    icon: '⚡', 
-    color: '#a855f7', 
-    glow: 'rgba(168, 85, 247, 0.5)', 
-    desc: 'Attend Events in 3 Different Categories', 
-    xp: 40, 
-    category: 'engagement', 
-    type: 'variety',
-    requirement: { field: 'event_categories', value: 3 }
+    id: 'super-member', 
+    name: 'Super Member', 
+    icon: '🔥', 
+    color: '#dc2626', 
+    glow: 'rgba(220, 38, 38, 0.5)', 
+    desc: 'Attend 15+ Events Total', 
+    xp: 75, 
+    category: 'achievement', 
+    type: 'count',
+    requirement: { field: 'total_events', value: 15 }
   }
 ];
 

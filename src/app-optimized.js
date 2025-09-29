@@ -296,7 +296,7 @@ function MentorshipSection({ onMentorshipClick }) {
   );
 }
 
-function MemberStats({ userStats }) {
+function MemberStats({ userStats, userName, onViewHistory }) {
   return (
     <StyledSection style={{
       clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
@@ -332,9 +332,168 @@ function MemberStats({ userStats }) {
             }}>
               <div className="text-xs sm:text-sm text-gray-300">Rank: <span className="text-yellow-400 font-bold">#{userStats.rank}</span></div>
             </div>
+            {userName && (
+              <StyledButton 
+                onClick={() => onViewHistory(userName)}
+                className="text-xs py-2 px-3 mt-3 w-full"
+                theme="blue"
+              >
+                📋 View History
+              </StyledButton>
+            )}
           </div>
         )}
       </div>
+    </StyledSection>
+  );
+}
+
+function AttendanceHistory({ userName, onClose }) {
+  const [attendanceData, setAttendanceData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchAttendanceHistory();
+  }, [userName]);
+
+  const fetchAttendanceHistory = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      if (window.getMemberAttendanceHistory) {
+        const history = await window.getMemberAttendanceHistory(userName);
+        if (history) {
+          setAttendanceData(history);
+        } else {
+          setError('No attendance history found for this member.');
+        }
+      } else {
+        setError('Attendance history system not loaded.');
+      }
+    } catch (err) {
+      console.error('Error fetching attendance history:', err);
+      setError('Failed to load attendance history.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getEventTypeColor = (eventType) => {
+    switch(eventType) {
+      case 'GBM': return 'text-yellow-400';
+      case 'Professional Development': return 'text-blue-400';
+      case 'P-Zone': return 'text-green-400';
+      case 'Community Service': return 'text-purple-400';
+      case 'Convention Attendance': return 'text-red-400';
+      case 'Social Events': return 'text-pink-400';
+      default: return 'text-gray-300';
+    }
+  };
+
+  return (
+    <StyledSection style={{
+      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+    }} className="p-3 sm:p-4 lg:p-5">
+      <div className="flex justify-between items-center mb-4">
+        <SectionTitle theme="blue">ATTENDANCE HISTORY</SectionTitle>
+        <StyledButton onClick={onClose} className="text-xs py-1 px-3" theme="blue">
+          ✕ Close
+        </StyledButton>
+      </div>
+
+      {loading && (
+        <div className="text-center py-8">
+          <div className="animate-spin w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading attendance history...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center py-8">
+          <p className="text-red-400 mb-4">{error}</p>
+          <StyledButton onClick={fetchAttendanceHistory} className="text-xs py-2 px-4">
+            Retry
+          </StyledButton>
+        </div>
+      )}
+
+      {attendanceData && !loading && (
+        <div>
+          {/* Member Summary */}
+          <div className="mb-6 p-4 bg-gray-800/50 border border-gray-600" style={{
+            clipPath: SHARED_STYLES.clipPaths.card
+          }}>
+            <h3 className="text-lg font-bold text-yellow-400 mb-2">{attendanceData.member.displayName}</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-400">Total Points: </span>
+                <span className="text-yellow-400 font-bold">{attendanceData.member.totalPoints}</span>
+              </div>
+              <div>
+                <span className="text-gray-400">Events: </span>
+                <span className="text-blue-400 font-bold">{attendanceData.summary.totalEvents}</span>
+              </div>
+              <div>
+                <span className="text-gray-400">Average: </span>
+                <span className="text-green-400 font-bold">{attendanceData.summary.averagePointsPerEvent} pts/event</span>
+              </div>
+              <div>
+                <span className="text-gray-400">Tier: </span>
+                <span className="text-yellow-400 font-bold">{attendanceData.member.tier}</span>
+              </div>
+            </div>
+            {attendanceData.summary.cappedEvents > 0 && (
+              <div className="mt-2 text-xs text-orange-400">
+                ⚠️ {attendanceData.summary.cappedEvents} events capped at 5 points (unpaid dues)
+              </div>
+            )}
+          </div>
+
+          {/* Events List */}
+          <div className="max-h-96 overflow-y-auto space-y-2">
+            {attendanceData.events.map((event, index) => (
+              <div key={event.id} className="p-3 bg-gray-800/30 border border-gray-600 hover:bg-gray-700/30" style={{
+                clipPath: SHARED_STYLES.clipPaths.card
+              }}>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className={`font-bold ${getEventTypeColor(event.eventType)}`}>
+                      {event.eventType}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {event.formattedDate}
+                    </div>
+                    {event.broughtFriend && (
+                      <div className="text-xs text-blue-400 mt-1">
+                        👥 Brought {event.friendCount} friend{event.friendCount > 1 ? 's' : ''} (+{event.friendPoints} pts)
+                      </div>
+                    )}
+                    {event.duesCapped && (
+                      <div className="text-xs text-orange-400 mt-1">
+                        🔒 Capped at 5 points (was {event.originalPoints} points)
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-yellow-400">
+                      {event.pointsEarned}
+                    </div>
+                    <div className="text-xs text-gray-400">points</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {attendanceData.events.length === 0 && (
+            <div className="text-center py-8 text-gray-400">
+              No events found for this member.
+            </div>
+          )}
+        </div>
+      )}
     </StyledSection>
   );
 }
@@ -530,6 +689,7 @@ function Leaderboard({ userName, onUserDataFound }) {
 function App() {
   const [userName, setUserName] = useState('');
   const [mentorshipMode, setMentorshipMode] = useState(false);
+  const [attendanceHistoryMode, setAttendanceHistoryMode] = useState(false);
   const [userStats, setUserStats] = useState({
     level: null,
     xp: null,
@@ -589,6 +749,14 @@ function App() {
     />;
   }
 
+  // If attendance history mode is active, render the AttendanceHistory
+  if (attendanceHistoryMode) {
+    return <AttendanceHistory 
+      userName={userName}
+      onClose={() => setAttendanceHistoryMode(false)}
+    />;
+  }
+
   return (
     <div className="min-h-screen p-4 sm:p-6 lg:p-8 font-futuristic" style={{
       background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%)'
@@ -613,7 +781,11 @@ function App() {
               <BadgeSection />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
                 <MentorshipSection onMentorshipClick={() => setMentorshipMode(true)} />
-                <MemberStats userStats={userStats} />
+                <MemberStats 
+                  userStats={userStats} 
+                  userName={userName}
+                  onViewHistory={() => setAttendanceHistoryMode(true)}
+                />
               </div>
             </div>
             

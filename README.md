@@ -4,7 +4,7 @@
 [![GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-blue)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A gamified mentorship and professional development platform for the National Society of Black Engineers (NSBE) University of Michigan chapter. Track progress, earn achievements, and unlock career development opportunities through an interactive Battle Pass system with dynamic tier ranking and real-time trackable badges.
+A gamified mentorship and professional development platform for the National Society of Black Engineers (NSBE) University of Michigan chapter. Track progress, earn achievements, and unlock career development opportunities through an interactive Battle Pass system with dynamic tier ranking, real-time trackable badges, and live Google Sheets integration.
 
 
 ## 🚀 Features
@@ -30,8 +30,10 @@ A gamified mentorship and professional development platform for the National Soc
 
 ### 📊 **Data Integration & Architecture**
 - **LocalDataManager** - Centralized data processing with Google Sheets API
+- **Live Sheet Integration** - Real-time data from Google Forms with CSV fallback
 - **Dynamic Tier Calculation** - Automatic quartile-based tier assignment
-- **Real-time Synchronization** - Live updates from form submissions and member verification
+- **Enhanced Event Parsing** - Flexible header matching for robust data processing
+- **Comprehensive Test Suite** - Full system validation and performance testing
 - **Modular Components** - InfoSidebar, MentorshipHUB, and reusable UI components
 
 ## 🛠️ Tech Stack
@@ -41,6 +43,7 @@ A gamified mentorship and professional development platform for the National Soc
 - **Styling**: Tailwind CSS, Custom CSS animations
 - **Data Processing**: Google Sheets API with local calculations and dynamic tier system
 - **Badge System**: Real-time trackable achievements with progress monitoring
+
 - **Deployment**: GitHub Pages optimized
 - **Development**: Live Server, Modern JavaScript (ES6+)
 
@@ -54,15 +57,15 @@ A gamified mentorship and professional development platform for the National Soc
 ### **Quick Start**
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/BP-Game.git
-cd BP-Game
+git clone https://github.com/yourusername/nsbe-uofm-battle-pass-2.git
+cd nsbe-uofm-battle-pass-2
 
 # Start development server
-# Using Live Server extension in VS Code
-# Or using Python
-python -m http.server 8000
+python test-server.py
 
-# Visit http://localhost:8000
+# Visit the application
+# Main App: http://localhost:8080
+# Test Suite: http://localhost:8080/test-suite.html
 ```
 
 ### **Google Sheets Setup**
@@ -89,23 +92,25 @@ python -m http.server 8000
 2. **Track engagement metrics** - View participation through dynamic leaderboard
 3. **Manage tier thresholds** - Automatic quartile calculation adjusts competition
 4. **Badge system oversight** - All achievements calculate automatically from attendance data
+5. **Test Suite Validation** - Use comprehensive test suite to verify system functionality
 
 ## 🏗️ Project Structure
 
 ```
-nsbe-uofm-battle-pass/
+nsbe-uofm-battle-pass-2/
 ├── index.html                  # Main application entry point
-├── src/                        # Application source code
+├── test-suite.html            # Comprehensive testing framework
+├── test-server.py             # Development server
+├── event_data.csv             # Event attendance data
+├── src/                       # Application source code
 │   ├── app-optimized.js       # Main React application with dynamic tier integration
 │   ├── LocalDataManager.js    # Core data processing and Google Sheets integration
 │   ├── MentorshipHUB.js      # Trackable badge system and mentorship features
 │   ├── InfoSidebar.js        # Modular info sidebar component
+│   ├── AdminPanel.js         # Administrative functionality
 │   ├── Data-Constants.js     # Centralized configuration and badge definitions
-│   ├── Reuseable-UI.JS       # Shared UI components
 │   ├── Shared-style.js       # Common styling utilities
-│   ├── helpers.js            # Utility functions
-│   ├── main.jsx              # React component definitions
-│   └── index.css             # Custom styles and animations
+│   └── helpers.js            # Utility functions
 ├── tailwind.config.js         # Tailwind CSS configuration
 ├── CNAME                      # Custom domain configuration
 └── LICENSE                    # MIT License
@@ -206,7 +211,7 @@ We welcome contributions from NSBE members and the broader community!
 
 ### **Contribution Guidelines**
 - Follow existing code style and structure
-- Test all changes thoroughly
+- Verify all changes work correctly
 - Update documentation as needed
 - Ensure mobile responsiveness
 - Maintain accessibility standards
@@ -219,6 +224,7 @@ We welcome contributions from NSBE members and the broader community!
 - [x] Complete Google Sheets integration with local processing
 - [x] Modular component architecture (InfoSidebar, MentorshipHUB)
 - [x] Production-ready codebase cleanup
+- [x] Clean project structure optimized for deployment
 
 ### **Version 2.1 (In Progress)**
 - [ ] Enhanced badge progress visualization

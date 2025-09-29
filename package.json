@@ -1,0 +1,11 @@
+{
+  "name": "nsbe-battle-pass",
+  "version": "1.0.0",
+  "description": "NSBE UofM Battle Pass - Gamified mentorship and professional development platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 test-server.py"
+  },
+  "author": "NSBE UofM",
+  "license": "MIT"
+}

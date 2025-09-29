@@ -108,7 +108,8 @@ window.POINT_SYSTEM = [
   { activity: '🤝 Mentorship Events', points: '+7 pts' },
   { activity: '⚡ P-Zone / M-Zone', points: '+5 pts' },
   { activity: '🏆 Convention Attendance', points: '+15 pts' },
-  { activity: '🤝 Community Service', points: '+5 pts' }
+  { activity: '🤝 Community Service', points: '+5 pts' },
+  { activity: '👫 Bring a Friend', points: '+3 (first), +1 per extra' }
 ];
 
 // Badges configuration - Legacy static badges for dashboard

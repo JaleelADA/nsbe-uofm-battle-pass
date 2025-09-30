@@ -453,37 +453,26 @@ function MentorshipHub({ onBackClick, userData, eventData, localDataManager }) {
                 </div>
               </div>
 
-              {/* Upcoming Event Announcement */}
+              {/* Additional Resources */}
               <div>
-                <h4 className="text-lg font-semibold text-red-300 mb-4">� Upcoming Event</h4>
-                <div className="p-6 bg-gradient-to-r from-yellow-900/50 to-orange-900/50 border-2 border-yellow-400 rounded-lg animate-pulse">
-                  <div className="text-center mb-4">
-                    <div className="text-yellow-300 font-bold text-xl mb-2">🎉 MENTORSHIP MIXER</div>
-                    <div className="text-white font-semibold text-lg">Tomorrow - October 1st, 2025</div>
+                <h4 className="text-lg font-semibold text-red-300 mb-4">🔗 Additional Resources</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 bg-red-900/30 border border-red-400 rounded">
+                    <div className="text-yellow-300 font-bold mb-2">📚 Mentorship Resources</div>
+                    <div className="text-red-100 text-sm mb-3">
+                      Access guides, templates, and best practices for effective mentorship relationships.
+                    </div>
+                    <div className="text-gray-400 text-sm">Coming soon - Resource portal</div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div className="bg-red-900/40 p-3 rounded border border-red-400/60">
-                      <div className="text-red-200 font-semibold text-sm mb-1">⏰ TIME</div>
-                      <div className="text-white font-bold">6:00 - 7:30 PM</div>
+                  <div className="p-4 bg-red-900/30 border border-red-400 rounded">
+                    <div className="text-yellow-300 font-bold mb-2">🤝 Peer Support Network</div>
+                    <div className="text-red-100 text-sm mb-3">
+                      Connect with other mentorship pairs for group activities and broader networking.
                     </div>
-                    <div className="bg-blue-900/40 p-3 rounded border border-blue-400/60">
-                      <div className="text-blue-200 font-semibold text-sm mb-1">📍 LOCATION</div>
-                      <div className="text-white font-bold">Mason Hall 1448</div>
-                    </div>
-                    <div className="bg-purple-900/40 p-3 rounded border border-purple-400/60">
-                      <div className="text-purple-200 font-semibold text-sm mb-1">🎯 EVENT</div>
-                      <div className="text-white font-bold">Estimathon</div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 text-center">
-                    <div className="text-yellow-200 text-sm mb-2">
-                      Meet your mentor/mentee pairs and participate in fun estimation challenges!
-                    </div>
-                    <div className="text-white font-semibold bg-gradient-to-r from-red-600 to-orange-600 px-4 py-2 rounded inline-block">
-                      🔥 All Mentorship Pairs Welcome! 🔥
-                    </div>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVzBy08R3Ex8FMrmlJQ1uCq-TJdHzwr_wGk0cvxztrTL_6ng/viewform" target="_blank"
+                       className="text-yellow-400 hover:text-yellow-300 text-sm underline">
+                      Join Collaboration Network →
+                    </a>
                   </div>
                 </div>
               </div>

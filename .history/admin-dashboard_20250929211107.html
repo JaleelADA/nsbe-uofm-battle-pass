@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSBE Battle Pass - Admin Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .data-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .data-table th, .data-table td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #374151;
+        }
+        .data-table th {
+            background-color: #1f2937;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nsbeGreen: "#4CAF50",
+                        nsbeGold: "#FFD700"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div id="admin-dashboard"></div>
+
+    <!-- Load dependencies in correct order -->
+    <script src="src/Data-Constants.js"></script>
+    <script src="src/Shared-style.js"></script>
+    <script src="src/helpers.js"></script>
+    <script src="src/LocalDataManager.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        function AdminDashboard() {
+            const [data, setData] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [activeTab, setActiveTab] = useState('leaderboard');
+            const [lastUpdated, setLastUpdated] = useState(null);
+            const [autoRefresh, setAutoRefresh] = useState(false);
+
+            const loadData = useCallback(async () => {
+                setLoading(true);
+                setError(null);
+                try {
+                    console.log('🔄 Loading admin dashboard data...');
+                    
+                    // Check if LocalDataManager is available
+                    if (typeof LocalDataManager === 'undefined') {
+                        throw new Error('LocalDataManager not loaded. Please ensure all scripts are properly loaded.');
+                    }
+                    
+                    // Initialize LocalDataManager if not already done
+                    if (!window.localDataManager) {
+                        console.log('🔧 Initializing LocalDataManager...');
+                        window.localDataManager = new LocalDataManager();
+                    }
+
+                    // Load all data
+                    console.log('📊 Loading member data and live sheet data...');
+                    const [memberData, liveData] = await Promise.all([
+                        window.localDataManager.loadMemberData(),
+                        window.localDataManager.getLiveSheetData()
+                    ]);
+
+                    // Calculate comprehensive stats
+                    console.log('📊 Member data loaded:', typeof memberData, Array.isArray(memberData), memberData?.length);
+                    console.log('📊 Live data loaded:', typeof liveData, Array.isArray(liveData), liveData?.length);
+                    
+                    const leaderboard = window.localDataManager.calculateLeaderboard(memberData);
+                    const badgeStats = calculateBadgeStats(memberData);
+                    const systemStats = calculateSystemStats(memberData, liveData);
+
+                    setData({
+                        leaderboard,
+                        memberData,
+                        liveData,
+                        badgeStats,
+                        systemStats
+                    });
+                    setLastUpdated(new Date());
+                    console.log('✅ Admin dashboard data loaded');
+                    
+                } catch (err) {
+                    console.error('❌ Error loading admin data:', err);
+                    setError(err.message);
+                }
+                setLoading(false);
+            }, []);
+
+            const calculateBadgeStats = (memberData) => {
+                // Ensure memberData is an array
+                if (!Array.isArray(memberData)) {
+                    console.warn('⚠️ memberData is not an array in calculateBadgeStats:', typeof memberData);
+                    return {
+                        totalMembers: 0,
+                        badgeProgress: {},
+                        memberBadges: {}
+                    };
+                }
+
+                const stats = {
+                    totalMembers: memberData.length,
+                    badgeProgress: {},
+                    memberBadges: {}
+                };
+
+                // Calculate badge completion rates
+                if (window.TRACKABLE_BADGES_CONFIG) {
+                    window.TRACKABLE_BADGES_CONFIG.forEach(badgeConfig => {
+                        let completedCount = 0;
+                        memberData.forEach(member => {
+                            const badges = window.localDataManager.calculateMemberBadges(member.uniqname, memberData);
+                            const badge = badges.find(b => b.id === badgeConfig.id);
+                            if (badge && badge.earned) {
+                                completedCount++;
+                            }
+                        });
+                        
+                        stats.badgeProgress[badgeConfig.id] = {
+                            name: badgeConfig.name,
+                            icon: badgeConfig.icon,
+                            completed: completedCount,
+                            total: memberData.length,
+                            percentage: memberData.length > 0 ? (completedCount / memberData.length * 100).toFixed(1) : 0
+                        };
+                    });
+                }
+
+                // Calculate individual member badge progress
+                memberData.forEach(member => {
+                    const badges = window.localDataManager.calculateMemberBadges(member.uniqname, memberData);
+                    stats.memberBadges[member.uniqname] = badges;
+                });
+
+                return stats;
+            };
+
+            const calculateSystemStats = (memberData, liveData) => {
+                // Ensure memberData is an array
+                if (!Array.isArray(memberData)) {
+                    console.warn('⚠️ memberData is not an array in calculateSystemStats:', typeof memberData);
+                    memberData = [];
+                }
+                
+                const now = new Date();
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                
+                return {
+                    totalMembers: memberData.length,
+                    activeMembers: memberData.filter(m => m.totalPoints > 0).length,
+                    totalEvents: liveData && Array.isArray(liveData) ? liveData.length - 1 : 0, // Subtract header row
+                    averagePoints: memberData.length > 0 ? (memberData.reduce((sum, m) => sum + (m.totalPoints || 0), 0) / memberData.length).toFixed(1) : 0,
+                    topPerformer: memberData.length > 0 ? memberData.reduce((top, member) => (member.totalPoints || 0) > (top.totalPoints || 0) ? member : top) : null,
+                    tierDistribution: calculateTierDistribution(memberData)
+                };
+            };
+
+            const calculateTierDistribution = (memberData) => {
+                const tiers = { Gold: 0, Silver: 0, Bronze: 0, Participant: 0 };
+                
+                if (!Array.isArray(memberData)) {
+                    console.warn('⚠️ memberData is not an array in calculateTierDistribution:', typeof memberData);
+                    return tiers;
+                }
+                
+                memberData.forEach(member => {
+                    if (member && member.tier && tiers.hasOwnProperty(member.tier)) {
+                        tiers[member.tier]++;
+                    }
+                });
+                return tiers;
+            };
+
+            const exportData = (dataType) => {
+                if (!data) return;
+                
+                let exportData, filename;
+                
+                switch (dataType) {
+                    case 'leaderboard':
+                        exportData = data.leaderboard.map(member => ({
+                            Rank: member.rank,
+                            Name: member.name,
+                            Uniqname: member.uniqname,
+                            Points: member.totalPoints,
+                            Tier: member.tier,
+                            'Events Attended': member.events ? member.events.length : 0
+                        }));
+                        filename = 'leaderboard.csv';
+                        break;
+                    case 'badges':
+                        exportData = [];
+                        Object.entries(data.badgeStats.memberBadges).forEach(([uniqname, badges]) => {
+                            badges.forEach(badge => {
+                                exportData.push({
+                                    Member: uniqname,
+                                    Badge: badge.name,
+                                    Earned: badge.earned ? 'Yes' : 'No',
+                                    Progress: badge.progressText || 'N/A'
+                                });
+                            });
+                        });
+                        filename = 'badge-progress.csv';
+                        break;
+                    default:
+                        return;
+                }
+
+                const csv = convertToCSV(exportData);
+                downloadCSV(csv, filename);
+            };
+
+            const convertToCSV = (data) => {
+                if (!data.length) return '';
+                const headers = Object.keys(data[0]);
+                const csvContent = [
+                    headers.join(','),
+                    ...data.map(row => headers.map(header => `"${row[header]}"`).join(','))
+                ].join('\n');
+                return csvContent;
+            };
+
+            const downloadCSV = (csv, filename) => {
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+
+            useEffect(() => {
+                loadData();
+            }, [loadData]);
+
+            useEffect(() => {
+                let interval;
+                if (autoRefresh) {
+                    interval = setInterval(loadData, 30000); // Refresh every 30 seconds
+                }
+                return () => {
+                    if (interval) clearInterval(interval);
+                };
+            }, [autoRefresh, loadData]);
+
+            if (loading) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-nsbeGold mx-auto mb-4"></div>
+                            <div className="text-lg">Loading admin dashboard...</div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (error) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center">
+                        <div className="text-center text-red-400">
+                            <div className="text-xl mb-4">❌ Error loading data</div>
+                            <div className="mb-4">{error}</div>
+                            <button 
+                                onClick={loadData}
+                                className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded transition-colors"
+                            >
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-gray-900 text-white">
+                    {/* Header */}
+                    <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-20">
+                        <div className="max-w-7xl mx-auto px-4 py-4">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h1 className="text-2xl font-bold text-nsbeGold">NSBE Battle Pass - Admin Dashboard</h1>
+                                    <p className="text-gray-400 text-sm">
+                                        Last updated: {lastUpdated ? lastUpdated.toLocaleString() : 'Never'}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={autoRefresh}
+                                            onChange={(e) => setAutoRefresh(e.target.checked)}
+                                            className="rounded"
+                                        />
+                                        <span className="text-sm">Auto-refresh</span>
+                                    </label>
+                                    <button
+                                        onClick={loadData}
+                                        className="px-4 py-2 bg-nsbeGreen hover:bg-green-600 rounded transition-colors"
+                                    >
+                                        🔄 Refresh
+                                    </button>
+                                    <a
+                                        href="/"
+                                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded transition-colors"
+                                    >
+                                        ← Back to App
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Stats Overview */}
+                    {data && (
+                        <div className="max-w-7xl mx-auto px-4 py-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                <StatsCard
+                                    title="Total Members"
+                                    value={data.systemStats.totalMembers}
+                                    icon="👥"
+                                    color="blue"
+                                />
+                                <StatsCard
+                                    title="Active Members"
+                                    value={data.systemStats.activeMembers}
+                                    icon="⚡"
+                                    color="green"
+                                />
+                                <StatsCard
+                                    title="Total Events"
+                                    value={data.systemStats.totalEvents}
+                                    icon="📅"
+                                    color="purple"
+                                />
+                                <StatsCard
+                                    title="Avg Points"
+                                    value={data.systemStats.averagePoints}
+                                    icon="📊"
+                                    color="yellow"
+                                />
+                            </div>
+
+                            {/* Navigation Tabs */}
+                            <div className="mb-6">
+                                <div className="border-b border-gray-700">
+                                    <nav className="-mb-px flex space-x-8">
+                                        {[
+                                            { id: 'leaderboard', name: 'Leaderboard', icon: '🏆' },
+                                            { id: 'badges', name: 'Badge Progress', icon: '🏅' },
+                                            { id: 'members', name: 'Member Details', icon: '👤' },
+                                            { id: 'analytics', name: 'Analytics', icon: '📈' }
+                                        ].map(tab => (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => setActiveTab(tab.id)}
+                                                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                                                    activeTab === tab.id
+                                                        ? 'border-nsbeGold text-nsbeGold'
+                                                        : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
+                                                }`}
+                                            >
+                                                {tab.icon} {tab.name}
+                                            </button>
+                                        ))}
+                                    </nav>
+                                </div>
+                            </div>
+
+                            {/* Tab Content */}
+                            <div className="bg-gray-800 rounded-lg">
+                                {activeTab === 'leaderboard' && (
+                                    <LeaderboardTab data={data} onExport={() => exportData('leaderboard')} />
+                                )}
+                                {activeTab === 'badges' && (
+                                    <BadgeProgressTab data={data} onExport={() => exportData('badges')} />
+                                )}
+                                {activeTab === 'members' && (
+                                    <MemberDetailsTab data={data} />
+                                )}
+                                {activeTab === 'analytics' && (
+                                    <AnalyticsTab data={data} />
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        function StatsCard({ title, value, icon, color }) {
+            const colorClasses = {
+                blue: 'bg-blue-900/30 border-blue-400 text-blue-200',
+                green: 'bg-green-900/30 border-green-400 text-green-200',
+                purple: 'bg-purple-900/30 border-purple-400 text-purple-200',
+                yellow: 'bg-yellow-900/30 border-yellow-400 text-yellow-200'
+            };
+
+            return (
+                <div className={`p-6 border rounded-lg ${colorClasses[color] || colorClasses.blue}`}>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm opacity-80">{title}</p>
+                            <p className="text-2xl font-bold">{value}</p>
+                        </div>
+                        <div className="text-3xl">{icon}</div>
+                    </div>
+                </div>
+            );
+        }
+
+        function LeaderboardTab({ data, onExport }) {
+            return (
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold">Complete Leaderboard</h2>
+                        <button
+                            onClick={onExport}
+                            className="px-4 py-2 bg-nsbeGreen hover:bg-green-600 rounded transition-colors text-sm"
+                        >
+                            📊 Export CSV
+                        </button>
+                    </div>
+                    <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                        <table className="data-table text-sm">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Name</th>
+                                    <th>Uniqname</th>
+                                    <th>Points</th>
+                                    <th>Tier</th>
+                                    <th>Events</th>
+                                    <th>Badges Earned</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.leaderboard && data.leaderboard.length > 0 ? (
+                                    data.leaderboard.map(member => {
+                                        const badges = data.badgeStats.memberBadges[member.uniqname] || [];
+                                        const earnedBadges = badges.filter(b => b.earned).length;
+                                        
+                                        return (
+                                            <tr key={member.uniqname} className="hover:bg-gray-700">
+                                                <td className="font-bold">{member.rank}</td>
+                                                <td>{member.name}</td>
+                                                <td className="font-mono text-blue-400">{member.uniqname}</td>
+                                                <td className="font-bold text-nsbeGold">{member.totalPoints}</td>
+                                                <td>
+                                                    <span className={`px-2 py-1 rounded text-xs ${getTierColor(member.tier)}`}>
+                                                        {member.tier}
+                                                    </span>
+                                                </td>
+                                                <td>{member.events ? member.events.length : 0}</td>
+                                                <td>
+                                                    <span className="text-green-400">{earnedBadges}</span>
+                                                    <span className="text-gray-400">/{badges.length}</span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan="7" className="text-center py-8 text-gray-400">
+                                            No member data available. Please check data loading.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        }
+
+        function BadgeProgressTab({ data, onExport }) {
+            return (
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold">Badge Completion Statistics</h2>
+                        <button
+                            onClick={onExport}
+                            className="px-4 py-2 bg-nsbeGreen hover:bg-green-600 rounded transition-colors text-sm"
+                        >
+                            📊 Export CSV
+                        </button>
+                    </div>
+
+                    {/* Badge Overview */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                        {Object.entries(data.badgeStats.badgeProgress).map(([badgeId, stats]) => (
+                            <div key={badgeId} className="bg-gray-700 p-4 rounded-lg">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <span className="text-2xl">{stats.icon}</span>
+                                    <h3 className="font-bold">{stats.name}</h3>
+                                </div>
+                                <div className="mb-2">
+                                    <div className="flex justify-between text-sm">
+                                        <span>Completion Rate</span>
+                                        <span>{stats.percentage}%</span>
+                                    </div>
+                                    <div className="w-full bg-gray-600 rounded-full h-2 mt-1">
+                                        <div 
+                                            className="bg-gradient-to-r from-nsbeGold to-yellow-400 h-2 rounded-full transition-all"
+                                            style={{ width: `${stats.percentage}%` }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="text-sm text-gray-300">
+                                    {stats.completed} of {stats.total} members
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Individual Member Badge Progress */}
+                    <div>
+                        <h3 className="text-lg font-bold mb-4">Individual Member Progress</h3>
+                        <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                            <table className="data-table text-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Total Badges</th>
+                                        <th>Earned</th>
+                                        <th>In Progress</th>
+                                        <th>Completion %</th>
+                                        <th>Badge Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(data.badgeStats.memberBadges).map(([uniqname, badges]) => {
+                                        const earned = badges.filter(b => b.earned).length;
+                                        const inProgress = badges.filter(b => !b.earned && b.progress > 0).length;
+                                        const completionRate = badges.length > 0 ? (earned / badges.length * 100).toFixed(1) : 0;
+                                        
+                                        return (
+                                            <tr key={uniqname} className="hover:bg-gray-700">
+                                                <td className="font-mono text-blue-400">{uniqname}</td>
+                                                <td>{badges.length}</td>
+                                                <td className="text-green-400 font-bold">{earned}</td>
+                                                <td className="text-yellow-400">{inProgress}</td>
+                                                <td>
+                                                    <div className="flex items-center gap-2">
+                                                        <span>{completionRate}%</span>
+                                                        <div className="w-16 bg-gray-600 rounded-full h-1">
+                                                            <div 
+                                                                className="bg-nsbeGold h-1 rounded-full"
+                                                                style={{ width: `${completionRate}%` }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="flex gap-1">
+                                                        {badges.slice(0, 8).map((badge, idx) => (
+                                                            <span 
+                                                                key={idx}
+                                                                className={`text-xs ${badge.earned ? '' : 'grayscale opacity-50'}`}
+                                                                title={`${badge.name}: ${badge.earned ? 'Earned' : badge.progressText}`}
+                                                            >
+                                                                {badge.icon}
+                                                            </span>
+                                                        ))}
+                                                        {badges.length > 8 && (
+                                                            <span className="text-xs text-gray-400">+{badges.length - 8}</span>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function MemberDetailsTab({ data }) {
+            const [selectedMember, setSelectedMember] = useState(null);
+            
+            return (
+                <div className="p-6">
+                    <h2 className="text-xl font-bold mb-4">Member Details</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Member List */}
+                        <div>
+                            <h3 className="text-lg font-semibold mb-3">Select Member</h3>
+                            <div className="max-h-96 overflow-y-auto bg-gray-700 rounded">
+                                {data.leaderboard && data.leaderboard.length > 0 ? (
+                                    data.leaderboard.map(member => (
+                                        <button
+                                            key={member.uniqname}
+                                            onClick={() => setSelectedMember(member)}
+                                            className={`w-full text-left p-3 border-b border-gray-600 hover:bg-gray-600 transition-colors ${
+                                                selectedMember?.uniqname === member.uniqname ? 'bg-gray-600' : ''
+                                            }`}
+                                        >
+                                            <div className="flex justify-between items-center">
+                                                <div>
+                                                    <div className="font-semibold">{member.name}</div>
+                                                    <div className="text-sm text-blue-400">{member.uniqname}</div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="font-bold text-nsbeGold">{member.totalPoints} pts</div>
+                                                    <div className={`text-xs px-2 py-1 rounded ${getTierColor(member.tier)}`}>
+                                                        {member.tier}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-8 text-gray-400">
+                                        No member data available
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Member Details */}
+                        <div>
+                            {selectedMember ? (
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-3">
+                                        {selectedMember.name} Details
+                                    </h3>
+                                    <div className="space-y-4">
+                                        {/* Basic Info */}
+                                        <div className="bg-gray-700 p-4 rounded">
+                                            <h4 className="font-semibold mb-2">Basic Information</h4>
+                                            <div className="grid grid-cols-2 gap-2 text-sm">
+                                                <div>Uniqname: <span className="text-blue-400">{selectedMember.uniqname}</span></div>
+                                                <div>Rank: <span className="font-bold">#{selectedMember.rank}</span></div>
+                                                <div>Points: <span className="text-nsbeGold font-bold">{selectedMember.totalPoints}</span></div>
+                                                <div>Tier: <span className={getTierColor(selectedMember.tier)}>{selectedMember.tier}</span></div>
+                                            </div>
+                                        </div>
+
+                                        {/* Events */}
+                                        <div className="bg-gray-700 p-4 rounded">
+                                            <h4 className="font-semibold mb-2">Events Attended ({selectedMember.events?.length || 0})</h4>
+                                            <div className="max-h-32 overflow-y-auto">
+                                                {selectedMember.events?.length > 0 ? (
+                                                    <div className="space-y-1 text-sm">
+                                                        {selectedMember.events.map((event, idx) => (
+                                                            <div key={idx} className="flex justify-between">
+                                                                <span>{event.name || event}</span>
+                                                                <span className="text-green-400">+{event.points || 1}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-gray-400 text-sm">No events attended</div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Badges */}
+                                        <div className="bg-gray-700 p-4 rounded">
+                                            <h4 className="font-semibold mb-2">Badge Progress</h4>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {data.badgeStats.memberBadges[selectedMember.uniqname]?.map((badge, idx) => (
+                                                    <div 
+                                                        key={idx}
+                                                        className={`p-2 rounded text-xs ${
+                                                            badge.earned ? 'bg-green-900/30 border border-green-400' : 'bg-gray-600'
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-center gap-1 mb-1">
+                                                            <span className={badge.earned ? '' : 'grayscale'}>{badge.icon}</span>
+                                                            <span className="font-semibold">{badge.name}</span>
+                                                        </div>
+                                                        <div className={badge.earned ? 'text-green-300' : 'text-gray-300'}>
+                                                            {badge.earned ? '✅ Earned' : badge.progressText}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center text-gray-400 py-12">
+                                    Select a member to view their details
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function AnalyticsTab({ data }) {
+            return (
+                <div className="p-6">
+                    <h2 className="text-xl font-bold mb-6">System Analytics</h2>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Tier Distribution */}
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">Tier Distribution</h3>
+                            <div className="space-y-3">
+                                {Object.entries(data.systemStats.tierDistribution).map(([tier, count]) => {
+                                    const percentage = data.systemStats.totalMembers > 0 ? 
+                                        (count / data.systemStats.totalMembers * 100).toFixed(1) : 0;
+                                    return (
+                                        <div key={tier}>
+                                            <div className="flex justify-between text-sm mb-1">
+                                                <span className={getTierColor(tier)}>{tier}</span>
+                                                <span>{count} members ({percentage}%)</span>
+                                            </div>
+                                            <div className="w-full bg-gray-600 rounded-full h-2">
+                                                <div 
+                                                    className={`h-2 rounded-full ${getTierBarColor(tier)}`}
+                                                    style={{ width: `${percentage}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Top Performers */}
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">Top 10 Performers</h3>
+                            <div className="space-y-2">
+                                {data.leaderboard.slice(0, 10).map((member, idx) => (
+                                    <div key={member.uniqname} className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-6 text-center font-bold text-nsbeGold">#{idx + 1}</span>
+                                            <span>{member.name}</span>
+                                        </div>
+                                        <span className="text-nsbeGold font-bold">{member.totalPoints}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Badge Completion Overview */}
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">Badge Completion Overview</h3>
+                            <div className="space-y-2">
+                                {Object.entries(data.badgeStats.badgeProgress)
+                                    .sort((a, b) => parseFloat(b[1].percentage) - parseFloat(a[1].percentage))
+                                    .map(([badgeId, stats]) => (
+                                        <div key={badgeId} className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <span>{stats.icon}</span>
+                                                <span className="text-sm">{stats.name}</span>
+                                            </div>
+                                            <span className="text-nsbeGold text-sm">{stats.percentage}%</span>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+
+                        {/* System Health */}
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">System Health</h3>
+                            <div className="space-y-3">
+                                <div className="flex justify-between">
+                                    <span>Data Source</span>
+                                    <span className="text-green-400">✅ Live Google Sheets</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Active Members</span>
+                                    <span className="text-blue-400">{data.systemStats.activeMembers}/{data.systemStats.totalMembers}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Badge System</span>
+                                    <span className="text-green-400">✅ Operational</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Leaderboard</span>
+                                    <span className="text-green-400">✅ Updated</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function getTierColor(tier) {
+            const colors = {
+                'Gold': 'bg-yellow-500 text-black',
+                'Silver': 'bg-gray-300 text-black',
+                'Bronze': 'bg-orange-600 text-white',
+                'Participant': 'bg-gray-600 text-white'
+            };
+            return colors[tier] || 'bg-gray-600 text-white';
+        }
+
+        function getTierBarColor(tier) {
+            const colors = {
+                'Gold': 'bg-yellow-500',
+                'Silver': 'bg-gray-300',
+                'Bronze': 'bg-orange-600',
+                'Participant': 'bg-gray-500'
+            };
+            return colors[tier] || 'bg-gray-500';
+        }
+
+        // Wait for all scripts to load before rendering
+        function initializeDashboard() {
+            // Check if all required classes/objects are available
+            const requiredClasses = ['LocalDataManager'];
+            const missingClasses = requiredClasses.filter(className => typeof window[className] === 'undefined');
+            
+            if (missingClasses.length > 0) {
+                console.error('❌ Missing required classes:', missingClasses);
+                setTimeout(initializeDashboard, 100); // Retry after 100ms
+                return;
+            }
+            
+            console.log('✅ All dependencies loaded, initializing dashboard...');
+            // Render the dashboard
+            const root = ReactDOM.createRoot(document.getElementById('admin-dashboard'));
+            root.render(<AdminDashboard />);
+        }
+
+        // Start initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDashboard);
+        } else {
+            initializeDashboard();
+        }
+    </script>
+</body>
+</html>

@@ -384,18 +384,17 @@ function MentorshipHub({ onBackClick, userData, eventData, localDataManager }) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                   {[
                     { mentee: "Aaron Hall", mentor: "Morgan Allen", menteeUniq: "aphall", mentorUniq: "morghan", menteeMajor: "BME", mentorMajor: "BME", interests: "BlueLab, electric bike, engineering projects" },
-                    { mentee: "Jonathan Bishaw", mentor: "Jaleel Drones", menteeUniq: "jjbishaw", mentorUniq: "jdronesa", menteeMajor: "CS (CoE)", mentorMajor: "CS (LSA)", interests: "Both CS; ColorStack; tech-focused orgs" },
-                    { mentee: "Rayan Kamdem", mentor: "Jaleel Drones", menteeUniq: "rayankdm", mentorUniq: "jdronesa", menteeMajor: "CS", mentorMajor: "CS (LSA)", interests: "ColorStack; business/tech orgs; Hackers/KTP" },
+                    { mentee: "Jonathan Bishaw", mentor: "Boyan Tiwang", menteeUniq: "jjbishaw", mentorUniq: "btiwang", menteeMajor: "CS (LSA)", mentorMajor: "CS (CoE)", interests: "Both CS; ColorStack; tech-focused orgs" },
+                    { mentee: "Rayan Kamdem", mentor: "Jaleel Drones", menteeUniq: "rayankdm", mentorUniq: "jdronesa", menteeMajor: "CS (CoE)", mentorMajor: "CS (LSA)", interests: "ColorStack; business/tech orgs; Hackers/KTP" },
                     { mentee: "Jadon Oliver", mentor: "Desola Fujah", menteeUniq: "jadono", mentorUniq: "dfujah", menteeMajor: "CS", mentorMajor: "Computer Eng.", interests: "Rock climbing, walking; CSA involvement; strong CS/CE overlap" },
                     { mentee: "Savanna Evans", mentor: "Gianna Williams", menteeUniq: "savannae", mentorUniq: "giannaw", menteeMajor: "Robotics Eng.", mentorMajor: "Electrical Eng.", interests: "Engineering honor societies; diverse eng. pathways" },
                     { mentee: "Miraf Dinku", mentor: "Devin Maples", menteeUniq: "mdinku", mentorUniq: "devinmap", menteeMajor: "Chemical Eng.", mentorMajor: "Materials Sci", interests: "Running; ChemE/MatSci overlap; team projects" },
-                    { mentee: "Zahra Kamara", mentor: "Ben Bradley", menteeUniq: "zkamara", mentorUniq: "bjbradl", menteeMajor: "Mechanical Eng.", mentorMajor: "MechE", interests: "MechE" },
+                    { mentee: "Zahra Kamara", mentor: "Skylar Scott", menteeUniq: "zkamara", mentorUniq: "scskylar", menteeMajor: "Mechanical Eng.", mentorMajor: "IOE", interests: "Explore new ECs; IOE mentoring MechE" },
                     { mentee: "Kaden Sanders", mentor: "Tiah Watt", menteeUniq: "kadensan", mentorUniq: "shantiah", menteeMajor: "CS (CoE)", mentorMajor: "Electrical Eng.", interests: "CoE foundation; shared sports/gym" },
                     { mentee: "Kaiden Davis", mentor: "Iman Ahmed", menteeUniq: "kaidend", mentorUniq: "imanahm", menteeMajor: "IOE", mentorMajor: "IOE", interests: "IOE coursework; STEM clubs; Shared Movie interests" },
                     { mentee: "Cameron Conner", mentor: "Mikko Hendricks", menteeUniq: "cconxav", mentorUniq: "mikkogbh", menteeMajor: "MechE", mentorMajor: "MechE", interests: "HEADS involvement; MechE foundation" },
                     { mentee: "James Willis", mentor: "Bruce Williams II", menteeUniq: "jamwill", mentorUniq: "Bwii", menteeMajor: "MechE", mentorMajor: "MechE", interests: "Gym interest; strong MechE alignment" },
-                    { mentee: "Boyan Tiwang", mentor: "Choyce Jakes", menteeUniq: "btiwang", mentorUniq: "cjakes", menteeMajor: "Data Science", mentorMajor: "Info Science", interests: "Both computing-adjacent majors; gaming/music hobbies" },
-                    { mentee: "Skylar Scott", mentor: "Adna Mohamed Saed", menteeUniq: "scskylar", mentorUniq: "adna", menteeMajor: "IOE", mentorMajor: "Civil Eng.", interests: "Michigan Natives; IOE/Civil overlap (shared electives)" }
+                    { mentee: "Boyan Tiwang", mentor: "Choyce Jakes", menteeUniq: "btiwang", mentorUniq: "cjakes", menteeMajor: "Data Science", mentorMajor: "Info Science", interests: "Both computing-adjacent majors; gaming/music hobbies" }
                   ].map((pair, index) => (
                     <div key={index} className="p-4 bg-gradient-to-br from-red-900/40 to-orange-900/40 border border-red-400/60 rounded-lg hover:border-red-300 transition-all duration-300">
                       <div className="text-center mb-3">
@@ -453,37 +452,26 @@ function MentorshipHub({ onBackClick, userData, eventData, localDataManager }) {
                 </div>
               </div>
 
-              {/* Upcoming Event Announcement */}
+              {/* Additional Resources */}
               <div>
-                <h4 className="text-lg font-semibold text-red-300 mb-4">� Upcoming Event</h4>
-                <div className="p-6 bg-gradient-to-r from-yellow-900/50 to-orange-900/50 border-2 border-yellow-400 rounded-lg animate-pulse">
-                  <div className="text-center mb-4">
-                    <div className="text-yellow-300 font-bold text-xl mb-2">🎉 MENTORSHIP MIXER</div>
-                    <div className="text-white font-semibold text-lg">Tomorrow - October 1st, 2025</div>
+                <h4 className="text-lg font-semibold text-red-300 mb-4">🔗 Additional Resources</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 bg-red-900/30 border border-red-400 rounded">
+                    <div className="text-yellow-300 font-bold mb-2">📚 Mentorship Resources</div>
+                    <div className="text-red-100 text-sm mb-3">
+                      Access guides, templates, and best practices for effective mentorship relationships.
+                    </div>
+                    <div className="text-gray-400 text-sm">Coming soon - Resource portal</div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div className="bg-red-900/40 p-3 rounded border border-red-400/60">
-                      <div className="text-red-200 font-semibold text-sm mb-1">⏰ TIME</div>
-                      <div className="text-white font-bold">6:00 - 7:30 PM</div>
+                  <div className="p-4 bg-red-900/30 border border-red-400 rounded">
+                    <div className="text-yellow-300 font-bold mb-2">🤝 Peer Support Network</div>
+                    <div className="text-red-100 text-sm mb-3">
+                      Connect with other mentorship pairs for group activities and broader networking.
                     </div>
-                    <div className="bg-blue-900/40 p-3 rounded border border-blue-400/60">
-                      <div className="text-blue-200 font-semibold text-sm mb-1">📍 LOCATION</div>
-                      <div className="text-white font-bold">Mason Hall 1448</div>
-                    </div>
-                    <div className="bg-purple-900/40 p-3 rounded border border-purple-400/60">
-                      <div className="text-purple-200 font-semibold text-sm mb-1">🎯 EVENT</div>
-                      <div className="text-white font-bold">Estimathon</div>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 text-center">
-                    <div className="text-yellow-200 text-sm mb-2">
-                      Meet your mentor/mentee pairs and participate in fun estimation challenges!
-                    </div>
-                    <div className="text-white font-semibold bg-gradient-to-r from-red-600 to-orange-600 px-4 py-2 rounded inline-block">
-                      🔥 All Mentorship Pairs Welcome! 🔥
-                    </div>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVzBy08R3Ex8FMrmlJQ1uCq-TJdHzwr_wGk0cvxztrTL_6ng/viewform" target="_blank"
+                       className="text-yellow-400 hover:text-yellow-300 text-sm underline">
+                      Join Collaboration Network →
+                    </a>
                   </div>
                 </div>
               </div>

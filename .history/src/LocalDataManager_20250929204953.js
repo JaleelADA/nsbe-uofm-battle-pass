@@ -1010,28 +1010,18 @@ class LocalDataManager {
     if (!this.memberData) {
       console.log('🔄 Loading member data...');
       try {
-        const leaderboardResult = await getLocalLeaderboard();
-        console.log('📊 Raw leaderboard result:', typeof leaderboardResult, leaderboardResult);
+        const leaderboard = await getLocalLeaderboard();
+        console.log('📊 Raw leaderboard data:', typeof leaderboard, leaderboard);
         
-        // Handle the object structure returned by getLocalLeaderboard
-        if (leaderboardResult && leaderboardResult.leaderboard && Array.isArray(leaderboardResult.leaderboard)) {
-          this.memberData = leaderboardResult.leaderboard;
-          console.log('✅ Successfully loaded member data array:', this.memberData.length, 'members');
-        } else if (Array.isArray(leaderboardResult)) {
-          // Fallback if it's directly an array
-          this.memberData = leaderboardResult;
-          console.log('✅ Successfully loaded member data direct array:', this.memberData.length, 'members');
+        // Ensure leaderboard is an array
+        if (Array.isArray(leaderboard)) {
+          this.memberData = leaderboard;
         } else {
-          console.warn('⚠️ getLocalLeaderboard did not return expected format, trying alternative method...');
-          // Try to use the leaderboard data from the main app directly
+          console.warn('⚠️ getLocalLeaderboard did not return an array, trying alternative method...');
+          // Try to use the leaderboard data from the main app
           const signInData = await fetchSignInData();
-          console.log('📊 Sign in data loaded:', signInData.length, 'records');
-          
-          const memberStats = await calculateMemberPoints(signInData);
-          const leaderboard = generateLeaderboard(memberStats);
-          console.log('📊 Generated leaderboard:', leaderboard.length, 'members');
-          
-          this.memberData = leaderboard || [];
+          const paidMembers = await fetchPaidMembers();
+          this.memberData = await generateLeaderboard(signInData, paidMembers);
         }
       } catch (error) {
         console.error('❌ Error loading member data:', error);
@@ -1044,13 +1034,7 @@ class LocalDataManager {
   async getLiveSheetData() {
     if (!this.liveData) {
       console.log('🔄 Loading live sheet data...');
-      try {
-        this.liveData = await getLiveSheetData();
-        console.log('📊 Live sheet data loaded:', typeof this.liveData, Array.isArray(this.liveData) ? this.liveData.length : 'not array');
-      } catch (error) {
-        console.error('❌ Error loading live sheet data:', error);
-        this.liveData = [];
-      }
+      this.liveData = await getLiveSheetData();
     }
     return this.liveData;
   }
@@ -1081,88 +1065,43 @@ class LocalDataManager {
       let earned = false;
       let progress = 0;
       let progressText = 'Not started';
-      let attendanceDetails = '';
 
       try {
-        // Get actual event attendance data
-        const eventHistory = member.events || [];
-        const eventCount = eventHistory.length;
-        const totalPoints = member.totalPoints || 0;
-        
-        // Enhanced badge calculation with real attendance data
+        // Use the existing badge calculation logic
         switch (badgeConfig.id) {
           case 'firstEvent':
-            earned = eventCount > 0 && totalPoints > 0;
+            earned = member.totalPoints > 0;
             progress = earned ? 1 : 0;
             progressText = earned ? 'Completed' : 'Attend your first event';
-            attendanceDetails = earned ? `First event: ${eventHistory[0]?.name || eventHistory[0] || 'Unknown'}` : '';
             break;
-            
           case 'regular':
-            const requiredRegular = 3;
-            earned = eventCount >= requiredRegular;
-            progress = Math.min(eventCount / requiredRegular, 1);
-            progressText = earned ? 'Completed' : `${eventCount}/${requiredRegular} events attended`;
-            attendanceDetails = `Events: ${eventHistory.slice(0, 3).map(e => e.name || e).join(', ')}`;
+            const requiredEvents = 3;
+            const attendedEvents = member.events ? member.events.length : 0;
+            earned = attendedEvents >= requiredEvents;
+            progress = Math.min(attendedEvents / requiredEvents, 1);
+            progressText = earned ? 'Completed' : `${attendedEvents}/${requiredEvents} events`;
             break;
-            
           case 'dedicated':
             const requiredDedicated = 5;
-            earned = eventCount >= requiredDedicated;
-            progress = Math.min(eventCount / requiredDedicated, 1);
-            progressText = earned ? 'Completed' : `${eventCount}/${requiredDedicated} events attended`;
-            attendanceDetails = `Recent events: ${eventHistory.slice(0, 5).map(e => e.name || e).join(', ')}`;
+            const attendedDedicated = member.events ? member.events.length : 0;
+            earned = attendedDedicated >= requiredDedicated;
+            progress = Math.min(attendedDedicated / requiredDedicated, 1);
+            progressText = earned ? 'Completed' : `${attendedDedicated}/${requiredDedicated} events`;
             break;
-            
           case 'loyalist':
             const requiredLoyalist = 8;
-            earned = eventCount >= requiredLoyalist;
-            progress = Math.min(eventCount / requiredLoyalist, 1);
-            progressText = earned ? 'Completed' : `${eventCount}/${requiredLoyalist} events attended`;
-            attendanceDetails = `Total events: ${eventCount}`;
+            const attendedLoyalist = member.events ? member.events.length : 0;
+            earned = attendedLoyalist >= requiredLoyalist;
+            progress = Math.min(attendedLoyalist / requiredLoyalist, 1);
+            progressText = earned ? 'Completed' : `${attendedLoyalist}/${requiredLoyalist} events`;
             break;
-            
           case 'goldTier':
             earned = member.tier === 'Gold';
             progress = earned ? 1 : 0;
-            const currentTier = member.tier || 'Unranked';
-            progressText = earned ? 'Completed' : `Currently ${currentTier} tier`;
-            attendanceDetails = `Points: ${totalPoints}, Tier: ${currentTier}`;
+            progressText = earned ? 'Completed' : 'Reach Gold tier';
             break;
-            
-          case 'consistent':
-            // Check for consistent attendance (attending events regularly)
-            const recentEventCount = eventCount >= 4 ? eventCount : 0;
-            earned = recentEventCount >= 4 && totalPoints >= 10;
-            progress = Math.min((recentEventCount + (totalPoints / 10)) / 8, 1);
-            progressText = earned ? 'Completed' : `${eventCount} events, ${totalPoints} points`;
-            attendanceDetails = `Consistency score: ${(progress * 100).toFixed(0)}%`;
-            break;
-            
-          case 'engaged':
-            // High engagement badge based on points and events
-            const engagementScore = totalPoints + (eventCount * 2);
-            earned = engagementScore >= 20;
-            progress = Math.min(engagementScore / 20, 1);
-            progressText = earned ? 'Completed' : `${engagementScore}/20 engagement score`;
-            attendanceDetails = `${eventCount} events, ${totalPoints} points`;
-            break;
-            
-          case 'semester':
-            // Full semester participation
-            const semesterTarget = 6;
-            earned = eventCount >= semesterTarget && totalPoints >= 15;
-            progress = Math.min((eventCount / semesterTarget + totalPoints / 15) / 2, 1);
-            progressText = earned ? 'Completed' : `${eventCount}/${semesterTarget} events, ${totalPoints}/15 points`;
-            attendanceDetails = `Semester progress: ${(progress * 100).toFixed(0)}%`;
-            break;
-            
           default:
-            // Generic calculation for any other badges
-            earned = eventCount >= 1;
-            progress = eventCount > 0 ? Math.min(eventCount / 3, 1) : 0;
-            progressText = `${eventCount} events attended`;
-            attendanceDetails = eventCount > 0 ? `Latest: ${eventHistory[eventHistory.length - 1]?.name || eventHistory[eventHistory.length - 1] || 'Unknown'}` : '';
+            progressText = 'Progress not tracked';
         }
       } catch (error) {
         console.warn('Error calculating badge:', badgeConfig.id, error);
@@ -1176,9 +1115,6 @@ class LocalDataManager {
         earned,
         progress,
         progressText,
-        attendanceDetails,
-        eventCount: member.events ? member.events.length : 0,
-        totalPoints: member.totalPoints || 0,
         color: badgeConfig.color,
         glow: badgeConfig.glow
       };

@@ -867,41 +867,10 @@ async function calculateMemberPoints(signInData) {
 }
 
 // Generate leaderboard from member stats
-async function generateLeaderboard(memberStats) {
+function generateLeaderboard(memberStats) {
     console.log('[Leaderboard] Generating leaderboard...');
     
     const members = Object.values(memberStats);
-    
-    // Fetch paid members data to merge demographics
-    const paidMembersList = await fetchPaidMembers();
-    
-    // Create lookup map for paid members by email and uniqname
-    const paidMembersMap = new Map();
-    paidMembersList.forEach(paidMember => {
-        if (paidMember.email) {
-            paidMembersMap.set(paidMember.email.toLowerCase().trim(), paidMember);
-        }
-        if (paidMember.Uniqname || paidMember.uniqname) {
-            const uniqname = (paidMember.Uniqname || paidMember.uniqname).toLowerCase().trim();
-            paidMembersMap.set(uniqname, paidMember);
-        }
-    });
-    
-    // Merge demographics data from paid members sheet
-    members.forEach(member => {
-        const paidData = paidMembersMap.get(member.email) || paidMembersMap.get(member.uniqname);
-        if (paidData) {
-            // Merge demographic fields
-            member.major = paidData.Major || paidData.major || paidData['Major/Field of Study'] || '';
-            member.Major = member.major; // Alias for compatibility
-            member.year = paidData.Year || paidData.year || paidData['Year in School'] || '';
-            member.Year = member.year; // Alias for compatibility
-            member.national_dues = paidData['National Dues'] || paidData.national_dues || paidData['Paid National Dues'] || '';
-            member['National Dues'] = member.national_dues; // Alias for compatibility
-        }
-    });
-    
-    console.log(`[Leaderboard] Merged demographics for ${members.filter(m => m.major || m.year).length}/${members.length} members`);
     
     // Sort by total points (descending)
     members.sort((a, b) => b.totalPoints - a.totalPoints);

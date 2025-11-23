@@ -1092,12 +1092,6 @@
                     // Test 6: Paid Members Integration
                     results.paidMembers = await testPaidMembersIntegration(data);
                     
-                    // Test 7: API Cache System
-                    results.apiCache = await testAPICacheSystem();
-                    
-                    // Test 8: Data Cleansing
-                    results.dataCleansing = await testDataCleansing();
-                    
                     const endTime = Date.now();
                     const testRun = {
                         timestamp: new Date().toLocaleString(),
@@ -1279,44 +1273,41 @@
                     return { status: 'fail', message: `❌ Demographics test failed: ${error.message}` };
                 }
             };
+                            status: 'fail',
+                            message: `❌ Demographics failing - Majors: ${majorsCount}/${totalMembers}, Years: ${yearsCount}/${totalMembers}, Dues: ${totalDuesData}/${totalMembers}. Insufficient demographic data extracted from sign-in forms.`
+                        };
+                    }
+                } catch (error) {
+                    return { status: 'fail', message: `❌ Demographics test failed: ${error.message}` };
+                }
+            };
 
             const testEventTracking = async (data) => {
                 try {
                     const totalEvents = data.systemStats?.totalEvents || 0;
                     const uniqueEvents = data.systemStats?.uniqueEvents || [];
-                    
-                    // Check both events and eventHistory/eventCount fields
-                    const membersWithEventHistory = data.memberData ? 
-                        data.memberData.filter(m => (m.eventHistory && Array.isArray(m.eventHistory) && m.eventHistory.length > 0) || (m.eventCount > 0)).length : 0;
+                    const memberWithEvents = data.memberData ? data.memberData.filter(m => m.events && Array.isArray(m.events) && m.events.length > 0).length : 0;
                     const totalMembers = data.memberData ? data.memberData.length : 0;
-                    
-                    // Calculate total event attendances
-                    const totalAttendances = data.memberData ? 
-                        data.memberData.reduce((sum, m) => sum + (m.eventCount || m.eventHistory?.length || 0), 0) : 0;
                     
                     console.log('🧪 Event Tracking Test Details:', {
                         totalEvents,
                         uniqueEventsCount: uniqueEvents.length,
-                        membersWithEventHistory,
+                        memberWithEvents,
                         totalMembers,
-                        totalAttendances,
-                        sampleMember: data.memberData?.[0] ? {
-                            eventCount: data.memberData[0].eventCount,
-                            eventHistoryLength: data.memberData[0].eventHistory?.length
-                        } : 'none',
+                        sampleMemberEvents: data.memberData?.[0]?.events,
                         sampleEventNames: uniqueEvents.slice(0, 3)
                     });
                     
-                    // Require meaningful event data
-                    if (totalEvents > 0 && uniqueEvents.length > 0 && membersWithEventHistory > 0 && totalAttendances > 0) {
+                    // More strict validation - require meaningful event data
+                    if (totalEvents > 0 && uniqueEvents.length > 0 && memberWithEvents > 0 && memberWithEvents >= Math.min(totalMembers * 0.1, 1)) {
                         return {
                             status: 'pass',
-                            message: `✅ Event tracking working - ${totalEvents} unique events, ${totalAttendances} total attendances, ${membersWithEventHistory}/${totalMembers} members participated`
+                            message: `✅ Event tracking working - ${totalEvents} unique events, ${memberWithEvents}/${totalMembers} members with event data`
                         };
                     } else {
                         return {
                             status: 'fail',
-                            message: `❌ Event tracking failing - Events: ${totalEvents}, Attendances: ${totalAttendances}, MembersWithEvents: ${membersWithEventHistory}/${totalMembers}`
+                            message: `❌ Event tracking failing - Events: ${totalEvents}, UniqueEvents: ${uniqueEvents.length}, MembersWithEvents: ${memberWithEvents}/${totalMembers}. Sample events: ${uniqueEvents.slice(0, 2).join(', ') || 'none'}`
                         };
                     }
                 } catch (error) {
@@ -1326,117 +1317,23 @@
 
             const testPaidMembersIntegration = async (data) => {
                 try {
-                    const paidMembers = data.systemStats?.paidMembers || 0;
-                    const nationalPaid = data.systemStats?.demographics?.nationalDues?.paid || 0;
-                    const totalMembers = data.systemStats?.totalMembers || 0;
+                    const chapterPaid = data.systemStats?.chapterPaidMembers || 0;
+                    const nationalPaid = data.systemStats?.nationalDuesPaid || 0;
+                    const hasPaidData = data.paidMembersData && Array.isArray(data.paidMembersData);
                     
-                    // Count members with isPaid flag
-                    const membersMarkedPaid = data.memberData ? 
-                        data.memberData.filter(m => m.isPaid === true).length : 0;
-                    
-                    console.log('🧪 Paid Members Test Details:', {
-                        paidMembers,
-                        nationalPaid,
-                        totalMembers,
-                        membersMarkedPaid
-                    });
-                    
-                    if (paidMembers >= 0 && nationalPaid >= 0 && membersMarkedPaid >= 0) {
+                    if (hasPaidData && chapterPaid >= 0 && nationalPaid >= 0) {
                         return {
                             status: 'pass',
-                            message: `✅ Paid members integration working - Chapter Paid: ${paidMembers}/${totalMembers}, National Dues: ${nationalPaid}/${totalMembers}, Members flagged paid: ${membersMarkedPaid}`
+                            message: `✅ Paid members integration working - Chapter: ${chapterPaid}, National: ${nationalPaid}`
                         };
                     } else {
                         return {
                             status: 'fail',
-                            message: `❌ Paid members integration issues - Chapter: ${paidMembers}, National: ${nationalPaid}, Flagged: ${membersMarkedPaid}`
+                            message: `❌ Paid members integration issues - Chapter: ${chapterPaid}, National: ${nationalPaid}, HasData: ${hasPaidData}`
                         };
                     }
                 } catch (error) {
                     return { status: 'fail', message: `❌ Paid members test failed: ${error.message}` };
-                }
-            };
-
-            const testAPICacheSystem = async () => {
-                try {
-                    // Check if API cache exists in LocalDataManager
-                    const hasAPICache = typeof window.API_CACHE !== 'undefined';
-                    
-                    if (!hasAPICache) {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ API cache not accessible - may not be exposed globally'
-                        };
-                    }
-                    
-                    const cache = window.API_CACHE;
-                    const paidMembersCache = cache?.paidMembers;
-                    const signInCache = cache?.signInData;
-                    
-                    const hasPaidCache = paidMembersCache && paidMembersCache.data;
-                    const hasSignInCache = signInCache && signInCache.data;
-                    
-                    const paidCacheAge = hasPaidCache ? (Date.now() - paidMembersCache.timestamp) / 1000 : null;
-                    const signInCacheAge = hasSignInCache ? (Date.now() - signInCache.timestamp) / 1000 : null;
-                    
-                    console.log('🧪 API Cache Test Details:', {
-                        hasAPICache,
-                        hasPaidCache,
-                        hasSignInCache,
-                        paidCacheAge: paidCacheAge ? `${paidCacheAge.toFixed(1)}s ago` : 'N/A',
-                        signInCacheAge: signInCacheAge ? `${signInCacheAge.toFixed(1)}s ago` : 'N/A',
-                        paidCacheTTL: paidMembersCache?.ttl / 1000,
-                        signInCacheTTL: signInCache?.ttl / 1000
-                    });
-                    
-                    if (hasPaidCache || hasSignInCache) {
-                        return {
-                            status: 'pass',
-                            message: `✅ API caching active - Paid: ${hasPaidCache ? 'cached' : 'empty'} (${paidCacheAge ? paidCacheAge.toFixed(0) + 's ago' : 'N/A'}), SignIn: ${hasSignInCache ? 'cached' : 'empty'} (${signInCacheAge ? signInCacheAge.toFixed(0) + 's ago' : 'N/A'})`
-                        };
-                    } else {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ No active cache found - may need data refresh'
-                        };
-                    }
-                } catch (error) {
-                    return { status: 'warn', message: `⚠️ API cache test partial: ${error.message}` };
-                }
-            };
-
-            const testDataCleansing = async () => {
-                try {
-                    const hasCleansingStats = typeof window.CLEANSING_STATS !== 'undefined';
-                    
-                    if (!hasCleansingStats) {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ Data cleansing stats not available'
-                        };
-                    }
-                    
-                    const stats = window.CLEANSING_STATS;
-                    const duplicatesRemoved = stats.duplicatesRemoved || 0;
-                    const eventTypesFixed = stats.eventTypesFixed || 0;
-                    const originalCount = stats.originalCount || 0;
-                    const cleanCount = stats.cleanCount || 0;
-                    
-                    console.log('🧪 Data Cleansing Test Details:', stats);
-                    
-                    if (cleanCount > 0) {
-                        return {
-                            status: 'pass',
-                            message: `✅ Data cleansing active - ${originalCount} → ${cleanCount} entries (${duplicatesRemoved} duplicates, ${eventTypesFixed} event types fixed)`
-                        };
-                    } else {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ No cleansing stats yet - may need data load'
-                        };
-                    }
-                } catch (error) {
-                    return { status: 'warn', message: `⚠️ Data cleansing test partial: ${error.message}` };
                 }
             };
 

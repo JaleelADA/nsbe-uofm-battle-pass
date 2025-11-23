@@ -1092,12 +1092,6 @@
                     // Test 6: Paid Members Integration
                     results.paidMembers = await testPaidMembersIntegration(data);
                     
-                    // Test 7: API Cache System
-                    results.apiCache = await testAPICacheSystem();
-                    
-                    // Test 8: Data Cleansing
-                    results.dataCleansing = await testDataCleansing();
-                    
                     const endTime = Date.now();
                     const testRun = {
                         timestamp: new Date().toLocaleString(),
@@ -1354,89 +1348,6 @@
                     }
                 } catch (error) {
                     return { status: 'fail', message: `❌ Paid members test failed: ${error.message}` };
-                }
-            };
-
-            const testAPICacheSystem = async () => {
-                try {
-                    // Check if API cache exists in LocalDataManager
-                    const hasAPICache = typeof window.API_CACHE !== 'undefined';
-                    
-                    if (!hasAPICache) {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ API cache not accessible - may not be exposed globally'
-                        };
-                    }
-                    
-                    const cache = window.API_CACHE;
-                    const paidMembersCache = cache?.paidMembers;
-                    const signInCache = cache?.signInData;
-                    
-                    const hasPaidCache = paidMembersCache && paidMembersCache.data;
-                    const hasSignInCache = signInCache && signInCache.data;
-                    
-                    const paidCacheAge = hasPaidCache ? (Date.now() - paidMembersCache.timestamp) / 1000 : null;
-                    const signInCacheAge = hasSignInCache ? (Date.now() - signInCache.timestamp) / 1000 : null;
-                    
-                    console.log('🧪 API Cache Test Details:', {
-                        hasAPICache,
-                        hasPaidCache,
-                        hasSignInCache,
-                        paidCacheAge: paidCacheAge ? `${paidCacheAge.toFixed(1)}s ago` : 'N/A',
-                        signInCacheAge: signInCacheAge ? `${signInCacheAge.toFixed(1)}s ago` : 'N/A',
-                        paidCacheTTL: paidMembersCache?.ttl / 1000,
-                        signInCacheTTL: signInCache?.ttl / 1000
-                    });
-                    
-                    if (hasPaidCache || hasSignInCache) {
-                        return {
-                            status: 'pass',
-                            message: `✅ API caching active - Paid: ${hasPaidCache ? 'cached' : 'empty'} (${paidCacheAge ? paidCacheAge.toFixed(0) + 's ago' : 'N/A'}), SignIn: ${hasSignInCache ? 'cached' : 'empty'} (${signInCacheAge ? signInCacheAge.toFixed(0) + 's ago' : 'N/A'})`
-                        };
-                    } else {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ No active cache found - may need data refresh'
-                        };
-                    }
-                } catch (error) {
-                    return { status: 'warn', message: `⚠️ API cache test partial: ${error.message}` };
-                }
-            };
-
-            const testDataCleansing = async () => {
-                try {
-                    const hasCleansingStats = typeof window.CLEANSING_STATS !== 'undefined';
-                    
-                    if (!hasCleansingStats) {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ Data cleansing stats not available'
-                        };
-                    }
-                    
-                    const stats = window.CLEANSING_STATS;
-                    const duplicatesRemoved = stats.duplicatesRemoved || 0;
-                    const eventTypesFixed = stats.eventTypesFixed || 0;
-                    const originalCount = stats.originalCount || 0;
-                    const cleanCount = stats.cleanCount || 0;
-                    
-                    console.log('🧪 Data Cleansing Test Details:', stats);
-                    
-                    if (cleanCount > 0) {
-                        return {
-                            status: 'pass',
-                            message: `✅ Data cleansing active - ${originalCount} → ${cleanCount} entries (${duplicatesRemoved} duplicates, ${eventTypesFixed} event types fixed)`
-                        };
-                    } else {
-                        return {
-                            status: 'warn',
-                            message: '⚠️ No cleansing stats yet - may need data load'
-                        };
-                    }
-                } catch (error) {
-                    return { status: 'warn', message: `⚠️ Data cleansing test partial: ${error.message}` };
                 }
             };
 

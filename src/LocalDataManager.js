@@ -457,20 +457,16 @@ async function fetchPaidMembers() {
             return [];
         }
         
-        console.log('[Data Manager] CSV line 0 (title):', lines[0]);
-        console.log('[Data Manager] CSV line 1 (should be headers):', lines[1]);
-        console.log('[Data Manager] CSV line 2 (first data):', lines[2]);
+        // This sheet has no header row - just a title row and data
+        // Columns are: [blank, ID, First Name, Last Name, Year, Date, National Dues, Email]
+        const headers = ['', 'ID', 'First Name', 'Last Name', 'Year', 'Date', 'National Dues', 'email'];
         
-        // Skip title row (row 0), use row 1 as headers
-        const headerLine = lines[1];
-        const headers = headerLine.split(',').map(h => h.trim().replace(/"/g, ''));
-        
-        console.log('[Data Manager] Paid members sheet headers:', headers);
+        console.log('[Data Manager] Using manual headers for paid members:', headers);
         
         const processedData = [];
         
-        // Process data rows (starting from row 2)
-        for (let i = 2; i < lines.length; i++) {
+        // Process data rows (starting from row 1 - no header row exists!)
+        for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
             
@@ -860,11 +856,10 @@ async function calculateMemberPoints(signInData) {
                 displayName = email.split('@')[0]; // Use email username as fallback
             }
             
-            // Find demographics from paid members list
-            const paidMemberData = paidMembersList.find(pm => 
-                (pm.email && pm.email.toLowerCase().trim() === normalizedEmail) ||
-                ((pm.Uniqname || pm.uniqname || '').toLowerCase().trim() === normalizedUniqname)
-            );
+            // Get demographics from sign-in entry
+            const major = entry['Major'] || '';
+            const year = entry['Year'] || '';
+            const nationalDues = entry['National Dues'] || '';
             
             memberStats[normalizedUniqname] = {
                 email: normalizedEmail,
@@ -873,14 +868,28 @@ async function calculateMemberPoints(signInData) {
                 totalPoints: 0,
                 eventHistory: [],
                 eventCount: 0,
-                isPaid: isPaidMemberFast(normalizedEmail), // Set paid status here
-                major: paidMemberData?.Major || paidMemberData?.major || '',
-                Major: paidMemberData?.Major || paidMemberData?.major || '',
-                year: paidMemberData?.Year || paidMemberData?.year || '',
-                Year: paidMemberData?.Year || paidMemberData?.year || '',
-                national_dues: paidMemberData?.['National Dues'] || paidMemberData?.national_dues || '',
-                'National Dues': paidMemberData?.['National Dues'] || paidMemberData?.national_dues || ''
+                isPaid: isPaidMemberFast(normalizedEmail),
+                major: major,
+                Major: major, // Alias
+                year: year,
+                Year: year, // Alias
+                national_dues: nationalDues,
+                'National Dues': nationalDues // Alias
             };
+        } else {
+            // Update demographics if this entry has more complete data
+            if (entry['Major'] && !memberStats[normalizedUniqname].major) {
+                memberStats[normalizedUniqname].major = entry['Major'];
+                memberStats[normalizedUniqname].Major = entry['Major'];
+            }
+            if (entry['Year'] && !memberStats[normalizedUniqname].year) {
+                memberStats[normalizedUniqname].year = entry['Year'];
+                memberStats[normalizedUniqname].Year = entry['Year'];
+            }
+            if (entry['National Dues'] && !memberStats[normalizedUniqname].national_dues) {
+                memberStats[normalizedUniqname].national_dues = entry['National Dues'];
+                memberStats[normalizedUniqname]['National Dues'] = entry['National Dues'];
+            }
         }
         
         // Calculate points for this specific event using your original system

@@ -457,6 +457,10 @@ async function fetchPaidMembers() {
             return [];
         }
         
+        console.log('[Data Manager] CSV line 0 (title):', lines[0]);
+        console.log('[Data Manager] CSV line 1 (should be headers):', lines[1]);
+        console.log('[Data Manager] CSV line 2 (first data):', lines[2]);
+        
         // Skip title row (row 0), use row 1 as headers
         const headerLine = lines[1];
         const headers = headerLine.split(',').map(h => h.trim().replace(/"/g, ''));

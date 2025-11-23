@@ -819,6 +819,12 @@ async function calculateMemberPoints(signInData) {
                 displayName = email.split('@')[0]; // Use email username as fallback
             }
             
+            // Find demographics from paid members list
+            const paidMemberData = paidMembersList.find(pm => 
+                (pm.email && pm.email.toLowerCase().trim() === normalizedEmail) ||
+                ((pm.Uniqname || pm.uniqname || '').toLowerCase().trim() === normalizedUniqname)
+            );
+            
             memberStats[normalizedUniqname] = {
                 email: normalizedEmail,
                 uniqname: normalizedUniqname,
@@ -826,7 +832,13 @@ async function calculateMemberPoints(signInData) {
                 totalPoints: 0,
                 eventHistory: [],
                 eventCount: 0,
-                isPaid: isPaidMemberFast(normalizedEmail) // Set paid status here
+                isPaid: isPaidMemberFast(normalizedEmail), // Set paid status here
+                major: paidMemberData?.Major || paidMemberData?.major || '',
+                Major: paidMemberData?.Major || paidMemberData?.major || '',
+                year: paidMemberData?.Year || paidMemberData?.year || '',
+                Year: paidMemberData?.Year || paidMemberData?.year || '',
+                national_dues: paidMemberData?.['National Dues'] || paidMemberData?.national_dues || '',
+                'National Dues': paidMemberData?.['National Dues'] || paidMemberData?.national_dues || ''
             };
         }
         
@@ -867,40 +879,10 @@ async function calculateMemberPoints(signInData) {
 }
 
 // Generate leaderboard from member stats
-async function generateLeaderboard(memberStats) {
+function generateLeaderboard(memberStats) {
     console.log('[Leaderboard] Generating leaderboard...');
     
     const members = Object.values(memberStats);
-    
-    // Fetch paid members data to merge demographics
-    const paidMembersList = await fetchPaidMembers();
-    
-    // Create lookup map for paid members by email and uniqname
-    const paidMembersMap = new Map();
-    paidMembersList.forEach(paidMember => {
-        if (paidMember.email) {
-            paidMembersMap.set(paidMember.email.toLowerCase().trim(), paidMember);
-        }
-        if (paidMember.Uniqname || paidMember.uniqname) {
-            const uniqname = (paidMember.Uniqname || paidMember.uniqname).toLowerCase().trim();
-            paidMembersMap.set(uniqname, paidMember);
-        }
-    });
-    
-    // Merge demographics data from paid members sheet
-    members.forEach(member => {
-        const paidData = paidMembersMap.get(member.email) || paidMembersMap.get(member.uniqname);
-        if (paidData) {
-            member.major = paidData.Major || paidData.major || '';
-            member.Major = member.major;
-            member.year = paidData.Year || paidData.year || '';
-            member.Year = member.year;
-            member.national_dues = paidData['National Dues'] || paidData.national_dues || '';
-            member['National Dues'] = member.national_dues;
-        }
-    });
-    
-    console.log(`[Leaderboard] Merged demographics for ${members.filter(m => m.major || m.year).length}/${members.length} members`);
     
     // Sort by total points (descending)
     members.sort((a, b) => b.totalPoints - a.totalPoints);

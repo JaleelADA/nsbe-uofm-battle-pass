@@ -891,13 +891,12 @@ async function generateLeaderboard(memberStats) {
     members.forEach(member => {
         const paidData = paidMembersMap.get(member.email) || paidMembersMap.get(member.uniqname);
         if (paidData) {
-            // Merge demographic fields
-            member.major = paidData.Major || paidData.major || paidData['Major/Field of Study'] || '';
-            member.Major = member.major; // Alias for compatibility
-            member.year = paidData.Year || paidData.year || paidData['Year in School'] || '';
-            member.Year = member.year; // Alias for compatibility
-            member.national_dues = paidData['National Dues'] || paidData.national_dues || paidData['Paid National Dues'] || '';
-            member['National Dues'] = member.national_dues; // Alias for compatibility
+            member.major = paidData.Major || paidData.major || '';
+            member.Major = member.major;
+            member.year = paidData.Year || paidData.year || '';
+            member.Year = member.year;
+            member.national_dues = paidData['National Dues'] || paidData.national_dues || '';
+            member['National Dues'] = member.national_dues;
         }
     });
     

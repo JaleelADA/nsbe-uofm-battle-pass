@@ -605,13 +605,13 @@
                                 />
                                 <StatsCard
                                     title="Chapter Paid"
-                                    value={data.systemStats.chapterPaidMembers}
+                                    value={data.systemStats.paidMembers}
                                     icon="💳"
                                     color="green"
                                 />
                                 <StatsCard
                                     title="National Dues"
-                                    value={data.systemStats.nationalDuesPaid}
+                                    value={data.systemStats.demographics?.nationalDues?.paid || 0}
                                     icon="🏛️"
                                     color="purple"
                                 />

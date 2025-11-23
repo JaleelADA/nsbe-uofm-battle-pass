@@ -456,6 +456,8 @@ async function fetchPaidMembers() {
         const headerLine = lines[1];
         const headers = headerLine.split(',').map(h => h.trim().replace(/"/g, ''));
         
+        console.log('[Data Manager] Paid members sheet headers:', headers);
+        
         const processedData = [];
         
         // Process data rows (starting from row 2)
@@ -463,9 +465,25 @@ async function fetchPaidMembers() {
             const line = lines[i].trim();
             if (!line) continue;
             
-            const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
-            const entry = {};
+            // Better CSV parsing that handles quoted commas
+            const values = [];
+            let currentValue = '';
+            let inQuotes = false;
             
+            for (let j = 0; j < line.length; j++) {
+                const char = line[j];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    values.push(currentValue.trim());
+                    currentValue = '';
+                } else {
+                    currentValue += char;
+                }
+            }
+            values.push(currentValue.trim()); // Add last value
+            
+            const entry = {};
             headers.forEach((header, index) => {
                 entry[header] = values[index] || '';
             });
@@ -478,6 +496,9 @@ async function fetchPaidMembers() {
         API_CACHE.paidMembers.timestamp = now;
         
         console.log(`[Data Manager] Fetched ${processedData.length} paid members (cached for ${cached.ttl / 1000}s)`);
+        if (processedData.length > 0) {
+            console.log('[Data Manager] Sample parsed entry:', processedData[0]);
+        }
         
         return processedData;
     } catch (error) {
@@ -771,6 +792,17 @@ async function calculateMemberPoints(signInData) {
     
     // Fetch paid members data ONCE at the beginning
     const paidMembersList = await fetchPaidMembers();
+    console.log(`[Demographics] Loaded ${paidMembersList.length} paid members for demographics merge`);
+    if (paidMembersList.length > 0) {
+        const sample = paidMembersList[0];
+        console.log('[Demographics] Sample paid member fields:', Object.keys(sample));
+        console.log('[Demographics] Sample data:', {
+            email: sample.email,
+            Major: sample.Major,
+            Year: sample.Year,
+            'National Dues': sample['National Dues']
+        });
+    }
     
     // Build email-to-uniqname mapping first
     buildEmailUniqnameMapping(signInData);

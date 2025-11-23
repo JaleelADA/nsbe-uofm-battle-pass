@@ -81,20 +81,6 @@
                     const memberData = leaderboardResult.leaderboard;
                     console.log('✅ Loaded', memberData.length, 'members from leaderboard');
                     
-                    // Debug: Log sample member data to verify structure
-                    if (memberData.length > 0) {
-                        const sampleMember = memberData[0];
-                        console.log('📋 Sample member data:', {
-                            name: sampleMember.name,
-                            uniqname: sampleMember.uniqname,
-                            totalPoints: sampleMember.totalPoints,
-                            eventCount: sampleMember.eventCount,
-                            eventHistory: sampleMember.eventHistory?.length || 0,
-                            tier: sampleMember.tier,
-                            isPaid: sampleMember.isPaid
-                        });
-                    }
-                    
                     // Calculate badge stats using the same member data
                     const badgeStats = calculateBadgeStats(memberData);
                     
@@ -143,182 +129,38 @@
                     memberBadges: {}
                 };
 
-                // Calculate badges directly using TRACKABLE_BADGES_CONFIG
-                if (!window.TRACKABLE_BADGES_CONFIG) {
-                    console.warn('⚠️ TRACKABLE_BADGES_CONFIG not available');
-                    return stats;
-                }
-                
-                console.log('🎖️ Badge IDs in config:', window.TRACKABLE_BADGES_CONFIG.map(b => b.id));
-                
-                // Calculate badges for each member
-                memberData.forEach(member => {
-                    const badges = calculateMemberBadgesFromData(member);
-                    stats.memberBadges[member.uniqname] = badges;
-                });
-                
-                // Debug: Log a sample member's badges
-                if (memberData.length > 0) {
-                    const sampleBadges = stats.memberBadges[memberData[0].uniqname];
-                    console.log('📊 Sample member badges:', sampleBadges.map(b => ({ id: b.id, earned: b.earned, progress: b.progressText })));
-                }
-                
                 // Calculate badge completion rates
-                window.TRACKABLE_BADGES_CONFIG.forEach(badgeConfig => {
-                    let completedCount = 0;
-                    Object.values(stats.memberBadges).forEach(badges => {
-                        const badge = badges.find(b => b.id === badgeConfig.id);
-                        if (badge && badge.earned) {
-                            completedCount++;
-                        }
+                if (window.TRACKABLE_BADGES_CONFIG) {
+                    window.TRACKABLE_BADGES_CONFIG.forEach(badgeConfig => {
+                        let completedCount = 0;
+                        memberData.forEach(member => {
+                            const badges = window.localDataManager.calculateMemberBadges(member.uniqname, memberData);
+                            const badge = badges.find(b => b.id === badgeConfig.id);
+                            if (badge && badge.earned) {
+                                completedCount++;
+                            }
+                        });
+                        
+                        stats.badgeProgress[badgeConfig.id] = {
+                            name: badgeConfig.name,
+                            icon: badgeConfig.icon,
+                            completed: completedCount,
+                            total: memberData.length,
+                            percentage: memberData.length > 0 ? (completedCount / memberData.length * 100).toFixed(1) : 0
+                        };
                     });
-                    
-                    stats.badgeProgress[badgeConfig.id] = {
-                        name: badgeConfig.name,
-                        icon: badgeConfig.icon,
-                        completed: completedCount,
-                        total: memberData.length,
-                        percentage: memberData.length > 0 ? (completedCount / memberData.length * 100).toFixed(1) : 0
-                    };
+                }
+
+                // Calculate individual member badge progress
+                memberData.forEach(member => {
+                    const badges = window.localDataManager.calculateMemberBadges(member.uniqname, memberData);
+                    stats.memberBadges[member.uniqname] = badges;
                 });
 
                 return stats;
             };
-            
-            // Helper function to calculate badges from member data
-            const calculateMemberBadgesFromData = (member) => {
-                if (!window.TRACKABLE_BADGES_CONFIG) return [];
-                
-                const eventHistory = member.eventHistory || [];
-                const eventCount = member.eventCount || eventHistory.length;
-                const totalPoints = member.totalPoints || 0;
-                
-                // Count specific event types
-                const eventTypeCounts = {};
-                eventHistory.forEach(event => {
-                    const type = event.eventType || 'Unknown';
-                    eventTypeCounts[type] = (eventTypeCounts[type] || 0) + 1;
-                });
-                
-                const gbmCount = eventTypeCounts['GBM'] || 0;
-                const pdCount = eventTypeCounts['Professional Development'] || 0;
-                const conventionCount = eventTypeCounts['Convention Attendance'] || 0;
-                const communityCount = eventTypeCounts['Community Service'] || 0;
-                const socialCount = eventTypeCounts['Social Events'] || 0;
-                const pzoneCount = eventTypeCounts['P-Zone'] || 0;
-                const mentorshipCount = eventTypeCounts['Mentorship Events'] || 0;
-                
-                return window.TRACKABLE_BADGES_CONFIG.map(badgeConfig => {
-                    let earned = false;
-                    let progress = 0;
-                    let progressText = 'Not started';
-                    
-                    try {
-                        switch (badgeConfig.id) {
-                            case 'paid-member':
-                                earned = member.isPaid === true;
-                                progress = earned ? 1 : 0;
-                                progressText = earned ? 'Completed' : 'Not a paid member';
-                                break;
-                                
-                            case 'gbm-starter':
-                                earned = gbmCount >= 1;
-                                progress = Math.min(gbmCount / 1, 1);
-                                progressText = earned ? 'Completed' : `${gbmCount}/1 GBM`;
-                                break;
-                                
-                            case 'gbm-regular':
-                                earned = gbmCount >= 3;
-                                progress = Math.min(gbmCount / 3, 1);
-                                progressText = earned ? 'Completed' : `${gbmCount}/3 GBMs`;
-                                break;
-                                
-                            case 'gbm-champion':
-                                earned = gbmCount >= 5;
-                                progress = Math.min(gbmCount / 5, 1);
-                                progressText = earned ? 'Completed' : `${gbmCount}/5 GBMs`;
-                                break;
-                                
-                            case 'pd-explorer':
-                                earned = pdCount >= 1;
-                                progress = Math.min(pdCount / 1, 1);
-                                progressText = earned ? 'Completed' : `${pdCount}/1 PD event`;
-                                break;
-                                
-                            case 'pd-master':
-                                earned = pdCount >= 3;
-                                progress = Math.min(pdCount / 3, 1);
-                                progressText = earned ? 'Completed' : `${pdCount}/3 PD events`;
-                                break;
-                                
-                            case 'conference-attendee':
-                                earned = conventionCount >= 1;
-                                progress = Math.min(conventionCount / 1, 1);
-                                progressText = earned ? 'Completed' : `${conventionCount}/1 convention`;
-                                break;
-                                
-                            case 'community-helper':
-                                earned = communityCount >= 1;
-                                progress = Math.min(communityCount / 1, 1);
-                                progressText = earned ? 'Completed' : `${communityCount}/1 service event`;
-                                break;
-                                
-                            case 'social-connector':
-                                earned = socialCount >= 2;
-                                progress = Math.min(socialCount / 2, 1);
-                                progressText = earned ? 'Completed' : `${socialCount}/2 social events`;
-                                break;
-                                
-                            case 'study-warrior':
-                                earned = pzoneCount >= 3;
-                                progress = Math.min(pzoneCount / 3, 1);
-                                progressText = earned ? 'Completed' : `${pzoneCount}/3 P-Zone events`;
-                                break;
-                                
-                            case 'mentorship-seeker':
-                                earned = mentorshipCount >= 2;
-                                progress = Math.min(mentorshipCount / 2, 1);
-                                progressText = earned ? 'Completed' : `${mentorshipCount}/2 mentorship events`;
-                                break;
-                                
-                            case 'consistent-member':
-                                earned = eventCount >= 8;
-                                progress = Math.min(eventCount / 8, 1);
-                                progressText = earned ? 'Completed' : `${eventCount}/8 events`;
-                                break;
-                                
-                            case 'super-member':
-                                // Super member: attend at least 1 of each major event type
-                                const requiredTypes = [gbmCount >= 1, pdCount >= 1, socialCount >= 1];
-                                const typesCompleted = requiredTypes.filter(x => x).length;
-                                earned = typesCompleted >= 3;
-                                progress = typesCompleted / 3;
-                                progressText = earned ? 'Completed' : `${typesCompleted}/3 event types`;
-                                break;
-                                
-                            default:
-                                // Don't mark as earned by default
-                                earned = false;
-                                progress = 0;
-                                progressText = 'Badge type not implemented';
-                        }
-                    } catch (error) {
-                        console.warn('Error calculating badge:', badgeConfig.id, error);
-                    }
-                    
-                    return {
-                        id: badgeConfig.id,
-                        name: badgeConfig.name,
-                        icon: badgeConfig.icon,
-                        desc: badgeConfig.desc,
-                        earned,
-                        progress,
-                        progressText
-                    };
-                });
-            };
 
-            const calculateSystemStats = (memberData) => {
+            const calculateSystemStats = (memberData, liveData, paidMembersData) => {
                 // Ensure memberData is an array
                 if (!Array.isArray(memberData)) {
                     console.warn('⚠️ memberData is not an array in calculateSystemStats:', typeof memberData);
@@ -359,18 +201,27 @@
                 // Calculate demographics data
                 const demographics = calculateDemographics(memberData);
 
-                // Calculate paid members from member data (isPaid flag set during points calculation)
-                const paidMembers = memberData.filter(member => member.isPaid).length;
+                // Calculate paid members from actual paid members sheet
+                const chapterPaidMembers = Array.isArray(paidMembersData) ? paidMembersData.length : 0;
                 
+                // Count national dues paid from sign-in form data
+                const nationalDuesPaid = memberData.filter(member => {
+                    const dues = (member.national_dues || member['National Dues'] || member.nationalDues || '').toString().toLowerCase();
+                    return dues.includes('yes') || dues.includes('paid') || dues.includes('true') || dues === '1';
+                }).length;
+
                 return {
                     totalMembers: memberData.length,
-                    paidMembers: paidMembers,
+                    chapterPaidMembers: chapterPaidMembers, // From paid members sheet
+                    nationalDuesPaid: nationalDuesPaid, // From sign-in form data
+                    paidMembers: chapterPaidMembers, // Use chapter paid for main display
                     totalEvents: allEvents.size, // Count of unique event types
                     eventAttendance: eventAttendance, // Detailed attendance per event
                     uniqueEvents: Array.from(allEvents), // Array of unique event types
                     averagePoints: memberData.length > 0 ? (memberData.reduce((sum, m) => sum + (m.totalPoints || 0), 0) / memberData.length).toFixed(1) : 0,
                     topPerformer: memberData.length > 0 ? memberData.reduce((top, member) => (member.totalPoints || 0) > (top.totalPoints || 0) ? member : top) : null,
                     tierDistribution: calculateTierDistribution(memberData),
+                    uniqueEvents: Array.from(allEvents),
                     demographics: demographics
                 };
             };
@@ -743,7 +594,7 @@
                                                         {member.tier}
                                                     </span>
                                                 </td>
-                                                <td className="text-blue-400 font-semibold">{member.eventCount || member.eventHistory?.length || 0}</td>
+                                                <td>{member.events ? member.events.length : 0}</td>
                                                 <td>
                                                     <span className="text-green-400">{earnedBadges}</span>
                                                     <span className="text-gray-400">/{badges.length}</span>

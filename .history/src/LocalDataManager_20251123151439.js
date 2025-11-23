@@ -14,66 +14,6 @@ window.CSV_OVERRIDE_DATA = null;
 window.CSV_CUTOFF_DATE = new Date('2025-09-26T00:00:00');
 window.EMAIL_UNIQNAME_MAPPING = new Map();
 
-// Cache for API requests with timestamps
-const API_CACHE = {
-    paidMembers: { data: null, timestamp: 0, ttl: 5 * 60 * 1000 }, // 5 minutes cache
-    signInData: { data: null, timestamp: 0, ttl: 2 * 60 * 1000 }   // 2 minutes cache
-};
-
-// Function to manually clear API cache (useful for debugging)
-window.clearAPICache = function() {
-    API_CACHE.paidMembers.data = null;
-    API_CACHE.paidMembers.timestamp = 0;
-    API_CACHE.signInData.data = null;
-    API_CACHE.signInData.timestamp = 0;
-    console.log('[Data Manager] API cache cleared');
-};
-
-// Check if running from file:// protocol and warn
-if (window.location.protocol === 'file:') {
-    console.warn('⚠️ [Data Manager] Running from file:// protocol may cause CORS issues.');
-    console.warn('💡 [Data Manager] For best results, serve via HTTP: python3 test-server.py');
-}
-
-// Rate limiting helper with exponential backoff
-async function fetchWithRetry(url, maxRetries = 2, initialDelay = 2000) {
-    let lastError;
-    
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-        try {
-            const response = await fetch(url);
-            
-            if (response.ok) {
-                return response;
-            }
-            
-            // If rate limited, wait longer
-            if (response.status === 429) {
-                const delay = initialDelay * Math.pow(2, attempt);
-                console.warn(`[Data Manager] Rate limited. Waiting ${delay}ms before retry ${attempt + 1}/${maxRetries}`);
-                
-                if (attempt < maxRetries) {
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    continue;
-                }
-            }
-            
-            lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
-            
-        } catch (error) {
-            lastError = error;
-            console.error(`[Data Manager] Fetch attempt ${attempt + 1} failed:`, error.message);
-            
-            if (attempt < maxRetries) {
-                const delay = initialDelay * Math.pow(2, attempt);
-                await new Promise(resolve => setTimeout(resolve, delay));
-            }
-        }
-    }
-    
-    throw lastError;
-}
-
 // Function to parse and prepare CSV data for use in the system
 async function parseCSVData() {
   try {
@@ -248,21 +188,12 @@ async function fetchSignInData() {
 
 // Function to fetch live Google Sheets sign-in data (for future use)
 async function getLiveSheetData() {
-    // Check cache first
-    const now = Date.now();
-    const cached = API_CACHE.signInData;
-    
-    if (cached.data && (now - cached.timestamp) < cached.ttl) {
-        console.log('[Data Manager] Using cached sign-in data');
-        return cached.data;
-    }
-    
     // URLs to try (multiple fallbacks for sheet access)
     const accessMethods = [
         // Method 1: CSV export with specific gid (most reliable)
         async () => {
             const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/export?format=csv&gid=${SHEETS_CONFIG.SIGN_IN_SHEET_GID}`;
-            const response = await fetchWithRetry(csvUrl, 1, 3000); // Reduced retries, longer delay
+            const response = await fetch(csvUrl);
             if (!response.ok) throw new Error(`CSV export with gid ${SHEETS_CONFIG.SIGN_IN_SHEET_GID} failed: ${response.status}`);
             
             const csvText = await response.text();
@@ -322,7 +253,7 @@ async function getLiveSheetData() {
         // Method 2: CSV export with default gid
         async () => {
             const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/export?format=csv&gid=0`;
-            const response = await fetchWithRetry(csvUrl, 1, 3000);
+            const response = await fetch(csvUrl);
             if (!response.ok) throw new Error(`CSV export with gid=0 failed: ${response.status}`);
             
             const csvText = await response.text();
@@ -342,14 +273,14 @@ async function getLiveSheetData() {
         // Method 3: API with Sheet1
         async () => {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/values/Sheet1?key=${SHEETS_CONFIG.API_KEY}`;
-            const response = await fetchWithRetry(url, 1, 3000);
+            const response = await fetch(url);
             if (!response.ok) throw new Error(`API Sheet1 failed: ${response.status}`);
             return await response.json();
         },
         // Method 4: API with Form Responses 1
         async () => {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/values/Form%20Responses%201?key=${SHEETS_CONFIG.API_KEY}`;
-            const response = await fetchWithRetry(url, 1, 3000);
+            const response = await fetch(url);
             if (!response.ok) throw new Error(`API Form Responses 1 failed: ${response.status}`);
             return await response.json();
         }
@@ -407,40 +338,22 @@ async function getLiveSheetData() {
         }
     }
     
-    // Update cache
-    API_CACHE.signInData.data = processedData;
-    API_CACHE.signInData.timestamp = Date.now();
-    
-    console.log(`[Data Manager] Fetched ${processedData.length} live sign-in entries (cached for ${API_CACHE.signInData.ttl / 1000}s)`);
-    
     return processedData;
 }
 
 // Function to fetch paid members data
 async function fetchPaidMembers() {
-    // Check cache first
-    const now = Date.now();
-    const cached = API_CACHE.paidMembers;
-    
-    if (cached.data && (now - cached.timestamp) < cached.ttl) {
-        console.log('[Data Manager] Using cached paid members data');
-        return cached.data;
-    }
-    
     try {
         // Use direct CSV export (more reliable for public sheets)
         const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEETS_CONFIG.PAID_MEMBERS_SHEET_ID}/export?format=csv&gid=0`;
         
-        const response = await fetchWithRetry(csvUrl, 1, 3000); // Reduced retries, longer initial delay
+        const response = await fetch(csvUrl);
         
         if (!response.ok) {
-            console.error(`[Data Manager] Paid members fetch failed: ${response.status}`);
-            // Return cached data if available, even if expired
-            if (cached.data) {
-                console.warn('[Data Manager] Using expired cache due to fetch failure');
-                return cached.data;
-            }
-            return [];
+            console.error(`[Data Manager] Paid members CSV fetch error: ${response.status} - ${response.statusText}`);
+            const errorText = await response.text();
+            console.error('[Data Manager] Error details:', errorText);
+            throw new Error(`Paid members CSV fetch error: ${response.status}`);
         }
         
         const csvText = await response.text();
@@ -473,22 +386,9 @@ async function fetchPaidMembers() {
             processedData.push(entry);
         }
         
-        // Update cache
-        API_CACHE.paidMembers.data = processedData;
-        API_CACHE.paidMembers.timestamp = now;
-        
-        console.log(`[Data Manager] Fetched ${processedData.length} paid members (cached for ${cached.ttl / 1000}s)`);
-        
         return processedData;
     } catch (error) {
-        console.error('[Data Manager] Error fetching paid members:', error.message);
-        
-        // Return cached data if available, even if expired
-        if (cached.data) {
-            console.warn('[Data Manager] Using expired cache due to error');
-            return cached.data;
-        }
-        
+        console.error('[Data Manager] Error fetching paid members:', error);
         // For now, return empty array to allow testing with CSV data
         return [];
     }
@@ -1212,8 +1112,8 @@ class LocalDataManager {
 
       try {
         // Get actual event attendance data
-        const eventHistory = member.eventHistory || member.events || [];
-        const eventCount = member.eventCount || eventHistory.length;
+        const eventHistory = member.events || [];
+        const eventCount = eventHistory.length;
         const totalPoints = member.totalPoints || 0;
         
         // Enhanced badge calculation with real attendance data
@@ -1222,7 +1122,7 @@ class LocalDataManager {
             earned = eventCount > 0 && totalPoints > 0;
             progress = earned ? 1 : 0;
             progressText = earned ? 'Completed' : 'Attend your first event';
-            attendanceDetails = earned ? `First event: ${eventHistory[0]?.eventType || eventHistory[0]?.name || 'Event attended'}` : '';
+            attendanceDetails = earned ? `First event: ${eventHistory[0]?.name || eventHistory[0] || 'Unknown'}` : '';
             break;
             
           case 'regular':
@@ -1230,7 +1130,7 @@ class LocalDataManager {
             earned = eventCount >= requiredRegular;
             progress = Math.min(eventCount / requiredRegular, 1);
             progressText = earned ? 'Completed' : `${eventCount}/${requiredRegular} events attended`;
-            attendanceDetails = `Events: ${eventHistory.slice(0, 3).map(e => e.eventType || e.name || e).join(', ')}`;
+            attendanceDetails = `Events: ${eventHistory.slice(0, 3).map(e => e.name || e).join(', ')}`;
             break;
             
           case 'dedicated':
@@ -1238,7 +1138,7 @@ class LocalDataManager {
             earned = eventCount >= requiredDedicated;
             progress = Math.min(eventCount / requiredDedicated, 1);
             progressText = earned ? 'Completed' : `${eventCount}/${requiredDedicated} events attended`;
-            attendanceDetails = `Recent events: ${eventHistory.slice(0, 5).map(e => e.eventType || e.name || e).join(', ')}`;
+            attendanceDetails = `Recent events: ${eventHistory.slice(0, 5).map(e => e.name || e).join(', ')}`;
             break;
             
           case 'loyalist':
@@ -1289,7 +1189,7 @@ class LocalDataManager {
             earned = eventCount >= 1;
             progress = eventCount > 0 ? Math.min(eventCount / 3, 1) : 0;
             progressText = `${eventCount} events attended`;
-            attendanceDetails = eventCount > 0 ? `Latest: ${eventHistory[eventHistory.length - 1]?.eventType || eventHistory[eventHistory.length - 1]?.name || 'Event attended'}` : '';
+            attendanceDetails = eventCount > 0 ? `Latest: ${eventHistory[eventHistory.length - 1]?.name || eventHistory[eventHistory.length - 1] || 'Unknown'}` : '';
         }
       } catch (error) {
         console.warn('Error calculating badge:', badgeConfig.id, error);

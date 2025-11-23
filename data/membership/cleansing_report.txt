@@ -1,0 +1,85 @@
+NSBE SIGN-IN DATA CLEANSING REPORT
+================================================================================
+Date: 2025-11-23 14:43:19
+Input file: data/membership/Copy of NSBE Sign in Responses - Sheet1.csv
+Output file: data/membership/CLEANSED_NSBE_Sign_In_Responses.csv
+
+SUMMARY
+--------------------------------------------------------------------------------
+Original entries: 425
+Cleansed entries: 402
+Entries removed: 23
+Event types corrected: 16
+
+EVENT TYPE STANDARDIZATION BY DATE
+--------------------------------------------------------------------------------
+2025-09-26: GBM
+2025-09-29: P-Zone (Study Jamz, NSBEjr, etc).
+2025-09-30: P-Zone (Study Jamz, NSBEjr, etc).
+  → Corrected 1/11 entries
+2025-10-01: Mentorship Events
+2025-10-06: P-Zone (Study Jamz, NSBEjr, Panels etc).
+2025-10-08: Social Events (off-campus, Incoming Student Mixer, Company Events - Golfing W/ Ford etc.)
+  → Corrected 6/16 entries
+2025-10-15: Professional Development
+  → Corrected 1/4 entries
+2025-10-16: Social Events (off-campus, Incoming Student Mixer, Company Events - Golfing W/ Ford etc.)
+  → Corrected 1/7 entries
+2025-10-17: GBM
+2025-10-20: P-Zone (Study Jamz, NSBEjr, Panels etc).
+2025-10-24: Social Events (off-campus, Incoming Student Mixer, Company Events - Golfing W/ Ford etc.)
+2025-10-27: P-Zone (Study Jamz, NSBEjr, Panels etc).
+2025-10-31: GBM
+  → Corrected 1/49 entries
+2025-11-03: P-Zone (Study Jamz, NSBEjr, Panels etc).
+2025-11-05: Social Events (off-campus, Incoming Student Mixer, Company Events - Golfing W/ Ford etc.)
+2025-11-11: Convention Attendance
+  → Corrected 1/14 entries
+2025-11-12: Convention Attendance
+2025-11-14: Professional Development
+  → Corrected 2/6 entries
+2025-11-17: JEB Events
+2025-11-21: GBM
+  → Corrected 3/67 entries
+
+DUPLICATE REMOVALS
+--------------------------------------------------------------------------------
+
+2025-09-26:
+  - Lindsi Scott (Lindsis)
+  - Kwabena Frimpong (kwabenaf)
+  - Josh Bowman (bojoshua)
+  - Toluni Ghandi-Olaye (Tolunigo)
+  - Keryl Fongang  (Kerylfo)
+  - Adam Herron (adherron)
+  - David Obadofin  (Davobad)
+  - Ryan Hobbs (Rjhobbs)
+  - Sheldon jackson (Sheldo)
+  - Keryl Fongang  (Kerylfo)
+  - Juliana Beecham (beechamj)
+
+2025-10-08:
+  - Jordan King  (Kingjj )
+
+2025-10-17:
+  - Brynn Walker (brynnw)
+  - Kenley Hall (Kenley )
+  - Kwabena Frimpong (kwabenaf)
+
+2025-10-31:
+  - Kwabena Frimpong (kwabenaf)
+
+2025-11-11:
+  - Chidera Okigbo  (chiderao)
+
+2025-11-21:
+  - Benjamin Bradley  (bjbradl )
+  - Sloan Howard (howardsl)
+  - Aria Fifer (ariaf)
+  - Sheldon Jackson  (Sheldo)
+  - Donald Adjeroh (dcadjer)
+  - Adam Ressom (Aressom)
+
+================================================================================
+DATA CLEANSING COMPLETE
+================================================================================

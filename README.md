@@ -4,14 +4,24 @@
 [![GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-blue)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A gamified mentorship and professional development platform for the National Society of Black Engineers (NSBE) University of Michigan chapter. Track progress, earn achievements, and unlock career development opportunities through an interactive Battle Pass system with dynamic tier ranking, real-time trackable badges, and live Google Sheets integration.
+A gamified mentorship and professional development platform for the National Society of Black Engineers (NSBE) University of Michigan chapter. Track progress, earn achievements, and unlock career development opportunities through an interactive Battle Pass system with dynamic tier ranking, real-time trackable badges, live Google Sheets integration, and **automatic data cleansing**.
 
+## ✨ What's New - Automatic Data Cleansing
+
+**Data Quality Guaranteed** - All sign-in data is automatically cleansed on load:
+- ✅ **Event types standardized** by date (majority voting)
+- ✅ **Duplicate sign-ins removed** (same person, same date)
+- ✅ **Accurate point calculations** from clean data
+- 📊 **Real-time monitoring** in Admin Dashboard
+
+See [DATA_CLEANSING.md](DATA_CLEANSING.md) for details.
 
 ## 🚀 Features
 
 ### 🎯 **Core Functionality**
 - **Dynamic Tier System** - Quartile-based competitive ranking (Gold, Silver, Bronze, Participant)
 - **Real-time Trackable Badges** - Achievement system with live progress tracking
+- **Automatic Data Cleansing** - Ensures accurate points through event standardization and deduplication
 - **Local Data Management** - Complete Google Sheets integration with local calculations
 - **Smart Leaderboard** - Live ranking with tier thresholds and member statistics
 - **User Recognition** - Personal progress tracking with tier placement
@@ -29,21 +39,22 @@ A gamified mentorship and professional development platform for the National Soc
 - **Interactive Filters** - Navigate between different development areas
 
 ### 📊 **Data Integration & Architecture**
+- **AutoCleanse™ System** - Automatic data cleansing on every load (event standardization + deduplication)
 - **LocalDataManager** - Centralized data processing with Google Sheets API
 - **Live Sheet Integration** - Real-time data from Google Forms with CSV fallback
 - **Dynamic Tier Calculation** - Automatic quartile-based tier assignment
 - **Enhanced Event Parsing** - Flexible header matching for robust data processing
-- **Comprehensive Test Suite** - Full system validation and performance testing
+- **Data Quality Dashboard** - Real-time cleansing statistics in Admin Panel
 - **Modular Components** - InfoSidebar, MentorshipHUB, and reusable UI components
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18 (via CDN), HTML5, CSS3
-- **Architecture**: Modular component system with LocalDataManager
+- **Architecture**: Modular component system with LocalDataManager + DataCleanser
 - **Styling**: Tailwind CSS, Custom CSS animations
-- **Data Processing**: Google Sheets API with local calculations and dynamic tier system
+- **Data Processing**: Google Sheets API with automatic cleansing and dynamic tier system
 - **Badge System**: Real-time trackable achievements with progress monitoring
-
+- **Data Quality**: Automated event standardization and duplicate removal
 - **Deployment**: GitHub Pages optimized
 - **Development**: Live Server, Modern JavaScript (ES6+)
 
@@ -51,7 +62,7 @@ A gamified mentorship and professional development platform for the National Soc
 
 ### **Prerequisites**
 - Web browser with JavaScript enabled
-- Live Server extension (for development)
+- Live Server or Python HTTP server (for development)
 - Google Sheets with public access
 
 ### **Quick Start**
@@ -61,12 +72,12 @@ git clone https://github.com/yourusername/nsbe-uofm-battle-pass-2.git
 cd nsbe-uofm-battle-pass-2
 
 # Start development server
-python test-server.py
+python -m http.server 8080
 
 # Visit the application
 # Main App: http://localhost:8080
-# Test Suite: http://localhost:8080/test-suite.html
 # Admin Dashboard: http://localhost:8080/admin-dashboard.html
+# Data Cleansing Test: http://localhost:8080/test-cleansing.html
 ```
 
 ### **Google Sheets Setup**

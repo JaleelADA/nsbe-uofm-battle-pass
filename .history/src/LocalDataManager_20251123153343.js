@@ -1289,7 +1289,7 @@ class LocalDataManager {
             earned = eventCount >= 1;
             progress = eventCount > 0 ? Math.min(eventCount / 3, 1) : 0;
             progressText = `${eventCount} events attended`;
-            attendanceDetails = eventCount > 0 ? `Latest: ${eventHistory[eventHistory.length - 1]?.eventType || eventHistory[eventHistory.length - 1]?.name || 'Event attended'}` : '';
+            attendanceDetails = eventCount > 0 ? `Latest: ${eventHistory[eventHistory.length - 1]?.name || eventHistory[eventHistory.length - 1] || 'Unknown'}` : '';
         }
       } catch (error) {
         console.warn('Error calculating badge:', badgeConfig.id, error);

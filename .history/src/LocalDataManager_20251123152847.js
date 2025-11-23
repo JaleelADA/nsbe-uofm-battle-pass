@@ -1212,8 +1212,8 @@ class LocalDataManager {
 
       try {
         // Get actual event attendance data
-        const eventHistory = member.eventHistory || member.events || [];
-        const eventCount = member.eventCount || eventHistory.length;
+        const eventHistory = member.events || [];
+        const eventCount = eventHistory.length;
         const totalPoints = member.totalPoints || 0;
         
         // Enhanced badge calculation with real attendance data
@@ -1222,7 +1222,7 @@ class LocalDataManager {
             earned = eventCount > 0 && totalPoints > 0;
             progress = earned ? 1 : 0;
             progressText = earned ? 'Completed' : 'Attend your first event';
-            attendanceDetails = earned ? `First event: ${eventHistory[0]?.eventType || eventHistory[0]?.name || 'Event attended'}` : '';
+            attendanceDetails = earned ? `First event: ${eventHistory[0]?.name || eventHistory[0] || 'Unknown'}` : '';
             break;
             
           case 'regular':
@@ -1230,7 +1230,7 @@ class LocalDataManager {
             earned = eventCount >= requiredRegular;
             progress = Math.min(eventCount / requiredRegular, 1);
             progressText = earned ? 'Completed' : `${eventCount}/${requiredRegular} events attended`;
-            attendanceDetails = `Events: ${eventHistory.slice(0, 3).map(e => e.eventType || e.name || e).join(', ')}`;
+            attendanceDetails = `Events: ${eventHistory.slice(0, 3).map(e => e.name || e).join(', ')}`;
             break;
             
           case 'dedicated':
@@ -1238,7 +1238,7 @@ class LocalDataManager {
             earned = eventCount >= requiredDedicated;
             progress = Math.min(eventCount / requiredDedicated, 1);
             progressText = earned ? 'Completed' : `${eventCount}/${requiredDedicated} events attended`;
-            attendanceDetails = `Recent events: ${eventHistory.slice(0, 5).map(e => e.eventType || e.name || e).join(', ')}`;
+            attendanceDetails = `Recent events: ${eventHistory.slice(0, 5).map(e => e.name || e).join(', ')}`;
             break;
             
           case 'loyalist':
@@ -1289,7 +1289,7 @@ class LocalDataManager {
             earned = eventCount >= 1;
             progress = eventCount > 0 ? Math.min(eventCount / 3, 1) : 0;
             progressText = `${eventCount} events attended`;
-            attendanceDetails = eventCount > 0 ? `Latest: ${eventHistory[eventHistory.length - 1]?.eventType || eventHistory[eventHistory.length - 1]?.name || 'Event attended'}` : '';
+            attendanceDetails = eventCount > 0 ? `Latest: ${eventHistory[eventHistory.length - 1]?.name || eventHistory[eventHistory.length - 1] || 'Unknown'}` : '';
         }
       } catch (error) {
         console.warn('Error calculating badge:', badgeConfig.id, error);

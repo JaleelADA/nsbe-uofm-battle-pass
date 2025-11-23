@@ -422,9 +422,14 @@ async function fetchPaidMembers() {
     const now = Date.now();
     const cached = API_CACHE.paidMembers;
     
+    // Validate cached data format - should be array of objects, not array of arrays
     if (cached.data && (now - cached.timestamp) < cached.ttl) {
-        console.log('[Data Manager] Using cached paid members data');
-        return cached.data;
+        if (cached.data.length > 0 && typeof cached.data[0] === 'object' && !Array.isArray(cached.data[0])) {
+            console.log('[Data Manager] Using cached paid members data');
+            return cached.data;
+        } else {
+            console.warn('[Data Manager] Cache has invalid format, re-fetching...');
+        }
     }
     
     try {

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSBE Comprehensive Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .tab-button {
+            @apply px-6 py-3 font-semibold rounded-t-lg transition-colors;
+        }
+        .tab-button.active {
+            @apply bg-white text-blue-600 border-b-2 border-blue-600;
+        }
+        .tab-button:not(.active) {
+            @apply bg-gray-200 text-gray-600 hover:bg-gray-300;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            @apply text-white rounded-lg shadow-lg p-6;
+        }
+        .event-card {
+            @apply bg-white rounded-lg shadow p-4 mb-3 hover:shadow-lg transition-shadow border-l-4;
+        }
+        .member-row {
+            @apply bg-white hover:bg-gray-50 transition-colors;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-6">
+                <h1 class="text-4xl font-bold mb-2">NSBE Admin Dashboard</h1>
+                <p class="text-blue-100">Comprehensive Member & Event Analytics</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-gray-200 border-b">
+            <div class="container mx-auto px-4">
+                <div class="flex gap-2">
+                    <button class="tab-button active" data-tab="overview">📊 Overview</button>
+                    <button class="tab-button" data-tab="members">👥 Members</button>
+                    <button class="tab-button" data-tab="events">📅 Events & Attendance</button>
+                    <button class="tab-button" data-tab="analytics">📈 Analytics</button>
+                    <button class="tab-button" data-tab="export">💾 Export Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-8">
+            <!-- Overview Tab -->
+            <div id="overview-tab" class="tab-content">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card">
+                        <div class="text-sm opacity-80 mb-1">Total Members</div>
+                        <div id="stat-total-members" class="text-4xl font-bold">-</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="text-sm opacity-80 mb-1">Paid Members</div>
+                        <div id="stat-paid-members" class="text-4xl font-bold">-</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <div class="text-sm opacity-80 mb-1">Total Events</div>
+                        <div id="stat-total-events" class="text-4xl font-bold">-</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <div class="text-sm opacity-80 mb-1">Avg Attendance</div>
+                        <div id="stat-avg-attendance" class="text-4xl font-bold">-</div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Event Type Distribution</h3>
+                        <canvas id="eventTypeChart"></canvas>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Year Distribution</h3>
+                        <canvas id="yearDistChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Quick Insights -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-bold mb-4">Quick Insights</h3>
+                    <div id="insights-content" class="space-y-2 text-gray-700"></div>
+                </div>
+            </div>
+
+            <!-- Members Tab -->
+            <div id="members-tab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="member-search" placeholder="Search members..." 
+                            class="border rounded px-4 py-2 w-full">
+                        <select id="filter-paid" class="border rounded px-4 py-2">
+                            <option value="all">All Payment Status</option>
+                            <option value="paid">Paid Only</option>
+                            <option value="unpaid">Unpaid Only</option>
+                        </select>
+                        <select id="filter-year" class="border rounded px-4 py-2">
+                            <option value="all">All Years</option>
+                            <option value="1st">1st Year</option>
+                            <option value="2nd">2nd Year</option>
+                            <option value="3rd">3rd Year</option>
+                            <option value="4th">4th Year</option>
+                            <option value="5th">5th+ Year</option>
+                        </select>
+                        <button id="clear-filters" class="bg-gray-500 text-white rounded px-4 py-2 hover:bg-gray-600">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Major</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Year</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Points</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Events</th>
+                            </tr>
+                        </thead>
+                        <tbody id="members-table-body" class="divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Events & Attendance Tab -->
+            <div id="events-tab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-4">Event Calendar & Attendance</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <select id="event-filter" class="border rounded px-4 py-2">
+                            <option value="all">All Events</option>
+                        </select>
+                        <select id="event-type-filter" class="border rounded px-4 py-2">
+                            <option value="all">All Types</option>
+                            <option value="GBM">GBM</option>
+                            <option value="Social">Social</option>
+                            <option value="PD">Professional Development</option>
+                            <option value="Academic">Academic</option>
+                            <option value="Community Service">Community Service</option>
+                        </select>
+                        <button id="export-attendance-btn" class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700">
+                            📥 Export Attendance
+                        </button>
+                    </div>
+                </div>
+
+                <div id="events-list" class="space-y-4"></div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Engagement Over Time</h3>
+                        <canvas id="engagementChart"></canvas>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Top Events by Attendance</h3>
+                        <canvas id="topEventsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Major Distribution</h3>
+                        <canvas id="majorDistChart"></canvas>
+                    </div>
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Points Distribution</h3>
+                        <canvas id="pointsDistChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Tab -->
+            <div id="export-tab" class="tab-content hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4">📊 Export Member Data</h3>
+                        <p class="text-gray-600 mb-4">Export complete member roster with demographics and points</p>
+                        <button id="export-members-csv" class="bg-blue-600 text-white rounded px-6 py-3 hover:bg-blue-700 w-full">
+                            Download Members CSV
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4">📅 Export Event Attendance</h3>
+                        <p class="text-gray-600 mb-4">Export attendance data for all events</p>
+                        <button id="export-events-csv" class="bg-green-600 text-white rounded px-6 py-3 hover:bg-green-700 w-full">
+                            Download Events CSV
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4">📈 Export Analytics</h3>
+                        <p class="text-gray-600 mb-4">Export statistical summary and insights</p>
+                        <button id="export-analytics-csv" class="bg-purple-600 text-white rounded px-6 py-3 hover:bg-purple-700 w-full">
+                            Download Analytics CSV
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4">🎯 Export Event-Specific Attendance</h3>
+                        <select id="export-event-select" class="border rounded px-4 py-2 w-full mb-4">
+                            <option value="">Select an event...</option>
+                        </select>
+                        <button id="export-single-event" class="bg-orange-600 text-white rounded px-6 py-3 hover:bg-orange-700 w-full">
+                            Download Event Attendance
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { getLocalLeaderboard, getPaidMembers } from './src/LocalDataManager.js';
+
+        // Global state
+        let allMembers = [];
+        let paidMembersSet = new Set();
+        let eventCalendar = [];
+        let attendanceByEvent = {};
+        let charts = {};
+
+        // Parse calendar data
+        function parseCalendar() {
+            const calendarText = `Engineers Brunch	Social	8/24/2025 11:00:00	8/24/2025 1:00:00	Michigan League Ballroom	Mikko Hendricks
+Festifall	Tabling	8/27/2025 0:00:00		Diag	Gianna Williams
+Freshman/Transfer mixer	Social	8/28/2025 0:00:00		Mason Hall	Megan Nyabaro
+BBQ	Social	8/30/2025 12:00:00	8/30/2025 4:00:00	Rackham Graduate School - University of Michigan	Jaleel Drones-Akins
+Resume Workshop	PD	9/5/2025 5:00:00	9/5/2025 6:00:00	Mason Hall	Nnenna Brown
+Fall Corporate Mixer	PD	9/7/2025 0:00:00		G.G. Brown Building	Kaden Sanders
+Study Jamz	Academic	9/8/2025 5:00:00	9/8/2025 8:00:00		
+1st GBM w/ Ford	GBM	9/12/2025 5:30:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	9/15/2025 5:00:00	9/15/2025 8:00:00		
+Jane Street Tech Talk	PD	9/17/2025 6:00:00			Kaden Sanders
+Verkada Tech Talk	PD	9/18/2025 1:00:00		Leinweber 1125	Kaden Sanders
+Golfing with Ford	PD	9/18/2025 0:00:00		Driving Range	Kaden Sanders
+Peninsula Park Cleanup	Community Service	9/20/2025 9:00:00	9/20/2025 12:00:00	Peninsular Park	Londyn Jefferson
+Study Jamz	Academic	9/22/2025 5:00:00	9/22/2025 8:00:00		
+LinkedIn Headshots	PD				Nnenna Brown
+2nd GBM w/ P&G	GBM	9/26/2025 0:00:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	9/29/2025 5:00:00	9/29/2025 8:00:00		
+Black Engineering Coalition X GSBES Graduate School Event	Social	9/30/2025 5:30:00	9/30/2025 7:00:00	Dow Building	Gianna Williams
+Mentorship Mixer: Estimathon	Mentorship	10/1/2025 6:00:00	10/1/2025 7:30:00	1448 MH	Jaleel Drones-Akins
+Study Jamz	Academic	10/6/2025 5:00:00	10/6/2025 8:00:00		
+Bowling w/ Coinbase	Social	10/8/2025 8:00:00	10/8/2025 10:00:00	Revel and Roll	Kaden Sanders
+Study Jamz	Academic	10/13/2025 5:00:00	10/13/2025 8:00:00		
+Bloomberg Coffee Chats	Social	10/15/2025 0:00:00	10/15/2025 0:00:00		Kaden Sanders
+Lunch & Learn Series #1	PD	10/16/2025 6:00:00	10/16/2025 7:00:00		
+PCI x AEX Cass Workshop	PCI	10/17/2025 0:00:00	10/17/2025 0:00:00	Cass Technical High School	Shantiah Watt
+3rd GBM	GBM	10/17/2025 0:00:00		1610 IOE	Mikko Hendricks
+Cedar Point	Social	10/19/2025 8:45:00	10/19/2025 6:00:00	Cedar Point	Jaleel Drones-Akins
+Study Jamz	Academic	10/20/2025 5:00:00	10/20/2025 8:00:00		
+Mind Matters (NSBE x BUPA)	Academic	10/22/2025 7:35:00	10/22/2025 9:30:00	South Quad Yuri Lounge	Shaylena Dodge
+Curl Talk Collab	Social	10/24/2025 6:00:00	10/24/2025 8:00:00	South Quad Yuri Lounge	Megan Nyabaro
+Making Strides Breast Cancer Walk	Community Service	10/25/2025 9:00:00	10/25/2025 0:00:00	Washtenaw Community College	
+Study Jamz	Academic	10/27/2025 5:00:00	10/27/2025 8:00:00		
+4th GBM	GBM	10/31/2025 0:00:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	11/3/2025 5:00:00	11/3/2025 8:00:00		
+NSBE X SHPE X Theta Tau X BSA Fall Craft Collab 	Social	11/5/2025 6:00:00	11/5/2025 8:00:00	Dow Building 1014	Megan Nyabaro
+Study Jamz	Academic	11/10/2025 5:00:00	11/10/2025 8:00:00		
+IOE Tabling	Tabling	11/12/2025 11:00:00	11/12/2025 1:30:00	Industrial and Operations Eng 	Iman Ahmed
+NSBE x BlackGen Capital Financial Literacy	PD	11/14/2025 3:30:00	11/14/2025 5:00:00	Ross School of Business	Nnenna Brown
+Study Jamz	Academic	11/17/2025 5:00:00	11/17/2025 8:00:00		
+Cozy Cooldown Social	Social	11/17/2025 7:30:00	11/17/2025 9:00:00	2325 Mason Hall	Mikko Hendricks
+Maximize your Summer	Academic	11/19/2025 5:00:00	11/19/2025 6:00:00	Trotter Multicultural Center	Zharia Hunter 
+5th GBM w/ Google	GBM	11/21/2025 0:00:00		1610 IOE	Mikko Hendricks`;
+
+            const lines = calendarText.split('\n').filter(l => l.trim());
+            return lines.map(line => {
+                const parts = line.split('\t');
+                const startDate = parts[2] ? new Date(parts[2]) : null;
+                return {
+                    name: parts[0]?.trim() || '',
+                    type: parts[1]?.trim() || '',
+                    date: startDate ? startDate.toLocaleDateString('en-US') : '',
+                    dateObj: startDate,
+                    location: parts[4]?.trim() || '',
+                    contact: parts[5]?.trim() || ''
+                };
+            }).filter(e => e.name && e.date);
+        }
+
+        // Match events to calendar by date
+        function matchEventToCalendar(eventName, timestamp) {
+            if (!timestamp) return null;
+            
+            const eventDate = new Date(timestamp).toLocaleDateString('en-US');
+            
+            // Try exact name match first
+            let match = eventCalendar.find(e => 
+                e.name.toLowerCase().includes(eventName.toLowerCase()) && e.date === eventDate
+            );
+            
+            // Try partial match
+            if (!match) {
+                match = eventCalendar.find(e => e.date === eventDate);
+            }
+            
+            return match;
+        }
+
+        // Build attendance map
+        function buildAttendanceData() {
+            attendanceByEvent = {};
+            
+            allMembers.forEach(member => {
+                if (!member.eventHistory) return;
+                
+                member.eventHistory.forEach(eventEntry => {
+                    // eventEntry format: "EventName (MM/DD/YYYY)"
+                    const match = eventEntry.match(/^(.+?)\s*\((\d{1,2}\/\d{1,2}\/\d{4})\)$/);
+                    if (!match) return;
+                    
+                    const eventName = match[1].trim();
+                    const timestamp = match[2];
+                    
+                    const calendarEvent = matchEventToCalendar(eventName, timestamp);
+                    const eventKey = calendarEvent ? calendarEvent.name : eventName;
+                    
+                    if (!attendanceByEvent[eventKey]) {
+                        attendanceByEvent[eventKey] = {
+                            name: eventKey,
+                            type: calendarEvent?.type || 'Unknown',
+                            date: timestamp,
+                            location: calendarEvent?.location || '',
+                            contact: calendarEvent?.contact || '',
+                            attendees: []
+                        };
+                    }
+                    
+                    attendanceByEvent[eventKey].attendees.push({
+                        name: member.displayName,
+                        email: member.email,
+                        uniqname: member.uniqname,
+                        isPaid: member.isPaid,
+                        major: member.major || member.Major || '',
+                        year: member.year || member.Year || ''
+                    });
+                });
+            });
+        }
+
+        // Load all data
+        async function loadData() {
+            try {
+                console.log('🔄 Loading data...');
+                
+                // Parse calendar
+                eventCalendar = parseCalendar();
+                console.log('📅 Loaded', eventCalendar.length, 'calendar events');
+                
+                // Load paid members
+                const paidMembers = await getPaidMembers();
+                paidMembersSet = new Set(paidMembers.map(m => m.email?.toLowerCase().trim()));
+                
+                // Load members
+                const leaderboard = await getLocalLeaderboard();
+                allMembers = leaderboard.map(member => ({
+                    ...member,
+                    isPaid: paidMembersSet.has(member.email?.toLowerCase().trim())
+                }));
+                
+                console.log('✅ Loaded', allMembers.length, 'members');
+                
+                // Build attendance data
+                buildAttendanceData();
+                console.log('📊 Built attendance data for', Object.keys(attendanceByEvent).length, 'events');
+                
+                // Render all sections
+                renderOverview();
+                renderMembers();
+                renderEvents();
+                renderAnalytics();
+                setupExport();
+                
+            } catch (error) {
+                console.error('❌ Error loading data:', error);
+            }
+        }
+
+        // Render Overview Tab
+        function renderOverview() {
+            // Stats
+            document.getElementById('stat-total-members').textContent = allMembers.length;
+            document.getElementById('stat-paid-members').textContent = 
+                allMembers.filter(m => m.isPaid).length;
+            document.getElementById('stat-total-events').textContent = 
+                Object.keys(attendanceByEvent).length;
+            
+            const totalAttendance = Object.values(attendanceByEvent).reduce((sum, e) => sum + e.attendees.length, 0);
+            const avgAttendance = Object.keys(attendanceByEvent).length > 0 
+                ? Math.round(totalAttendance / Object.keys(attendanceByEvent).length) 
+                : 0;
+            document.getElementById('stat-avg-attendance').textContent = avgAttendance;
+
+            // Event Type Chart
+            const eventTypes = {};
+            Object.values(attendanceByEvent).forEach(event => {
+                eventTypes[event.type] = (eventTypes[event.type] || 0) + 1;
+            });
+            
+            const eventTypeCtx = document.getElementById('eventTypeChart');
+            if (charts.eventType) charts.eventType.destroy();
+            charts.eventType = new Chart(eventTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(eventTypes),
+                    datasets: [{
+                        data: Object.values(eventTypes),
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // Year Distribution
+            const years = {};
+            allMembers.forEach(m => {
+                const year = m.year || m.Year || 'Unknown';
+                years[year] = (years[year] || 0) + 1;
+            });
+            
+            const yearDistCtx = document.getElementById('yearDistChart');
+            if (charts.yearDist) charts.yearDist.destroy();
+            charts.yearDist = new Chart(yearDistCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(years),
+                    datasets: [{
+                        label: 'Members',
+                        data: Object.values(years),
+                        backgroundColor: '#3B82F6'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // Insights
+            const insights = [
+                `💡 ${allMembers.filter(m => m.isPaid).length} out of ${allMembers.length} members (${Math.round(allMembers.filter(m => m.isPaid).length / allMembers.length * 100)}%) have paid chapter dues`,
+                `🎯 Most popular event type: ${Object.entries(eventTypes).sort((a,b) => b[1] - a[1])[0]?.[0] || 'N/A'}`,
+                `📈 Average member attendance: ${Math.round(allMembers.reduce((sum, m) => sum + (m.eventCount || 0), 0) / allMembers.length)} events`,
+                `🏆 Top performing year: ${Object.entries(years).sort((a,b) => b[1] - a[1])[0]?.[0] || 'N/A'} with ${Object.entries(years).sort((a,b) => b[1] - a[1])[0]?.[1] || 0} members`
+            ];
+            
+            document.getElementById('insights-content').innerHTML = insights.map(i => 
+                `<div class="py-2 border-b last:border-0">${i}</div>`
+            ).join('');
+        }
+
+        // Render Members Tab
+        function renderMembers(filteredMembers = null) {
+            const members = filteredMembers || allMembers;
+            const tbody = document.getElementById('members-table-body');
+            
+            tbody.innerHTML = members.map(m => `
+                <tr class="member-row">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-gray-900">${escapeHtml(m.displayName || m.email)}</div>
+                        <div class="text-sm text-gray-500">${escapeHtml(m.uniqname || '')}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(m.email)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(m.major || m.Major || 'N/A')}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${escapeHtml(m.year || m.Year || 'N/A')}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        ${m.isPaid ? 
+                            '<span class="px-2 py-1 text-xs rounded bg-green-100 text-green-800">PAID</span>' : 
+                            '<span class="px-2 py-1 text-xs rounded bg-gray-100 text-gray-600">UNPAID</span>'
+                        }
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">${m.totalPoints || 0}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${m.eventCount || 0}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Events Tab
+        function renderEvents() {
+            const container = document.getElementById('events-list');
+            const eventSelect = document.getElementById('event-filter');
+            const exportSelect = document.getElementById('export-event-select');
+            
+            const events = Object.values(attendanceByEvent).sort((a, b) => 
+                new Date(b.date) - new Date(a.date)
+            );
+            
+            // Populate filters
+            eventSelect.innerHTML = '<option value="all">All Events</option>' + 
+                events.map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('');
+            
+            exportSelect.innerHTML = '<option value="">Select an event...</option>' + 
+                events.map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.name)}</option>`).join('');
+            
+            // Render event cards
+            container.innerHTML = events.map(event => {
+                const borderColor = {
+                    'GBM': 'border-blue-500',
+                    'Social': 'border-pink-500',
+                    'PD': 'border-green-500',
+                    'Academic': 'border-purple-500',
+                    'Community Service': 'border-yellow-500'
+                }[event.type] || 'border-gray-500';
+                
+                return `
+                    <div class="event-card ${borderColor}">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-lg font-bold">${escapeHtml(event.name)}</h3>
+                                <div class="text-sm text-gray-600 space-y-1 mt-2">
+                                    <div>📅 ${escapeHtml(event.date)}</div>
+                                    ${event.location ? `<div>📍 ${escapeHtml(event.location)}</div>` : ''}
+                                    ${event.contact ? `<div>👤 ${escapeHtml(event.contact)}</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-3 py-1 rounded text-sm font-semibold bg-blue-100 text-blue-800">
+                                    ${escapeHtml(event.type)}
+                                </span>
+                                <div class="text-2xl font-bold text-blue-600 mt-2">${event.attendees.length}</div>
+                                <div class="text-xs text-gray-500">attendees</div>
+                            </div>
+                        </div>
+                        <details class="mt-3">
+                            <summary class="cursor-pointer text-blue-600 hover:text-blue-800 font-semibold">
+                                View Attendees
+                            </summary>
+                            <div class="mt-3 pl-4 space-y-1 max-h-60 overflow-y-auto">
+                                ${event.attendees.map(a => `
+                                    <div class="text-sm py-1 border-b">
+                                        <span class="font-medium">${escapeHtml(a.name)}</span>
+                                        <span class="text-gray-500"> - ${escapeHtml(a.email)}</span>
+                                        ${a.isPaid ? '<span class="text-green-600 text-xs ml-2">✓ Paid</span>' : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </details>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Analytics Tab
+        function renderAnalytics() {
+            // Engagement over time
+            const eventsByMonth = {};
+            Object.values(attendanceByEvent).forEach(event => {
+                const date = new Date(event.date);
+                const monthKey = `${date.getMonth() + 1}/${date.getFullYear()}`;
+                if (!eventsByMonth[monthKey]) {
+                    eventsByMonth[monthKey] = { events: 0, attendance: 0 };
+                }
+                eventsByMonth[monthKey].events++;
+                eventsByMonth[monthKey].attendance += event.attendees.length;
+            });
+            
+            const engagementCtx = document.getElementById('engagementChart');
+            if (charts.engagement) charts.engagement.destroy();
+            charts.engagement = new Chart(engagementCtx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(eventsByMonth),
+                    datasets: [{
+                        label: 'Total Attendance',
+                        data: Object.values(eventsByMonth).map(v => v.attendance),
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // Top events
+            const topEvents = Object.values(attendanceByEvent)
+                .sort((a, b) => b.attendees.length - a.attendees.length)
+                .slice(0, 10);
+            
+            const topEventsCtx = document.getElementById('topEventsChart');
+            if (charts.topEvents) charts.topEvents.destroy();
+            charts.topEvents = new Chart(topEventsCtx, {
+                type: 'bar',
+                data: {
+                    labels: topEvents.map(e => e.name.length > 20 ? e.name.substring(0, 20) + '...' : e.name),
+                    datasets: [{
+                        label: 'Attendees',
+                        data: topEvents.map(e => e.attendees.length),
+                        backgroundColor: '#10B981'
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: true,
+                    indexAxis: 'y'
+                }
+            });
+
+            // Major distribution
+            const majors = {};
+            allMembers.forEach(m => {
+                const major = m.major || m.Major || 'Unknown';
+                majors[major] = (majors[major] || 0) + 1;
+            });
+            
+            const majorDistCtx = document.getElementById('majorDistChart');
+            if (charts.majorDist) charts.majorDist.destroy();
+            charts.majorDist = new Chart(majorDistCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(majors).slice(0, 10),
+                    datasets: [{
+                        data: Object.values(majors).slice(0, 10),
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#14B8A6', '#F97316', '#06B6D4', '#84CC16']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+
+            // Points distribution
+            const pointsRanges = { '0-10': 0, '11-20': 0, '21-30': 0, '31-40': 0, '41-50': 0, '51+': 0 };
+            allMembers.forEach(m => {
+                const points = m.totalPoints || 0;
+                if (points <= 10) pointsRanges['0-10']++;
+                else if (points <= 20) pointsRanges['11-20']++;
+                else if (points <= 30) pointsRanges['21-30']++;
+                else if (points <= 40) pointsRanges['31-40']++;
+                else if (points <= 50) pointsRanges['41-50']++;
+                else pointsRanges['51+']++;
+            });
+            
+            const pointsDistCtx = document.getElementById('pointsDistChart');
+            if (charts.pointsDist) charts.pointsDist.destroy();
+            charts.pointsDist = new Chart(pointsDistCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(pointsRanges),
+                    datasets: [{
+                        label: 'Members',
+                        data: Object.values(pointsRanges),
+                        backgroundColor: '#8B5CF6'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: true }
+            });
+        }
+
+        // Setup Export functionality
+        function setupExport() {
+            document.getElementById('export-members-csv').addEventListener('click', exportMembersCSV);
+            document.getElementById('export-events-csv').addEventListener('click', exportEventsCSV);
+            document.getElementById('export-analytics-csv').addEventListener('click', exportAnalyticsCSV);
+            document.getElementById('export-single-event').addEventListener('click', exportSingleEvent);
+            document.getElementById('export-attendance-btn').addEventListener('click', exportEventsCSV);
+        }
+
+        function exportMembersCSV() {
+            const headers = ['Name', 'Email', 'Uniqname', 'Major', 'Year', 'Payment Status', 'National Dues', 'Points', 'Events Attended'];
+            const rows = allMembers.map(m => [
+                m.displayName || m.email,
+                m.email,
+                m.uniqname || '',
+                m.major || m.Major || '',
+                m.year || m.Year || '',
+                m.isPaid ? 'Paid' : 'Unpaid',
+                m.national_dues || m['National Dues'] || '',
+                m.totalPoints || 0,
+                m.eventCount || 0
+            ]);
+            
+            downloadCSV([headers, ...rows], 'nsbe-members.csv');
+        }
+
+        function exportEventsCSV() {
+            const headers = ['Event Name', 'Type', 'Date', 'Location', 'Contact', 'Attendance'];
+            const rows = Object.values(attendanceByEvent).map(e => [
+                e.name,
+                e.type,
+                e.date,
+                e.location,
+                e.contact,
+                e.attendees.length
+            ]);
+            
+            downloadCSV([headers, ...rows], 'nsbe-events.csv');
+        }
+
+        function exportAnalyticsCSV() {
+            const data = [
+                ['Metric', 'Value'],
+                ['Total Members', allMembers.length],
+                ['Paid Members', allMembers.filter(m => m.isPaid).length],
+                ['Total Events', Object.keys(attendanceByEvent).length],
+                ['Average Attendance', Math.round(Object.values(attendanceByEvent).reduce((sum, e) => sum + e.attendees.length, 0) / Object.keys(attendanceByEvent).length)],
+                ['Average Points', Math.round(allMembers.reduce((sum, m) => sum + (m.totalPoints || 0), 0) / allMembers.length)]
+            ];
+            
+            downloadCSV(data, 'nsbe-analytics.csv');
+        }
+
+        function exportSingleEvent() {
+            const select = document.getElementById('export-event-select');
+            const eventName = select.value;
+            
+            if (!eventName) {
+                alert('Please select an event');
+                return;
+            }
+            
+            const event = attendanceByEvent[eventName];
+            if (!event) return;
+            
+            const headers = ['Name', 'Email', 'Uniqname', 'Major', 'Year', 'Payment Status'];
+            const rows = event.attendees.map(a => [
+                a.name,
+                a.email,
+                a.uniqname,
+                a.major,
+                a.year,
+                a.isPaid ? 'Paid' : 'Unpaid'
+            ]);
+            
+            const fileName = `${eventName.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-attendance.csv`;
+            downloadCSV([headers, ...rows], fileName);
+        }
+
+        function downloadCSV(data, filename) {
+            const csv = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                // Update active tab button
+                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Show correct tab content
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+                document.getElementById(`${tab}-tab`).classList.remove('hidden');
+            });
+        });
+
+        // Member filters
+        document.getElementById('member-search').addEventListener('input', filterMembers);
+        document.getElementById('filter-paid').addEventListener('change', filterMembers);
+        document.getElementById('filter-year').addEventListener('change', filterMembers);
+        document.getElementById('clear-filters').addEventListener('click', () => {
+            document.getElementById('member-search').value = '';
+            document.getElementById('filter-paid').value = 'all';
+            document.getElementById('filter-year').value = 'all';
+            renderMembers();
+        });
+
+        function filterMembers() {
+            const search = document.getElementById('member-search').value.toLowerCase();
+            const paidFilter = document.getElementById('filter-paid').value;
+            const yearFilter = document.getElementById('filter-year').value;
+            
+            let filtered = allMembers;
+            
+            if (search) {
+                filtered = filtered.filter(m => 
+                    (m.displayName?.toLowerCase() || '').includes(search) ||
+                    (m.email?.toLowerCase() || '').includes(search) ||
+                    (m.uniqname?.toLowerCase() || '').includes(search)
+                );
+            }
+            
+            if (paidFilter === 'paid') {
+                filtered = filtered.filter(m => m.isPaid);
+            } else if (paidFilter === 'unpaid') {
+                filtered = filtered.filter(m => !m.isPaid);
+            }
+            
+            if (yearFilter !== 'all') {
+                filtered = filtered.filter(m => {
+                    const year = m.year || m.Year || '';
+                    return year.includes(yearFilter);
+                });
+            }
+            
+            renderMembers(filtered);
+        }
+
+        // Event filters
+        document.getElementById('event-filter').addEventListener('change', filterEvents);
+        document.getElementById('event-type-filter').addEventListener('change', filterEvents);
+
+        function filterEvents() {
+            const eventFilter = document.getElementById('event-filter').value;
+            const typeFilter = document.getElementById('event-type-filter').value;
+            
+            // This would filter the events display - implementation simplified
+            renderEvents();
+        }
+
+        // Initialize
+        console.log('🚀 Initializing dashboard...');
+        loadData();
+    </script>
+</body>
+</html>

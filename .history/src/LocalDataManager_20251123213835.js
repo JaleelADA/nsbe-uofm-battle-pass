@@ -957,19 +957,10 @@ async function calculateMemberPoints(signInData) {
         }
     });
     
-    // Helper function to check if member is paid (using paid members sheet + hardcoded list)
-    const isPaidMemberFast = (email, uniqname) => {
+    // Helper function to check if member is paid (using ONLY paid members sheet)
+    const isPaidMemberFast = (email) => {
         const normalizedEmail = email.toLowerCase().trim();
-        const normalizedUniqname = uniqname ? uniqname.toLowerCase().trim() : '';
-        
-        // Check paid members sheet
-        if (paidMemberEmails.has(normalizedEmail)) return true;
-        
-        // Check hardcoded paid chapter members list
-        if (normalizedUniqname && PAID_CHAPTER_MEMBERS.has(normalizedUniqname)) return true;
-        if (PAID_CHAPTER_MEMBERS.has(normalizedEmail)) return true;
-        
-        return false;
+        return paidMemberEmails.has(normalizedEmail);
     };
     
     // Process each entry
@@ -1012,7 +1003,7 @@ async function calculateMemberPoints(signInData) {
                 totalPoints: 0,
                 eventHistory: [],
                 eventCount: 0,
-                isPaid: isPaidMemberFast(normalizedEmail, normalizedUniqname),
+                isPaid: isPaidMemberFast(normalizedEmail),
                 major: major,
                 Major: major, // Alias
                 year: year,
@@ -1333,7 +1324,7 @@ async function getLocalLeaderboard() {
                             source: 'folder'
                         }],
                         eventCount: 1,
-                        isPaid: PAID_CHAPTER_MEMBERS.has(normalizedUniqname) || PAID_CHAPTER_MEMBERS.has((attendee.email || '').toLowerCase().trim()),
+                        isPaid: false, // Default to unpaid for folder-only members
                         major: major,
                         Major: major,
                         year: year,

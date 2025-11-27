@@ -98,30 +98,6 @@ const MEMBER_DEMOGRAPHICS = {
     'orukotan': { major: 'Biomedical Engineering', year: '1st' }
 };
 
-// Hardcoded paid chapter members list (supplemental to Google Sheet)
-// This ensures accurate paid member tracking even if sheet is not updated
-const PAID_CHAPTER_MEMBERS = new Set([
-    'iodetola', 'chiomaa', 'henoky', 'aphall', 'mikkoh', 'howardsl', 'uneak',
-    'imanahme', 'cjakombi', 'alexbing', 'malawis', 'thewfica', 'bsoumare',
-    'odumk', 'donjm', 'ojadon', 'savannae', 'yohannl', 'brynnw', 'kellm',
-    'kerylfo@umich.edu', 'sayoodus', 'jbowman', 'kaibilal', 'kylemoni',
-    'onimisi', 'gpears', 'gavynw', 'hunegnaw', 'landond', 'kmonie', 'kingjj',
-    'zhariahu', 'kwabenaf', 'regind', 'choyceja', 'giannaw', 'grcesar',
-    'sashahil', 'ihairsto', 'jasminew', 'jadlewis', 'adna@umich.edu',
-    'cmonie', 'daniecam', 'jdronesa', 'bsnkpah', 'etaylor', 'kinziebr',
-    'lsfifer', 'rareno', 'matipa', 'layiolus', 'aayungo', 'msmbayo',
-    'zakyahe', 'islyndwa', 'rayankam', 'achoroj', 'azaryahc', 'dtellis',
-    'mseade', 'toddbi', 'shantiah', 'johnsand', 'lindsis', 'kyrajcha',
-    'owadugea', 'kendallm', 'boyantv', 'skylars', 'aniyalew', 'ayeyiyp',
-    'londynj', 'haarun', 'sadiew', 'travic', 'tolunigh', 'kaidenda',
-    'tparham', 'divineos', 'kyrahud', 'mosesm', 'megann', 'otoboego',
-    'njokuc', 'davidang', 'jjbishaw', 'bryonyk', 'shayldod', 'ryanhobb',
-    'chiderao', 'nevaehmm', 'dantepar', 'benhopki', 'princeu', 'ghonore',
-    'rasheedj', 'ariaf', 'ugonnao', 'skylared', 'jeovajones', 'chitoemech',
-    'mdinku', 'jandyari', 'jadaree', 'mobadewa', 'jodhiamb', 'mdlong',
-    'shaniam', 'nnennabr', 'kenley', 'elvisc'
-].map(u => u.toLowerCase().trim()));
-
 // Application state
 window.CSV_OVERRIDE_DATA = null;
 window.CSV_CUTOFF_DATE = new Date('2025-09-26T00:00:00');
@@ -957,19 +933,18 @@ async function calculateMemberPoints(signInData) {
         }
     });
     
-    // Helper function to check if member is paid (using paid members sheet + hardcoded list)
-    const isPaidMemberFast = (email, uniqname) => {
+    // Helper function to check if member is paid (using only paid members sheet and CSV data)
+    const isPaidMemberFast = (email) => {
         const normalizedEmail = email.toLowerCase().trim();
-        const normalizedUniqname = uniqname ? uniqname.toLowerCase().trim() : '';
-        
-        // Check paid members sheet
-        if (paidMemberEmails.has(normalizedEmail)) return true;
-        
-        // Check hardcoded paid chapter members list
-        if (normalizedUniqname && PAID_CHAPTER_MEMBERS.has(normalizedUniqname)) return true;
-        if (PAID_CHAPTER_MEMBERS.has(normalizedEmail)) return true;
-        
-        return false;
+        return (
+            paidMemberEmails.has(normalizedEmail) ||  // From paid members sheet only
+            // For CSV data, treat all as paid (historical NSBE members)
+            (window.CSV_OVERRIDE_DATA && window.CSV_OVERRIDE_DATA.some(csvEntry => {
+                const csvEmailField = Object.keys(csvEntry).find(k => k.toLowerCase().includes('email'));
+                const csvEmail = csvEmailField ? csvEntry[csvEmailField] : '';
+                return csvEmail && csvEmail.toLowerCase().trim() === normalizedEmail;
+            }))
+        );
     };
     
     // Process each entry
@@ -1012,7 +987,7 @@ async function calculateMemberPoints(signInData) {
                 totalPoints: 0,
                 eventHistory: [],
                 eventCount: 0,
-                isPaid: isPaidMemberFast(normalizedEmail, normalizedUniqname),
+                isPaid: isPaidMemberFast(normalizedEmail),
                 major: major,
                 Major: major, // Alias
                 year: year,
@@ -1312,14 +1287,6 @@ async function getLocalLeaderboard() {
                         points = 5;
                     }
                     
-                    // Get demographics from hardcoded mapping if available
-                    let major = attendee.major || '';
-                    let year = attendee.year || '';
-                    if (MEMBER_DEMOGRAPHICS[normalizedUniqname]) {
-                        major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                        year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-                    }
-                    
                     memberStats[normalizedUniqname] = {
                         email: attendee.email || '',
                         uniqname: normalizedUniqname,
@@ -1333,11 +1300,11 @@ async function getLocalLeaderboard() {
                             source: 'folder'
                         }],
                         eventCount: 1,
-                        isPaid: PAID_CHAPTER_MEMBERS.has(normalizedUniqname) || PAID_CHAPTER_MEMBERS.has((attendee.email || '').toLowerCase().trim()),
-                        major: major,
-                        Major: major,
-                        year: year,
-                        Year: year,
+                        isPaid: false, // Default to unpaid for folder-only members
+                        major: attendee.major || '',
+                        Major: attendee.major || '',
+                        year: attendee.year || '',
+                        Year: attendee.year || '',
                         national_dues: '',
                         'National Dues': ''
                     };

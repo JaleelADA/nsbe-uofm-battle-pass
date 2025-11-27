@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSBE Battle Pass - Admin Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .data-table { border-collapse: collapse; width: 100%; }
+        .data-table th, .data-table td { text-align: left; padding: 8px; border-bottom: 1px solid #374151; }
+        .data-table th { background-color: #1f2937; position: sticky; top: 0; z-index: 10; }
+    </style>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { nsbeGreen: "#4CAF50", nsbeGold: "#FFD700" } } } }
+    </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div id="root"></div>
+    <script src="src/Data-Constants.js"></script>
+    <script src="src/Shared-style.js"></script>
+    <script src="src/helpers.js"></script>
+    <script src="src/LocalDataManager.js"></script>
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        async function loadEventCalendar() {
+            try {
+                const response = await fetch('data/Event Schedule - F25.csv');
+                const text = await response.text();
+                const lines = text.split('\n').filter(l => l.trim());
+                const events = [];
+                
+                // Parse CSV - handle quoted fields properly
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i];
+                    if (!line.trim()) continue;
+                    
+                    // Simple CSV parser that handles quoted fields
+                    const parts = [];
+                    let current = '';
+                    let inQuotes = false;
+                    
+                    for (let char of line) {
+                        if (char === '"') {
+                            inQuotes = !inQuotes;
+                        } else if (char === ',' && !inQuotes) {
+                            parts.push(current.trim());
+                            current = '';
+                        } else {
+                            current += char;
+                        }
+                    }
+                    parts.push(current.trim());
+                    
+                    const name = parts[0]?.replace(/^"|"$/g, '').trim();
+                    const type = parts[1]?.trim();
+                    const startDate = parts[2] ? new Date(parts[2]) : null;
+                    const location = parts[4]?.trim();
+                    const owner = parts[5]?.trim();
+                    
+                    if (name && startDate && !isNaN(startDate.getTime())) {
+                        events.push({
+                            name: name,
+                            type: type || '',
+                            date: startDate.toLocaleDateString('en-US'),
+                            dateObj: startDate,
+                            location: location || '',
+                            contact: owner || ''
+                        });
+                    }
+                }
+                
+                // Add Fall Regional Conference (missing from schedule but has attendance data)
+                events.push({
+                    name: 'Fall Regional Conference',
+                    type: 'Conference',
+                    date: new Date('11/8/2025').toLocaleDateString('en-US'),
+                    dateObj: new Date('11/8/2025'),
+                    location: 'Milwaukee, WI',
+                    contact: 'Toluni Ghandi-Olaoye'
+                });
+                
+                console.log('📅 Loaded calendar events:', events.length, events.filter(e => e.type === 'GBM').map(e => e.name));
+                return events;
+            } catch (error) {
+                console.error('Error loading calendar:', error);
+                return [];
+            }
+        }
+
+        function matchEventToCalendar(eventType, timestamp, calendar) {
+            if (!timestamp || !calendar.length) return null;
+            const eventDate = new Date(timestamp).toLocaleDateString('en-US');
+            const eventsOnDate = calendar.filter(e => e.date === eventDate);
+            
+            // First try matching by date
+            if (eventsOnDate.length === 1) return eventsOnDate[0];
+            if (eventsOnDate.length > 1) {
+                const typeMatch = eventsOnDate.find(e => e.type.toLowerCase() === eventType.toLowerCase());
+                if (typeMatch) return typeMatch;
+                const nameMatch = eventsOnDate.find(e => 
+                    e.name.toLowerCase().includes(eventType.toLowerCase()) || 
+                    eventType.toLowerCase().includes(e.name.toLowerCase())
+                );
+                if (nameMatch) return nameMatch;
+                return eventsOnDate[0];
+            }
+            
+            // Handle retroactive entries (forms filled out after the event)
+            // Special handling for Convention Attendance -> Fall Regional Conference
+            if (eventType.toLowerCase().includes('convention')) {
+                const frc = calendar.find(e => e.name === 'Fall Regional Conference');
+                if (frc) return frc;
+            }
+            
+            // Try matching by type/name if there's only one event of that type
+            const eventsByType = calendar.filter(e => 
+                e.type.toLowerCase() === eventType.toLowerCase() ||
+                e.name.toLowerCase().includes(eventType.toLowerCase()) ||
+                eventType.toLowerCase().includes(e.name.toLowerCase())
+            );
+            
+            if (eventsByType.length === 1) return eventsByType[0];
+            
+            return null;
+        }
+
+        function calculateMemberBadges(member) {
+            if (!window.TRACKABLE_BADGES_CONFIG) return [];
+            const eventHistory = member.eventHistory || [];
+            const eventTypeCounts = {};
+            eventHistory.forEach(event => {
+                const type = event.eventType || 'Unknown';
+                eventTypeCounts[type] = (eventTypeCounts[type] || 0) + 1;
+            });
+            return window.TRACKABLE_BADGES_CONFIG.map(badgeConfig => {
+                let earned = false, progressText = 'Not started';
+                const gbm = eventTypeCounts['GBM'] || 0;
+                const pd = eventTypeCounts['Professional Development'] || 0;
+                const social = eventTypeCounts['Social Events'] || 0;
+                const academic = eventTypeCounts['Academic'] || eventTypeCounts['P-Zone'] || 0;
+                const community = eventTypeCounts['Community Service'] || 0;
+                const totalEvents = eventHistory.length;
+                switch (badgeConfig.id) {
+                    case 'paid-member': earned = member.isPaid === true; progressText = earned ? 'Completed' : 'Not paid'; break;
+                    case 'gbm-starter': earned = gbm >= 1; progressText = `${gbm}/1 GBM`; break;
+                    case 'gbm-regular': earned = gbm >= 3; progressText = `${gbm}/3 GBMs`; break;
+                    case 'gbm-champion': earned = gbm >= 5; progressText = `${gbm}/5 GBMs`; break;
+                    case 'pd-explorer': earned = pd >= 1; progressText = `${pd}/1 PD`; break;
+                    case 'pd-master': earned = pd >= 3; progressText = `${pd}/3 PD`; break;
+                    case 'social-connector': earned = social >= 2; progressText = `${social}/2 Social`; break;
+                    case 'study-warrior': earned = academic >= 3; progressText = `${academic}/3 Academic`; break;
+                    case 'community-helper': earned = community >= 1; progressText = `${community}/1 Community`; break;
+                    case 'consistent-member': earned = totalEvents >= 8; progressText = `${totalEvents}/8 events`; break;
+                }
+                return { id: badgeConfig.id, name: badgeConfig.name, icon: badgeConfig.icon, desc: badgeConfig.desc, earned, progressText };
+            });
+        }
+
+        function AdminDashboard() {
+            const [members, setMembers] = useState([]);
+            const [calendar, setCalendar] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            const [activeTab, setActiveTab] = useState('overview');
+            const [selectedMember, setSelectedMember] = useState(null);
+            const [selectedEvent, setSelectedEvent] = useState(null);
+            const [lastUpdated, setLastUpdated] = useState(null);
+            const [autoRefresh, setAutoRefresh] = useState(false);
+
+            const loadData = useCallback(async () => {
+                setLoading(true);
+                setError(null);
+                try {
+                    const [calendarData, result] = await Promise.all([
+                        loadEventCalendar(),
+                        window.getLocalLeaderboard()
+                    ]);
+                    setCalendar(calendarData);
+                    const memberData = Array.isArray(result) ? result : (result?.leaderboard || []);
+                    setMembers(memberData);
+                    setLastUpdated(new Date());
+                    setLoading(false);
+                } catch (err) {
+                    setError(err.message);
+                    setLoading(false);
+                }
+            }, []);
+
+            useEffect(() => { loadData(); }, [loadData]);
+            useEffect(() => {
+                if (!autoRefresh) return;
+                const interval = setInterval(loadData, 30000);
+                return () => clearInterval(interval);
+            }, [autoRefresh, loadData]);
+
+            const attendanceByEvent = useMemo(() => {
+                const eventMap = {};
+                members.forEach(member => {
+                    if (!member.eventHistory || !Array.isArray(member.eventHistory)) return;
+                    member.eventHistory.forEach(eventEntry => {
+                        if (!eventEntry || typeof eventEntry !== 'object') return;
+                        const eventType = eventEntry.eventType || '';
+                        const timestamp = eventEntry.timestamp || '';
+                        if (!eventType || !timestamp) return;
+                        const calendarEvent = matchEventToCalendar(eventType, timestamp, calendar);
+                        const eventKey = calendarEvent ? `${calendarEvent.name} (${calendarEvent.date})` : `${eventType} (${new Date(timestamp).toLocaleDateString('en-US')})`;
+                        if (!eventMap[eventKey]) {
+                            eventMap[eventKey] = {
+                                name: calendarEvent?.name || eventType,
+                                type: calendarEvent?.type || eventType,
+                                date: calendarEvent?.date || new Date(timestamp).toLocaleDateString('en-US'),
+                                dateObj: calendarEvent?.dateObj || new Date(timestamp),
+                                location: calendarEvent?.location || '',
+                                contact: calendarEvent?.contact || '',
+                                attendees: []
+                            };
+                        }
+                        // Pull demographics directly from sign-in data (eventEntry has raw form data)
+                        const major = eventEntry.major || eventEntry.Major || '';
+                        const year = eventEntry.year || eventEntry.Year || '';
+                        const nationalDues = eventEntry.national_dues || eventEntry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'] || '';
+                        
+                        eventMap[eventKey].attendees.push({
+                            name: member.displayName || member.name,
+                            email: member.email || eventEntry.email,
+                            uniqname: member.uniqname || eventEntry.uniqname,
+                            major: major,
+                            year: year,
+                            isPaid: member.isPaid,
+                            nationalDues: nationalDues,
+                            points: eventEntry.totalPoints || 0
+                        });
+                    });
+                });
+                return Object.values(eventMap).sort((a, b) => b.dateObj - a.dateObj);
+            }, [members, calendar]);
+
+            const badgeStats = useMemo(() => {
+                if (!window.TRACKABLE_BADGES_CONFIG) return { badgeProgress: {}, memberBadges: {} };
+                const stats = { badgeProgress: {}, memberBadges: {} };
+                members.forEach(member => {
+                    stats.memberBadges[member.uniqname] = calculateMemberBadges(member);
+                });
+                window.TRACKABLE_BADGES_CONFIG.forEach(badgeConfig => {
+                    let completedCount = 0;
+                    Object.values(stats.memberBadges).forEach(badges => {
+                        const badge = badges.find(b => b.id === badgeConfig.id);
+                        if (badge && badge.earned) completedCount++;
+                    });
+                    stats.badgeProgress[badgeConfig.id] = {
+                        name: badgeConfig.name,
+                        icon: badgeConfig.icon,
+                        completed: completedCount,
+                        total: members.length,
+                        percentage: members.length > 0 ? (completedCount / members.length * 100).toFixed(1) : 0
+                    };
+                });
+                return stats;
+            }, [members]);
+
+            const systemStats = useMemo(() => {
+                const stats = {
+                    totalMembers: members.length,
+                    paidMembers: members.filter(m => m.isPaid).length,
+                    totalEvents: attendanceByEvent.length,
+                    averagePoints: members.length > 0 ? (members.reduce((sum, m) => sum + (m.totalPoints || 0), 0) / members.length).toFixed(1) : 0,
+                    averageAttendance: attendanceByEvent.length > 0 ? Math.round(attendanceByEvent.reduce((sum, e) => sum + e.attendees.length, 0) / attendanceByEvent.length) : 0,
+                    tierDistribution: {},
+                    demographics: { majors: {}, years: {}, nationalDues: { paid: 0, unpaid: 0, unknown: 0 } }
+                };
+                
+                // Calculate demographics from sign-in data (event attendees have the correct data)
+                const demographicsMap = new Map();
+                attendanceByEvent.forEach(event => {
+                    event.attendees.forEach(attendee => {
+                        const key = attendee.uniqname;
+                        if (!demographicsMap.has(key)) {
+                            demographicsMap.set(key, {
+                                major: attendee.major,
+                                year: attendee.year,
+                                nationalDues: attendee.nationalDues
+                            });
+                        } else {
+                            // Update if newer data has values and old doesn't
+                            const existing = demographicsMap.get(key);
+                            if (!existing.major && attendee.major) existing.major = attendee.major;
+                            if (!existing.year && attendee.year) existing.year = attendee.year;
+                            if (!existing.nationalDues && attendee.nationalDues) existing.nationalDues = attendee.nationalDues;
+                        }
+                    });
+                });
+                
+                // Aggregate demographics
+                demographicsMap.forEach((demo, uniqname) => {
+                    const major = demo.major || 'Unknown';
+                    const year = demo.year || 'Unknown';
+                    const dues = (demo.nationalDues || '').toString().toLowerCase();
+                    
+                    if (major !== 'Unknown') stats.demographics.majors[major] = (stats.demographics.majors[major] || 0) + 1;
+                    if (year !== 'Unknown') stats.demographics.years[year] = (stats.demographics.years[year] || 0) + 1;
+                    
+                    if (dues.includes('yes') || dues.includes('paid')) {
+                        stats.demographics.nationalDues.paid++;
+                    } else if (dues.includes('no') || dues.includes('unpaid')) {
+                        stats.demographics.nationalDues.unpaid++;
+                    } else {
+                        stats.demographics.nationalDues.unknown++;
+                    }
+                });
+                
+                // Tier distribution
+                members.forEach(m => {
+                    const tier = m.tier || 'Participant';
+                    stats.tierDistribution[tier] = (stats.tierDistribution[tier] || 0) + 1;
+                });
+                
+                return stats;
+            }, [members, attendanceByEvent]);
+
+            const exportCSV = (data, filename) => {
+                const csv = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = filename; a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            const exportMembers = () => {
+                const headers = ['Name', 'Email', 'Uniqname', 'Major', 'Year', 'Payment', 'National Dues', 'Points', 'Events', 'Tier'];
+                const rows = members.map(m => [m.displayName || m.name, m.email, m.uniqname, m.major || m.Major || '', m.year || m.Year || '', m.isPaid ? 'Paid' : 'Unpaid', m.national_dues || m['National Dues'] || '', m.totalPoints || 0, m.eventCount || 0, m.tier || '']);
+                exportCSV([headers, ...rows], 'nsbe-members.csv');
+            };
+
+            const exportEvents = () => {
+                const headers = ['Event', 'Type', 'Date', 'Location', 'Contact', 'Attendance'];
+                const rows = attendanceByEvent.map(e => [e.name, e.type, e.date, e.location, e.contact, e.attendees.length]);
+                exportCSV([headers, ...rows], 'nsbe-events.csv');
+            };
+
+            const exportEventAttendance = (event) => {
+                const headers = ['Name', 'Email', 'Uniqname', 'Major', 'Year', 'Payment', 'National Dues', 'Points'];
+                const rows = event.attendees.map(a => [a.name, a.email, a.uniqname, a.major, a.year, a.isPaid ? 'Paid' : 'Unpaid', a.nationalDues, a.points]);
+                exportCSV([headers, ...rows], `${event.name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-attendance.csv`);
+            };
+
+            const exportBadges = () => {
+                const rows = [];
+                Object.entries(badgeStats.memberBadges).forEach(([uniqname, badges]) => {
+                    badges.forEach(badge => rows.push([uniqname, badge.name, badge.earned ? 'Yes' : 'No', badge.progressText]));
+                });
+                exportCSV([['Uniqname', 'Badge', 'Earned', 'Progress'], ...rows], 'nsbe-badges.csv');
+            };
+
+            if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="text-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-nsbeGold mx-auto mb-4"></div><div className="text-lg">Loading dashboard...</div></div></div>;
+            if (error) return <div className="min-h-screen flex items-center justify-center"><div className="text-center text-red-400"><div className="text-xl mb-4">❌ Error: {error}</div><button onClick={loadData} className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded">Retry</button></div></div>;
+
+            return (
+                <div className="min-h-screen bg-gray-900">
+                    <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-20">
+                        <div className="max-w-7xl mx-auto px-4 py-4">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h1 className="text-2xl font-bold text-nsbeGold">NSBE Battle Pass - Admin Dashboard</h1>
+                                    <p className="text-gray-400 text-sm">{lastUpdated && `Last updated: ${lastUpdated.toLocaleString()}`}</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <label className="flex items-center gap-2">
+                                        <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} className="rounded" />
+                                        <span className="text-sm">Auto-refresh (30s)</span>
+                                    </label>
+                                    <button onClick={loadData} className="px-4 py-2 bg-nsbeGreen hover:bg-green-600 rounded transition-colors text-sm">🔄 Refresh</button>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="max-w-7xl mx-auto px-4 py-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+                            <StatsCard title="Total Members" value={systemStats.totalMembers} icon="👥" color="blue" />
+                            <StatsCard title="Paid Members" value={systemStats.paidMembers} icon="💰" color="green" />
+                            <StatsCard title="Total Events" value={systemStats.totalEvents} icon="📅" color="purple" />
+                            <StatsCard title="Avg Attendance" value={systemStats.averageAttendance} icon="📊" color="purple" />
+                            <StatsCard title="Avg Points" value={systemStats.averagePoints} icon="⭐" color="yellow" />
+                        </div>
+
+                        <div className="mb-6">
+                            <div className="border-b border-gray-700">
+                                <div className="flex gap-2">
+                                    {[
+                                        { id: 'overview', label: '📊 Overview' },
+                                        { id: 'leaderboard', label: '🏆 Leaderboard' },
+                                        { id: 'badges', label: '🎖️ Badges' },
+                                        { id: 'members', label: '👤 Members' },
+                                        { id: 'events', label: '📅 Events' },
+                                        { id: 'analytics', label: '📈 Analytics' }
+                                    ].map(tab => (
+                                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`px-6 py-3 font-semibold transition-colors ${activeTab === tab.id ? 'border-b-2 border-nsbeGold text-nsbeGold' : 'text-gray-400 hover:text-white'}`}>{tab.label}</button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-800 rounded-lg">
+                            {activeTab === 'overview' && <OverviewTab stats={systemStats} attendanceByEvent={attendanceByEvent} members={members} />}
+                            {activeTab === 'leaderboard' && <LeaderboardTab members={members} onExport={exportMembers} />}
+                            {activeTab === 'badges' && <BadgesTab badgeStats={badgeStats} members={members} onExport={exportBadges} />}
+                            {activeTab === 'members' && <MembersTab members={members} selectedMember={selectedMember} setSelectedMember={setSelectedMember} badgeStats={badgeStats} />}
+                            {activeTab === 'events' && <EventsTab attendanceByEvent={attendanceByEvent} exportEvents={exportEvents} exportEventAttendance={exportEventAttendance} selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />}
+                            {activeTab === 'analytics' && <AnalyticsTab systemStats={systemStats} members={members} attendanceByEvent={attendanceByEvent} />}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function StatsCard({ title, value, icon, color }) {
+            const colors = { blue: 'bg-blue-900/30 border-blue-400 text-blue-200', green: 'bg-green-900/30 border-green-400 text-green-200', purple: 'bg-purple-900/30 border-purple-400 text-purple-200', yellow: 'bg-yellow-900/30 border-yellow-400 text-yellow-200' };
+            return <div className={`p-6 border rounded-lg ${colors[color]}`}><div className="flex items-center justify-between"><div><p className="text-sm opacity-80">{title}</p><p className="text-2xl font-bold">{value}</p></div><div className="text-3xl">{icon}</div></div></div>;
+        }
+
+        function OverviewTab({ stats, attendanceByEvent, members }) {
+            const topEvents = [...attendanceByEvent].sort((a, b) => b.attendees.length - a.attendees.length).slice(0, 5);
+            const topMembers = [...members].sort((a, b) => (b.totalPoints || 0) - (a.totalPoints || 0)).slice(0, 5);
+            return (
+                <div className="p-6">
+                    <h2 className="text-xl font-bold mb-6">Dashboard Overview</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">Top 5 Events by Attendance</h3>
+                            <div className="space-y-3">
+                                {topEvents.map((event, idx) => (
+                                    <div key={idx} className="flex justify-between items-center bg-gray-600 p-3 rounded">
+                                        <div>
+                                            <div className="font-semibold">{event.name}</div>
+                                            <div className="text-sm text-gray-400">{event.date} • {event.type}</div>
+                                        </div>
+                                        <div className="text-2xl font-bold text-green-400">{event.attendees.length}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">Top 5 Members</h3>
+                            <div className="space-y-3">
+                                {topMembers.map((member, idx) => (
+                                    <div key={idx} className="flex justify-between items-center bg-gray-600 p-3 rounded">
+                                        <div>
+                                            <div className="font-semibold">{member.displayName || member.name}</div>
+                                            <div className="text-sm text-gray-400">{member.tier} • {member.eventCount || 0} events</div>
+                                        </div>
+                                        <div className="text-2xl font-bold text-nsbeGold">{member.totalPoints || 0}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function LeaderboardTab({ members, onExport }) {
+            return (
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold">Complete Leaderboard</h2>
+                        <button onClick={onExport} className="px-4 py-2 bg-nsbeGreen hover:bg-green-600 rounded">📊 Export CSV</button>
+                    </div>
+                    <div className="overflow-x-auto max-h-96 overflow-y-auto">
+                        <table className="data-table text-sm">
+                            <thead><tr><th>Rank</th><th>Name</th><th>Email</th><th>Points</th><th>Events</th><th>Tier</th><th>Status</th></tr></thead>
+                            <tbody>
+                                {members.map((m, idx) => (
+                                    <tr key={m.uniqname}>
+                                        <td>#{m.rank || idx + 1}</td>
+                                        <td>{m.displayName || m.name}</td>
+                                        <td className="text-gray-400">{m.email}</td>
+                                        <td className="font-bold text-nsbeGold">{m.totalPoints || 0}</td>
+                                        <td>{m.eventCount || 0}</td>
+                                        <td><span className={`px-2 py-1 rounded text-xs ${getTierColor(m.tier)}`}>{m.tier || 'Participant'}</span></td>
+                                        <td>{m.isPaid ? <span className="text-green-400">✅ Paid</span> : <span className="text-gray-500">⚪ Unpaid</span>}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        }
+
+        function BadgesTab({ badgeStats, onExport }) {
+            return (
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold">Badge Progress</h2>
+                        <button onClick={onExport} className="px-4 py-2 bg-nsbeGreen hover:bg-green-600 rounded">📊 Export CSV</button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {Object.entries(badgeStats.badgeProgress).map(([id, stats]) => (
+                            <div key={id} className="bg-gray-700 p-4 rounded-lg">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <span className="text-3xl">{stats.icon}</span>
+                                    <div><div className="font-bold">{stats.name}</div><div className="text-sm text-gray-400">{stats.completed}/{stats.total} members</div></div>
+                                </div>
+                                <div className="w-full bg-gray-600 rounded-full h-2 mb-2">
+                                    <div className="bg-nsbeGreen h-2 rounded-full" style={{width: `${stats.percentage}%`}}></div>
+                                </div>
+                                <div className="text-sm text-center text-gray-300">{stats.percentage}%</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function MembersTab({ members, selectedMember, setSelectedMember, badgeStats }) {
+            return (
+                <div className="p-6">
+                    <h2 className="text-xl font-bold mb-4">Member Details</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 className="text-lg font-semibold mb-3">Select Member</h3>
+                            <div className="max-h-96 overflow-y-auto bg-gray-700 rounded">
+                                {members.map(m => (
+                                    <button key={m.uniqname} onClick={() => setSelectedMember(m)} className={`w-full text-left p-3 border-b border-gray-600 hover:bg-gray-600 ${selectedMember?.uniqname === m.uniqname ? 'bg-gray-600' : ''}`}>
+                                        <div className="font-semibold">{m.displayName || m.name}</div>
+                                        <div className="text-sm text-gray-400">{m.email}</div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div>
+                            {selectedMember ? (
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-4">{selectedMember.displayName || selectedMember.name}</h3>
+                                    <div className="space-y-4">
+                                        <div className="bg-gray-700 p-4 rounded">
+                                            <h4 className="font-semibold mb-2">Demographics</h4>
+                                            <div className="space-y-2 text-sm">
+                                                <div><span className="text-gray-400">Major:</span> <span className="text-purple-300">{selectedMember.major || selectedMember.Major || 'Not specified'}</span></div>
+                                                <div><span className="text-gray-400">Year:</span> <span className="text-blue-300">{selectedMember.year || selectedMember.Year || 'Not specified'}</span></div>
+                                                <div><span className="text-gray-400">National Dues:</span> <span className={formatNationalDuesClass(selectedMember)}>{formatNationalDues(selectedMember)}</span></div>
+                                            </div>
+                                        </div>
+                                        <div className="bg-gray-700 p-4 rounded">
+                                            <h4 className="font-semibold mb-2">Points & Status</h4>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div><div className="text-gray-400 text-sm">Points</div><div className="text-2xl font-bold text-nsbeGold">{selectedMember.totalPoints || 0}</div></div>
+                                                <div><div className="text-gray-400 text-sm">Events</div><div className="text-2xl font-bold text-green-400">{selectedMember.eventCount || 0}</div></div>
+                                                <div><div className="text-gray-400 text-sm">Tier</div><div className="text-xl font-bold">{selectedMember.tier || 'Participant'}</div></div>
+                                                <div><div className="text-gray-400 text-sm">Payment</div><div className={selectedMember.isPaid ? 'text-green-400' : 'text-gray-400'}>{selectedMember.isPaid ? '✅ Paid' : '⚪ Unpaid'}</div></div>
+                                            </div>
+                                        </div>
+                                        {badgeStats.memberBadges[selectedMember.uniqname] && (
+                                            <div className="bg-gray-700 p-4 rounded">
+                                                <h4 className="font-semibold mb-2">Badges ({badgeStats.memberBadges[selectedMember.uniqname].filter(b => b.earned).length} earned)</h4>
+                                                <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                                                    {badgeStats.memberBadges[selectedMember.uniqname].map(badge => (
+                                                        <div key={badge.id} className={`p-2 rounded text-sm ${badge.earned ? 'bg-green-900/30 border border-green-400' : 'bg-gray-600'}`}>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-xl">{badge.icon}</span>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className="font-semibold truncate text-xs">{badge.name}</div>
+                                                                    <div className="text-xs text-gray-400">{badge.progressText}</div>
+                                                                </div>
+                                                                {badge.earned && <span className="text-green-400">✓</span>}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center text-gray-400 py-12">Select a member to view details</div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function EventsTab({ attendanceByEvent, exportEvents, exportEventAttendance, selectedEvent, setSelectedEvent }) {
+            const [typeFilter, setTypeFilter] = useState('all');
+            const filteredEvents = typeFilter === 'all' ? attendanceByEvent : attendanceByEvent.filter(e => e.type === typeFilter);
+            const eventTypes = ['all', ...new Set(attendanceByEvent.map(e => e.type))];
+            return (
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold">Event Attendance</h2>
+                        <div className="flex gap-4">
+                            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="bg-gray-700 border border-gray-600 rounded px-4 py-2">
+                                {eventTypes.map(type => <option key={type} value={type}>{type === 'all' ? 'All Types' : type}</option>)}
+                            </select>
+                            <button onClick={exportEvents} className="px-4 py-2 bg-nsbeGreen hover:bg-green-600 rounded">📊 Export All</button>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {filteredEvents.map(event => (
+                            <div key={event.name} className="bg-gray-700 p-4 rounded-lg border-l-4 border-blue-500">
+                                <div className="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h3 className="font-bold text-lg">{event.name}</h3>
+                                        <div className="text-sm text-gray-400 space-y-1 mt-2">
+                                            <div>📅 {event.date}</div>
+                                            {event.location && <div>📍 {event.location}</div>}
+                                            {event.contact && <div>👤 {event.contact}</div>}
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="inline-block bg-blue-600 px-3 py-1 rounded text-sm mb-2">{event.type}</span>
+                                        <div className="text-3xl font-bold text-green-400">{event.attendees.length}</div>
+                                        <div className="text-xs text-gray-400">attendees</div>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button onClick={() => setSelectedEvent(event)} className="flex-1 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm">View Details</button>
+                                    <button onClick={() => exportEventAttendance(event)} className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-sm">📥 Export</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {selectedEvent && <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
+                </div>
+            );
+        }
+
+        function EventDetailModal({ event, onClose }) {
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4" onClick={onClose}>
+                    <div className="bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6">
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h2 className="text-3xl font-bold mb-2">{event.name}</h2>
+                                    <div className="text-gray-400 space-y-1">
+                                        <div>📅 {event.date}</div>
+                                        {event.location && <div>📍 {event.location}</div>}
+                                        {event.contact && <div>👤 {event.contact}</div>}
+                                    </div>
+                                </div>
+                                <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl">&times;</button>
+                            </div>
+                            <h3 className="text-xl font-bold mb-4">Attendees ({event.attendees.length})</h3>
+                            <div className="overflow-x-auto">
+                                <table className="data-table">
+                                    <thead><tr><th>Name</th><th>Email</th><th>Major</th><th>Year</th><th>Payment</th></tr></thead>
+                                    <tbody>
+                                        {event.attendees.map((a, idx) => (
+                                            <tr key={idx}>
+                                                <td>{a.name}</td>
+                                                <td className="text-sm text-gray-400">{a.email}</td>
+                                                <td className="text-sm">{a.major || 'N/A'}</td>
+                                                <td className="text-sm">{a.year || 'N/A'}</td>
+                                                <td>{a.isPaid ? <span className="text-green-400">✅ Paid</span> : <span className="text-gray-500">⚪ Unpaid</span>}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function AnalyticsTab({ systemStats, members, attendanceByEvent }) {
+            useEffect(() => {
+                const eventTypeCtx = document.getElementById('eventTypeChart');
+                if (eventTypeCtx) {
+                    const types = {};
+                    attendanceByEvent.forEach(e => types[e.type] = (types[e.type] || 0) + 1);
+                    new Chart(eventTypeCtx, {
+                        type: 'doughnut',
+                        data: { labels: Object.keys(types), datasets: [{ data: Object.values(types), backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'] }] },
+                        options: { responsive: true, plugins: { legend: { labels: { color: '#FFF' } } } }
+                    });
+                }
+                const tierCtx = document.getElementById('tierChart');
+                if (tierCtx) {
+                    new Chart(tierCtx, {
+                        type: 'bar',
+                        data: { labels: Object.keys(systemStats.tierDistribution), datasets: [{ label: 'Members', data: Object.values(systemStats.tierDistribution), backgroundColor: '#3B82F6' }] },
+                        options: { responsive: true, plugins: { legend: { labels: { color: '#FFF' } } }, scales: { y: { ticks: { color: '#FFF' } }, x: { ticks: { color: '#FFF' } } } }
+                    });
+                }
+            }, []);
+            return (
+                <div className="p-6">
+                    <h2 className="text-xl font-bold mb-6">System Analytics</h2>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div className="bg-gray-700 p-4 rounded-lg"><h3 className="text-lg font-semibold mb-4">Event Type Distribution</h3><canvas id="eventTypeChart"></canvas></div>
+                        <div className="bg-gray-700 p-4 rounded-lg"><h3 className="text-lg font-semibold mb-4">Tier Distribution</h3><canvas id="tierChart"></canvas></div>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">Demographics - Years</h3>
+                            <div className="space-y-2">
+                                {Object.entries(systemStats.demographics.years).sort((a, b) => b[1] - a[1]).map(([year, count]) => (
+                                    <div key={year} className="flex justify-between"><span>{year}</span><span className="font-bold">{count}</span></div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">Demographics - Majors</h3>
+                            <div className="space-y-2 max-h-64 overflow-y-auto">
+                                {Object.entries(systemStats.demographics.majors).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([major, count]) => (
+                                    <div key={major} className="flex justify-between"><span className="truncate">{major}</span><span className="font-bold ml-2">{count}</span></div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="bg-gray-700 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-4">National Dues Status</h3>
+                            <div className="space-y-3">
+                                <div className="flex justify-between"><span>Paid:</span><span className="font-bold text-green-400">{systemStats.demographics.nationalDues.paid}</span></div>
+                                <div className="flex justify-between"><span>Unpaid:</span><span className="font-bold text-red-400">{systemStats.demographics.nationalDues.unpaid}</span></div>
+                                <div className="flex justify-between"><span>Unknown:</span><span className="font-bold text-gray-400">{systemStats.demographics.nationalDues.unknown}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function getTierColor(tier) {
+            const colors = { 'Gold': 'bg-yellow-500 text-black', 'Silver': 'bg-gray-300 text-black', 'Bronze': 'bg-orange-600 text-white', 'Participant': 'bg-gray-600 text-white' };
+            return colors[tier] || 'bg-gray-600 text-white';
+        }
+
+        function formatNationalDues(member) {
+            const dues = (member.national_dues || member['National Dues'] || '').toString().toLowerCase();
+            if (dues.includes('yes') || dues.includes('paid')) return '✅ Paid';
+            if (dues.includes('no') || dues.includes('unpaid')) return '❌ Unpaid';
+            return '❓ Unknown';
+        }
+
+        function formatNationalDuesClass(member) {
+            const dues = (member.national_dues || member['National Dues'] || '').toString().toLowerCase();
+            if (dues.includes('yes') || dues.includes('paid')) return 'text-green-400';
+            if (dues.includes('no') || dues.includes('unpaid')) return 'text-red-400';
+            return 'text-gray-400';
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AdminDashboard />);
+    </script>
+</body>
+</html>

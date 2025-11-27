@@ -1,0 +1,43 @@
+('Engineers Brunch	Social	8/24/2025 11:00:00	8/24/2025 1:00:00	Michigan League Ballroom	Mikko Hendricks')Engineers Brunch	Social	8/24/2025 11:00:00	8/24/2025 1:00:00	Michigan League Ballroom	Mikko Hendricks
+Festifall	Tabling	8/27/2025 0:00:00		Diag	Gianna Williams
+Freshman/Transfer mixer	Social	8/28/2025 0:00:00		Mason Hall	Megan Nyabaro
+BBQ	Social	8/30/2025 12:00:00	8/30/2025 4:00:00	Rackham Graduate School - University of Michigan	Jaleel Drones-Akins
+Resume Workshop	PD	9/5/2025 5:00:00	9/5/2025 6:00:00	Mason Hall	Nnenna Brown
+Fall Corporate Mixer('Fall Corporate Mixer	PD	9/7/2025 0:00:00		G.G. Brown Building	Kaden Sanders')	PD	9/7/2025 0:00:00		G.G. Brown Building	Kaden Sanders
+Study Jamz	Academic	9/8/2025 5:00:00	9/8/2025 8:00:00		
+1st GBM w/ Ford	GBM	9/12/2025 5:30:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	9/15/2025 5:00:00	9/15/2025 8:00:00		
+Jane Street Tech Talk	PD	9/17/2025 6:00:00			Kaden Sanders
+Verkada Tech Talk	PD	9/18/2025 1:00:00		Leinweber 1125	Kaden Sanders
+Golfing with Ford	PD	9/18/2025 0:00:00		Driving Range	Kaden Sanders
+Peninsula Park Cleanup	Community Service	9/20/2025 9:00:00	9/20/2025 12:00:00	Peninsular Park	Londyn Jefferson
+Study Jamz	Academic	9/22/2025 5:00:00	9/22/2025 8:00:00		
+LinkedIn Headshots	PD				Nnenna Brown
+2nd GBM w/ P&G	GBM	9/26/2025 0:00:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	9/29/2025 5:00:00	9/29/2025 8:00:00		
+"
+Black Engineering Coalition X GSBES Graduate School Event"	Social	9/30/2025 5:30:00	9/30/2025 7:00:00	Dow Building	Gianna Williams
+Mentorship Mixer: Estimathon	Mentorship	10/1/2025 6:00:00	10/1/2025 7:30:00	1448 MH	Jaleel Drones-Akins
+Study Jamz	Academic	10/6/2025 5:00:00	10/6/2025 8:00:00		
+Bowling w/ Coinbase	Social	10/8/2025 8:00:00	10/8/2025 10:00:00	Revel and Roll	Kaden Sanders
+Study Jamz	Academic	10/13/2025 5:00:00	10/13/2025 8:00:00		
+Bloomberg Coffee Chats	Social	10/15/2025 0:00:00	10/15/2025 0:00:00		Kaden Sanders
+Lunch & Learn Series #1	PD	10/16/2025 6:00:00	10/16/2025 7:00:00		
+PCI x AEX Cass Workshop	PCI	10/17/2025 0:00:00	10/17/2025 0:00:00	Cass Technical High School	Shantiah Watt
+3rd GBM	GBM	10/17/2025 0:00:00		1610 IOE	Mikko Hendricks
+Cedar Point	Social	10/19/2025 8:45:00	10/19/2025 6:00:00	Cedar Point	Jaleel Drones-Akins
+Study Jamz	Academic	10/20/2025 5:00:00	10/20/2025 8:00:00		
+Mind Matters (NSBE x BUPA)	Academic	10/22/2025 7:35:00	10/22/2025 9:30:00	South Quad Yuri Lounge	Shaylena Dodge
+Curl Talk Collab	Social	10/24/2025 6:00:00	10/24/2025 8:00:00	South Quad Yuri Lounge	Megan Nyabaro
+Making Strides Breast Cancer Walk	Community Service	10/25/2025 9:00:00	10/25/2025 0:00:00	Washtenaw Community College	
+Study Jamz	Academic	10/27/2025 5:00:00	10/27/2025 8:00:00		
+4th GBM	GBM	10/31/2025 0:00:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	11/3/2025 5:00:00	11/3/2025 8:00:00		
+NSBE X SHPE X Theta Tau X BSA Fall Craft Collab 	Social	11/5/2025 6:00:00	11/5/2025 8:00:00	Dow Building 1014	Megan Nyabaro
+Study Jamz	Academic	11/10/2025 5:00:00	11/10/2025 8:00:00		
+IOE Tabling	Tabling	11/12/2025 11:00:00	11/12/2025 1:30:00	Industrial and Operations Eng 	Iman Ahmed
+NSBE x BlackGen Capital Financial Literacy	PD	11/14/2025 3:30:00	11/14/2025 5:00:00	Ross School of Business	Nnenna Brown
+Study Jamz	Academic	11/17/2025 5:00:00	11/17/2025 8:00:00		
+Cozy Cooldown Social	Social	11/17/2025 7:30:00	11/17/2025 9:00:00	2325 Mason Hall	Mikko Hendricks
+Maximize your Summer	Academic	11/19/2025 5:00:00	11/19/2025 6:00:00	Trotter Multicultural Center	Zharia Hunter 
+5th GBM w/ Google	GBM	11/21/2025 0:00:00		1610 IOE	Mikko Hendricks

@@ -9,119 +9,6 @@ const SHEETS_CONFIG = {
   API_KEY: 'AIzaSyDSy7s_QYYX26D0ySIJQJ7zWAfBxUIGvOg'
 };
 
-// Member demographics mapping
-const MEMBER_DEMOGRAPHICS = {
-    'makaelaw': { major: 'Civil Engineering, Architecture', year: '2nd' },
-    'ericahay': { major: 'Computer Science (LSA)', year: '3rd' },
-    'natoriaw': { major: 'Mechanical Engineering', year: '5th+' },
-    'mdlong': { major: 'Industrial and Operations Engineering', year: '3rd' },
-    'ericdom': { major: 'Biomedical Engineering', year: '2nd' },
-    'bsnkpah': { major: 'Data Science', year: '4th' },
-    'devinmap': { major: 'Materials Science and Engineering', year: '5th+' },
-    'ugonnao': { major: 'Computer Science (CoE)', year: '4th' },
-    'malawis': { major: 'Computer Science (LSA)', year: '4th' },
-    'desta': { major: 'Civil Engineering', year: '3rd' },
-    'giannaw': { major: 'Electrical Engineering', year: '4th' },
-    'cmonie': { major: 'Industrial and Operations Engineering', year: '3rd' },
-    'cjakombi': { major: 'Mechanical Engineering', year: '4th' },
-    'regind': { major: 'Electrical Engineering', year: '3rd' },
-    'kingjj': { major: 'Urban Technology', year: '3rd' },
-    'plafave': { major: 'Biomedical Engineering, Cellular and Molecular Biomedical Sciences', year: '4th' },
-    'sayoodus': { major: 'Computer Science (LSA)', year: '2nd' },
-    'msmbayo': { major: 'Computer Science (LSA)', year: '2nd' },
-    'brynnw': { major: 'Computer Science (LSA)', year: '2nd' },
-    'kwabenaf': { major: 'Mechanical Engineering', year: '2nd' },
-    'donjm': { major: 'Computer Engineering', year: '5th+' },
-    'landond': { major: 'Computer Science (LSA)', year: '2nd' },
-    'daniecam': { major: 'Civil Engineering', year: '3rd' },
-    'hunegnaw': { major: 'Industrial and Operations Engineering', year: '2nd' },
-    'adna@umich.edu': { major: 'Civil Engineering', year: '4th' },
-    'owadugea': { major: 'Computer Science (LSA)', year: '4th' },
-    'ariaf': { major: 'Computer Science (LSA)', year: '3rd' },
-    'laurennn': { major: 'Biomedical Engineering', year: '5th+' },
-    'ayeyiyp': { major: 'Civil Engineering', year: '4th' },
-    'obiohac': { major: 'Computer Science (LSA)', year: '2nd' },
-    'aressom': { major: 'Computer Science (LSA)', year: '2nd' },
-    'gpears': { major: 'Biomedical Engineering', year: '3rd' },
-    'samueltk@umich.edu': { major: 'Computer Science (CoE)', year: '3rd' },
-    'akodjo': { major: 'Electrical Engineering', year: '3rd' },
-    'bsoumare': { major: 'Biomedical Engineering', year: '4th' },
-    'kylemoni': { major: 'Electrical Engineering', year: '1st' },
-    'kaibilal': { major: 'Engineering Physics', year: '1st' },
-    'grcesar': { major: 'Industrial and Operations Engineering, Robotics, Undeclared', year: '1st' },
-    'stjulius': { major: 'Computer Engineering', year: '1st' },
-    'alexbing': { major: 'Computer Science (CoE)', year: '1st' },
-    'aayungo': { major: 'Computer Science (CoE)', year: '1st' },
-    'jjbishaw': { major: 'Computer Science (CoE)', year: '1st' },
-    'haarun': { major: 'Computer Science (LSA)', year: '1st' },
-    'mekiyabe': { major: 'Biomedical Engineering, Undeclared', year: '1st' },
-    'aphall': { major: 'Biomedical Engineering', year: '1st' },
-    'onimisi': { major: 'Computer Engineering', year: '1st' },
-    'kerylfo@umich.edu': { major: 'Electrical Engineering', year: '1st' },
-    'kmonie': { major: 'Mechanical Engineering', year: '1st' },
-    'njokuc': { major: 'Mechanical Engineering', year: '1st' },
-    'tparham': { major: 'Undeclared', year: '1st' },
-    'gomarr': { major: 'Computer Science (LSA)', year: '1st' },
-    'lsfifer': { major: 'Computer Science (LSA)', year: '1st' },
-    'matipa': { major: 'Computer Science (CoE)', year: '1st' },
-    'rareno': { major: 'Mechanical Engineering', year: '2nd' },
-    'jadlewis': { major: 'Naval Architecture and Marine Engineering', year: '4th' },
-    'hadegbit': { major: 'Mechanical Engineering', year: '3rd' },
-    'tchonang': { major: 'Industrial and Operations Engineering', year: '4th' },
-    'justn': { major: 'Computer Science (CoE)', year: '1st' },
-    'lindsis': { major: 'Electrical Engineering', year: '1st' },
-    'dcadjer': { major: 'Undeclared', year: '1st' },
-    'kenley': { major: 'Electrical Engineering', year: '4th' },
-    'dantepar': { major: 'Computer Science (LSA)', year: '2nd' },
-    'howardsl': { major: 'Computer Science (LSA)', year: '4th' },
-    'gavynw': { major: 'Mechanical Engineering', year: '1st' },
-    'ghonore': { major: 'Aerospace Engineering', year: '2nd' },
-    'mdinku': { major: 'Chemical Engineering', year: '2nd' },
-    'layiolus': { major: 'Computer Science (LSA)', year: '4th' },
-    'jaedarae': { major: 'Biomedical Engineering', year: '2nd' },
-    'uneak': { major: 'Electrical Engineering', year: '4th' },
-    'jadaree': { major: 'Materials Science and Engineering', year: '3rd' },
-    'dtellis': { major: 'Computer Science (LSA)', year: '1st' },
-    'mseade': { major: 'Computer Science (LSA)', year: '1st' },
-    'zakyahe': { major: 'Chemical Engineering', year: '4th' },
-    'travic': { major: 'Mechanical Engineering', year: '5th+' },
-    'ihairsto': { major: 'Computer Engineering', year: '4th' },
-    'nnennabr': { major: 'Biomedical Engineering', year: '3rd' },
-    'achoroj': { major: 'Computer Science (CoE)', year: '2nd' },
-    'odumk': { major: 'Computer Science (LSA)', year: '3rd' },
-    'mirionb': { major: 'Aerospace Engineering', year: '2nd' },
-    'jodhiamb': { major: 'Public policy', year: '4th' },
-    'sjjohn': { major: 'Industrial and Operations Engineering', year: '1st' },
-    'shantiah': { major: 'Electrical Engineering', year: '3rd' },
-    'sbroddie': { major: 'Electrical Engineering', year: '5th+' },
-    'wcjulian': { major: 'Mechanical Engineering', year: '1st' },
-    'orukotan': { major: 'Biomedical Engineering', year: '1st' }
-};
-
-// Hardcoded paid chapter members list (supplemental to Google Sheet)
-// This ensures accurate paid member tracking even if sheet is not updated
-const PAID_CHAPTER_MEMBERS = new Set([
-    'iodetola', 'chiomaa', 'henoky', 'aphall', 'mikkoh', 'howardsl', 'uneak',
-    'imanahme', 'cjakombi', 'alexbing', 'malawis', 'thewfica', 'bsoumare',
-    'odumk', 'donjm', 'ojadon', 'savannae', 'yohannl', 'brynnw', 'kellm',
-    'kerylfo@umich.edu', 'sayoodus', 'jbowman', 'kaibilal', 'kylemoni',
-    'onimisi', 'gpears', 'gavynw', 'hunegnaw', 'landond', 'kmonie', 'kingjj',
-    'zhariahu', 'kwabenaf', 'regind', 'choyceja', 'giannaw', 'grcesar',
-    'sashahil', 'ihairsto', 'jasminew', 'jadlewis', 'adna@umich.edu',
-    'cmonie', 'daniecam', 'jdronesa', 'bsnkpah', 'etaylor', 'kinziebr',
-    'lsfifer', 'rareno', 'matipa', 'layiolus', 'aayungo', 'msmbayo',
-    'zakyahe', 'islyndwa', 'rayankam', 'achoroj', 'azaryahc', 'dtellis',
-    'mseade', 'toddbi', 'shantiah', 'johnsand', 'lindsis', 'kyrajcha',
-    'owadugea', 'kendallm', 'boyantv', 'skylars', 'aniyalew', 'ayeyiyp',
-    'londynj', 'haarun', 'sadiew', 'travic', 'tolunigh', 'kaidenda',
-    'tparham', 'divineos', 'kyrahud', 'mosesm', 'megann', 'otoboego',
-    'njokuc', 'davidang', 'jjbishaw', 'bryonyk', 'shayldod', 'ryanhobb',
-    'chiderao', 'nevaehmm', 'dantepar', 'benhopki', 'princeu', 'ghonore',
-    'rasheedj', 'ariaf', 'ugonnao', 'skylared', 'jeovajones', 'chitoemech',
-    'mdinku', 'jandyari', 'jadaree', 'mobadewa', 'jodhiamb', 'mdlong',
-    'shaniam', 'nnennabr', 'kenley', 'elvisc'
-].map(u => u.toLowerCase().trim()));
-
 // Application state
 window.CSV_OVERRIDE_DATA = null;
 window.CSV_CUTOFF_DATE = new Date('2025-09-26T00:00:00');
@@ -957,19 +844,18 @@ async function calculateMemberPoints(signInData) {
         }
     });
     
-    // Helper function to check if member is paid (using paid members sheet + hardcoded list)
-    const isPaidMemberFast = (email, uniqname) => {
+    // Helper function to check if member is paid (using only paid members sheet and CSV data)
+    const isPaidMemberFast = (email) => {
         const normalizedEmail = email.toLowerCase().trim();
-        const normalizedUniqname = uniqname ? uniqname.toLowerCase().trim() : '';
-        
-        // Check paid members sheet
-        if (paidMemberEmails.has(normalizedEmail)) return true;
-        
-        // Check hardcoded paid chapter members list
-        if (normalizedUniqname && PAID_CHAPTER_MEMBERS.has(normalizedUniqname)) return true;
-        if (PAID_CHAPTER_MEMBERS.has(normalizedEmail)) return true;
-        
-        return false;
+        return (
+            paidMemberEmails.has(normalizedEmail) ||  // From paid members sheet only
+            // For CSV data, treat all as paid (historical NSBE members)
+            (window.CSV_OVERRIDE_DATA && window.CSV_OVERRIDE_DATA.some(csvEntry => {
+                const csvEmailField = Object.keys(csvEntry).find(k => k.toLowerCase().includes('email'));
+                const csvEmail = csvEmailField ? csvEntry[csvEmailField] : '';
+                return csvEmail && csvEmail.toLowerCase().trim() === normalizedEmail;
+            }))
+        );
     };
     
     // Process each entry
@@ -994,16 +880,10 @@ async function calculateMemberPoints(signInData) {
                 displayName = email.split('@')[0]; // Use email username as fallback
             }
             
-            // Get demographics from sign-in entry first
-            let major = entry['Major'] || '';
-            let year = entry['Year'] || '';
+            // Get demographics from sign-in entry
+            const major = entry['Major'] || '';
+            const year = entry['Year'] || '';
             const nationalDues = entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'] || '';
-            
-            // Override with hardcoded demographics if available
-            if (MEMBER_DEMOGRAPHICS[normalizedUniqname]) {
-                major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-            }
             
             memberStats[normalizedUniqname] = {
                 email: normalizedEmail,
@@ -1012,7 +892,7 @@ async function calculateMemberPoints(signInData) {
                 totalPoints: 0,
                 eventHistory: [],
                 eventCount: 0,
-                isPaid: isPaidMemberFast(normalizedEmail, normalizedUniqname),
+                isPaid: isPaidMemberFast(normalizedEmail),
                 major: major,
                 Major: major, // Alias
                 year: year,
@@ -1022,21 +902,13 @@ async function calculateMemberPoints(signInData) {
             };
         } else {
             // Update demographics if this entry has more complete data
-            // But always prefer hardcoded demographics
-            if (MEMBER_DEMOGRAPHICS[normalizedUniqname]) {
-                memberStats[normalizedUniqname].major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                memberStats[normalizedUniqname].Major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                memberStats[normalizedUniqname].year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-                memberStats[normalizedUniqname].Year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-            } else {
-                if (entry['Major'] && !memberStats[normalizedUniqname].major) {
-                    memberStats[normalizedUniqname].major = entry['Major'];
-                    memberStats[normalizedUniqname].Major = entry['Major'];
-                }
-                if (entry['Year'] && !memberStats[normalizedUniqname].year) {
-                    memberStats[normalizedUniqname].year = entry['Year'];
-                    memberStats[normalizedUniqname].Year = entry['Year'];
-                }
+            if (entry['Major'] && !memberStats[normalizedUniqname].major) {
+                memberStats[normalizedUniqname].major = entry['Major'];
+                memberStats[normalizedUniqname].Major = entry['Major'];
+            }
+            if (entry['Year'] && !memberStats[normalizedUniqname].year) {
+                memberStats[normalizedUniqname].year = entry['Year'];
+                memberStats[normalizedUniqname].Year = entry['Year'];
             }
             if (entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'] && !memberStats[normalizedUniqname].national_dues) {
                 memberStats[normalizedUniqname].national_dues = entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'];
@@ -1312,14 +1184,6 @@ async function getLocalLeaderboard() {
                         points = 5;
                     }
                     
-                    // Get demographics from hardcoded mapping if available
-                    let major = attendee.major || '';
-                    let year = attendee.year || '';
-                    if (MEMBER_DEMOGRAPHICS[normalizedUniqname]) {
-                        major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                        year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-                    }
-                    
                     memberStats[normalizedUniqname] = {
                         email: attendee.email || '',
                         uniqname: normalizedUniqname,
@@ -1333,11 +1197,11 @@ async function getLocalLeaderboard() {
                             source: 'folder'
                         }],
                         eventCount: 1,
-                        isPaid: PAID_CHAPTER_MEMBERS.has(normalizedUniqname) || PAID_CHAPTER_MEMBERS.has((attendee.email || '').toLowerCase().trim()),
-                        major: major,
-                        Major: major,
-                        year: year,
-                        Year: year,
+                        isPaid: false, // Default to unpaid for folder-only members
+                        major: attendee.major || '',
+                        Major: attendee.major || '',
+                        year: attendee.year || '',
+                        Year: attendee.year || '',
                         national_dues: '',
                         'National Dues': ''
                     };

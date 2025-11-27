@@ -1333,7 +1333,7 @@ async function getLocalLeaderboard() {
                             source: 'folder'
                         }],
                         eventCount: 1,
-                        isPaid: PAID_CHAPTER_MEMBERS.has(normalizedUniqname) || PAID_CHAPTER_MEMBERS.has((attendee.email || '').toLowerCase().trim()),
+                        isPaid: false, // Default to unpaid for folder-only members
                         major: major,
                         Major: major,
                         year: year,

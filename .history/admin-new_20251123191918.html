@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSBE Admin Dashboard - Complete</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div id="root"></div>
+
+    <!-- Load dependencies -->
+    <script src="src/Data-Constants.js"></script>
+    <script src="src/Shared-style.js"></script>
+    <script src="src/helpers.js"></script>
+    <script src="src/LocalDataManager.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback, useMemo } = React;
+
+        // Event Calendar Data
+        const EVENT_CALENDAR = `Engineers Brunch	Social	8/24/2025 11:00:00	8/24/2025 1:00:00	Michigan League Ballroom	Mikko Hendricks
+Festifall	Tabling	8/27/2025 0:00:00		Diag	Gianna Williams
+Freshman/Transfer mixer	Social	8/28/2025 0:00:00		Mason Hall	Megan Nyabaro
+BBQ	Social	8/30/2025 12:00:00	8/30/2025 4:00:00	Rackham Graduate School - University of Michigan	Jaleel Drones-Akins
+Resume Workshop	PD	9/5/2025 5:00:00	9/5/2025 6:00:00	Mason Hall	Nnenna Brown
+Fall Corporate Mixer	PD	9/7/2025 0:00:00		G.G. Brown Building	Kaden Sanders
+Study Jamz	Academic	9/8/2025 5:00:00	9/8/2025 8:00:00		
+1st GBM w/ Ford	GBM	9/12/2025 5:30:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	9/15/2025 5:00:00	9/15/2025 8:00:00		
+Jane Street Tech Talk	PD	9/17/2025 6:00:00			Kaden Sanders
+Verkada Tech Talk	PD	9/18/2025 1:00:00		Leinweber 1125	Kaden Sanders
+Golfing with Ford	PD	9/18/2025 0:00:00		Driving Range	Kaden Sanders
+Peninsula Park Cleanup	Community Service	9/20/2025 9:00:00	9/20/2025 12:00:00	Peninsular Park	Londyn Jefferson
+Study Jamz	Academic	9/22/2025 5:00:00	9/22/2025 8:00:00		
+LinkedIn Headshots	PD				Nnenna Brown
+2nd GBM w/ P&G	GBM	9/26/2025 0:00:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	9/29/2025 5:00:00	9/29/2025 8:00:00		
+Black Engineering Coalition X GSBES Graduate School Event	Social	9/30/2025 5:30:00	9/30/2025 7:00:00	Dow Building	Gianna Williams
+Mentorship Mixer: Estimathon	Mentorship	10/1/2025 6:00:00	10/1/2025 7:30:00	1448 MH	Jaleel Drones-Akins
+Study Jamz	Academic	10/6/2025 5:00:00	10/6/2025 8:00:00		
+Bowling w/ Coinbase	Social	10/8/2025 8:00:00	10/8/2025 10:00:00	Revel and Roll	Kaden Sanders
+Study Jamz	Academic	10/13/2025 5:00:00	10/13/2025 8:00:00		
+Bloomberg Coffee Chats	Social	10/15/2025 0:00:00	10/15/2025 0:00:00		Kaden Sanders
+Lunch & Learn Series #1	PD	10/16/2025 6:00:00	10/16/2025 7:00:00		
+PCI x AEX Cass Workshop	PCI	10/17/2025 0:00:00	10/17/2025 0:00:00	Cass Technical High School	Shantiah Watt
+3rd GBM	GBM	10/17/2025 0:00:00		1610 IOE	Mikko Hendricks
+Cedar Point	Social	10/19/2025 8:45:00	10/19/2025 6:00:00	Cedar Point	Jaleel Drones-Akins
+Study Jamz	Academic	10/20/2025 5:00:00	10/20/2025 8:00:00		
+Mind Matters (NSBE x BUPA)	Academic	10/22/2025 7:35:00	10/22/2025 9:30:00	South Quad Yuri Lounge	Shaylena Dodge
+Curl Talk Collab	Social	10/24/2025 6:00:00	10/24/2025 8:00:00	South Quad Yuri Lounge	Megan Nyabaro
+Making Strides Breast Cancer Walk	Community Service	10/25/2025 9:00:00	10/25/2025 0:00:00	Washtenaw Community College	
+Study Jamz	Academic	10/27/2025 5:00:00	10/27/2025 8:00:00		
+4th GBM	GBM	10/31/2025 0:00:00		1610 IOE	Mikko Hendricks
+Study Jamz	Academic	11/3/2025 5:00:00	11/3/2025 8:00:00		
+NSBE X SHPE X Theta Tau X BSA Fall Craft Collab 	Social	11/5/2025 6:00:00	11/5/2025 8:00:00	Dow Building 1014	Megan Nyabaro
+Study Jamz	Academic	11/10/2025 5:00:00	11/10/2025 8:00:00		
+IOE Tabling	Tabling	11/12/2025 11:00:00	11/12/2025 1:30:00	Industrial and Operations Eng 	Iman Ahmed
+NSBE x BlackGen Capital Financial Literacy	PD	11/14/2025 3:30:00	11/14/2025 5:00:00	Ross School of Business	Nnenna Brown
+Study Jamz	Academic	11/17/2025 5:00:00	11/17/2025 8:00:00		
+Cozy Cooldown Social	Social	11/17/2025 7:30:00	11/17/2025 9:00:00	2325 Mason Hall	Mikko Hendricks
+Maximize your Summer	Academic	11/19/2025 5:00:00	11/19/2025 6:00:00	Trotter Multicultural Center	Zharia Hunter 
+5th GBM w/ Google	GBM	11/21/2025 0:00:00		1610 IOE	Mikko Hendricks`;
+
+        // Parse calendar
+        function parseCalendar() {
+            const lines = EVENT_CALENDAR.split('\n').filter(l => l.trim());
+            return lines.map(line => {
+                const parts = line.split('\t');
+                const startDate = parts[2] ? new Date(parts[2]) : null;
+                return {
+                    name: parts[0]?.trim() || '',
+                    type: parts[1]?.trim() || '',
+                    startDateTime: startDate,
+                    date: startDate ? startDate.toLocaleDateString('en-US') : '',
+                    location: parts[4]?.trim() || '',
+                    contact: parts[5]?.trim() || ''
+                };
+            }).filter(e => e.name && e.date);
+        }
+
+        const CALENDAR_EVENTS = parseCalendar();
+
+        // Match sign-in event to calendar by date
+        function matchEventToCalendar(eventName, timestamp) {
+            if (!timestamp) return null;
+            
+            const signInDate = new Date(timestamp).toLocaleDateString('en-US');
+            
+            // Find events on the same date
+            const eventsOnDate = CALENDAR_EVENTS.filter(e => e.date === signInDate);
+            
+            if (eventsOnDate.length === 0) return null;
+            
+            // Try exact or partial name match first
+            const nameMatch = eventsOnDate.find(e => 
+                e.name.toLowerCase().includes(eventName.toLowerCase()) ||
+                eventName.toLowerCase().includes(e.name.toLowerCase())
+            );
+            
+            if (nameMatch) return nameMatch;
+            
+            // If only one event on that date, use it
+            if (eventsOnDate.length === 1) return eventsOnDate[0];
+            
+            // Multiple events on same date, try type matching
+            const typeMatch = eventsOnDate.find(e => 
+                eventName.toLowerCase().includes(e.type.toLowerCase())
+            );
+            
+            return typeMatch || eventsOnDate[0];
+        }
+
+        function AdminDashboard() {
+            const [members, setMembers] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [activeTab, setActiveTab] = useState('overview');
+            const [selectedMember, setSelectedMember] = useState(null);
+            const [searchTerm, setSearchTerm] = useState('');
+            const [filterPaid, setFilterPaid] = useState('all');
+            const [filterYear, setFilterYear] = useState('all');
+
+            // Load data
+            useEffect(() => {
+                loadData();
+            }, []);
+
+            const loadData = async () => {
+                try {
+                    setLoading(true);
+                    console.log('🔄 Loading admin data...');
+                    
+                    // Check if function exists
+                    if (typeof window.getLocalLeaderboard !== 'function') {
+                        throw new Error('getLocalLeaderboard not available. Make sure LocalDataManager.js is loaded.');
+                    }
+                    
+                    const result = await window.getLocalLeaderboard();
+                    console.log('📊 Result structure:', result);
+                    
+                    // Handle different result structures
+                    let memberData = [];
+                    if (Array.isArray(result)) {
+                        memberData = result;
+                    } else if (result && result.leaderboard) {
+                        memberData = result.leaderboard;
+                    } else if (result && Array.isArray(result.members)) {
+                        memberData = result.members;
+                    }
+                    
+                    console.log('✅ Loaded', memberData.length, 'members');
+                    setMembers(memberData);
+                    setLoading(false);
+                } catch (error) {
+                    console.error('❌ Error loading data:', error);
+                    alert('Error loading data: ' + error.message);
+                    setLoading(false);
+                }
+            };
+
+            // Build attendance data by event
+            const attendanceByEvent = useMemo(() => {
+                const eventMap = {};
+                
+                members.forEach(member => {
+                    if (!member.eventHistory || !Array.isArray(member.eventHistory)) return;
+                    
+                    member.eventHistory.forEach(eventEntry => {
+                        // Handle both string and object formats
+                        let eventName, timestamp;
+                        
+                        if (typeof eventEntry === 'string') {
+                            // Extract event name and date from "EventName (MM/DD/YYYY)"
+                            const match = eventEntry.match(/^(.+?)\s*\((\d{1,2}\/\d{1,2}\/\d{4})\)$/);
+                            if (!match) return;
+                            eventName = match[1].trim();
+                            timestamp = match[2];
+                        } else if (typeof eventEntry === 'object' && eventEntry !== null) {
+                            // Handle object format {event: "...", date: "..."}
+                            eventName = eventEntry.event || eventEntry.name || eventEntry.eventName || '';
+                            timestamp = eventEntry.date || eventEntry.timestamp || '';
+                        } else {
+                            return;
+                        }
+                        
+                        if (!eventName || !timestamp) return;
+                        
+                        // Match to calendar
+                        const calendarEvent = matchEventToCalendar(eventName, timestamp);
+                        const eventKey = calendarEvent ? calendarEvent.name : eventName;
+                        
+                        if (!eventMap[eventKey]) {
+                            eventMap[eventKey] = {
+                                name: eventKey,
+                                type: calendarEvent?.type || 'Unknown',
+                                date: timestamp,
+                                dateObj: new Date(timestamp),
+                                location: calendarEvent?.location || '',
+                                contact: calendarEvent?.contact || '',
+                                attendees: []
+                            };
+                        }
+                        
+                        eventMap[eventKey].attendees.push({
+                            name: member.displayName || member.name,
+                            email: member.email,
+                            uniqname: member.uniqname,
+                            isPaid: member.isPaid,
+                            major: member.major || member.Major || '',
+                            year: member.year || member.Year || '',
+                            nationalDues: member.national_dues || member['National Dues'] || '',
+                            points: member.totalPoints
+                        });
+                    });
+                });
+                
+                return Object.values(eventMap).sort((a, b) => b.dateObj - a.dateObj);
+            }, [members]);
+
+            // Stats
+            const stats = useMemo(() => {
+                const paidCount = members.filter(m => m.isPaid).length;
+                const totalEvents = attendanceByEvent.length;
+                const totalAttendance = attendanceByEvent.reduce((sum, e) => sum + e.attendees.length, 0);
+                const avgAttendance = totalEvents > 0 ? Math.round(totalAttendance / totalEvents) : 0;
+                const avgPoints = members.length > 0 ? Math.round(members.reduce((sum, m) => sum + (m.totalPoints || 0), 0) / members.length) : 0;
+                
+                const majorCounts = {};
+                const yearCounts = {};
+                const eventTypeCounts = {};
+                
+                members.forEach(m => {
+                    const major = m.major || m.Major || 'Unknown';
+                    const year = m.year || m.Year || 'Unknown';
+                    majorCounts[major] = (majorCounts[major] || 0) + 1;
+                    yearCounts[year] = (yearCounts[year] || 0) + 1;
+                });
+                
+                attendanceByEvent.forEach(e => {
+                    eventTypeCounts[e.type] = (eventTypeCounts[e.type] || 0) + 1;
+                });
+                
+                return {
+                    totalMembers: members.length,
+                    paidMembers: paidCount,
+                    totalEvents,
+                    avgAttendance,
+                    avgPoints,
+                    majorCounts,
+                    yearCounts,
+                    eventTypeCounts
+                };
+            }, [members, attendanceByEvent]);
+
+            // Filtered members
+            const filteredMembers = useMemo(() => {
+                return members.filter(m => {
+                    const searchMatch = !searchTerm || 
+                        (m.displayName || m.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (m.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (m.uniqname || '').toLowerCase().includes(searchTerm.toLowerCase());
+                    
+                    const paidMatch = filterPaid === 'all' || 
+                        (filterPaid === 'paid' && m.isPaid) ||
+                        (filterPaid === 'unpaid' && !m.isPaid);
+                    
+                    const year = m.year || m.Year || '';
+                    const yearMatch = filterYear === 'all' || year.includes(filterYear);
+                    
+                    return searchMatch && paidMatch && yearMatch;
+                });
+            }, [members, searchTerm, filterPaid, filterYear]);
+
+            // Export functions
+            const exportMembersCSV = () => {
+                const headers = ['Name', 'Email', 'Uniqname', 'Major', 'Year', 'Payment Status', 'National Dues', 'Points', 'Events', 'Tier'];
+                const rows = members.map(m => [
+                    m.displayName || m.name || '',
+                    m.email || '',
+                    m.uniqname || '',
+                    m.major || m.Major || '',
+                    m.year || m.Year || '',
+                    m.isPaid ? 'Paid' : 'Unpaid',
+                    m.national_dues || m['National Dues'] || '',
+                    m.totalPoints || 0,
+                    m.eventCount || 0,
+                    m.tier || ''
+                ]);
+                downloadCSV([headers, ...rows], 'nsbe-members.csv');
+            };
+
+            const exportEventsCSV = () => {
+                const headers = ['Event Name', 'Type', 'Date', 'Location', 'Contact', 'Attendance'];
+                const rows = attendanceByEvent.map(e => [
+                    e.name,
+                    e.type,
+                    e.date,
+                    e.location,
+                    e.contact,
+                    e.attendees.length
+                ]);
+                downloadCSV([headers, ...rows], 'nsbe-events.csv');
+            };
+
+            const exportEventAttendance = (eventName) => {
+                const event = attendanceByEvent.find(e => e.name === eventName);
+                if (!event) return;
+                
+                const headers = ['Name', 'Email', 'Uniqname', 'Major', 'Year', 'Payment Status', 'National Dues', 'Points'];
+                const rows = event.attendees.map(a => [
+                    a.name,
+                    a.email,
+                    a.uniqname,
+                    a.major,
+                    a.year,
+                    a.isPaid ? 'Paid' : 'Unpaid',
+                    a.nationalDues,
+                    a.points
+                ]);
+                const fileName = `${eventName.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-attendance.csv`;
+                downloadCSV([headers, ...rows], fileName);
+            };
+
+            const downloadCSV = (data, filename) => {
+                const csv = data.map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+
+            if (loading) {
+                return (
+                    <div className="flex items-center justify-center min-h-screen">
+                        <div className="text-center">
+                            <div className="text-4xl mb-4">⏳</div>
+                            <div className="text-xl">Loading dashboard...</div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-gray-900">
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg">
+                        <div className="container mx-auto px-6 py-8">
+                            <h1 className="text-5xl font-bold mb-2">NSBE Admin Dashboard</h1>
+                            <p className="text-blue-100 text-lg">Comprehensive Member & Event Management</p>
+                        </div>
+                    </div>
+
+                    {/* Tabs */}
+                    <div className="bg-gray-800 border-b border-gray-700">
+                        <div className="container mx-auto px-6">
+                            <div className="flex gap-2">
+                                {[
+                                    { id: 'overview', label: '📊 Overview', icon: '📊' },
+                                    { id: 'members', label: '👥 Members', icon: '👥' },
+                                    { id: 'events', label: '📅 Events & Attendance', icon: '📅' },
+                                    { id: 'analytics', label: '📈 Analytics', icon: '📈' },
+                                    { id: 'export', label: '💾 Export', icon: '💾' }
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`px-6 py-4 font-semibold transition-colors ${
+                                            activeTab === tab.id
+                                                ? 'bg-gray-900 text-white border-b-2 border-blue-500'
+                                                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                                        }`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="container mx-auto px-6 py-8">
+                        {/* Overview Tab */}
+                        {activeTab === 'overview' && (
+                            <OverviewTab stats={stats} members={members} attendanceByEvent={attendanceByEvent} />
+                        )}
+
+                        {/* Members Tab */}
+                        {activeTab === 'members' && (
+                            <MembersTab 
+                                members={filteredMembers}
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                filterPaid={filterPaid}
+                                setFilterPaid={setFilterPaid}
+                                filterYear={filterYear}
+                                setFilterYear={setFilterYear}
+                                selectedMember={selectedMember}
+                                setSelectedMember={setSelectedMember}
+                            />
+                        )}
+
+                        {/* Events Tab */}
+                        {activeTab === 'events' && (
+                            <EventsTab 
+                                attendanceByEvent={attendanceByEvent}
+                                exportEventAttendance={exportEventAttendance}
+                            />
+                        )}
+
+                        {/* Analytics Tab */}
+                        {activeTab === 'analytics' && (
+                            <AnalyticsTab stats={stats} attendanceByEvent={attendanceByEvent} members={members} />
+                        )}
+
+                        {/* Export Tab */}
+                        {activeTab === 'export' && (
+                            <ExportTab 
+                                exportMembersCSV={exportMembersCSV}
+                                exportEventsCSV={exportEventsCSV}
+                                attendanceByEvent={attendanceByEvent}
+                                exportEventAttendance={exportEventAttendance}
+                            />
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        // Overview Tab Component
+        function OverviewTab({ stats, members, attendanceByEvent }) {
+            return (
+                <div>
+                    {/* Stats Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                        <StatCard title="Total Members" value={stats.totalMembers} gradient="from-blue-500 to-blue-700" />
+                        <StatCard title="Paid Members" value={stats.paidMembers} gradient="from-green-500 to-green-700" />
+                        <StatCard title="Total Events" value={stats.totalEvents} gradient="from-purple-500 to-purple-700" />
+                        <StatCard title="Avg Attendance" value={stats.avgAttendance} gradient="from-pink-500 to-pink-700" />
+                        <StatCard title="Avg Points" value={stats.avgPoints} gradient="from-yellow-500 to-yellow-700" />
+                    </div>
+
+                    {/* Quick Insights */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">📊 Event Types</h3>
+                            <div className="space-y-2">
+                                {Object.entries(stats.eventTypeCounts)
+                                    .sort((a, b) => b[1] - a[1])
+                                    .slice(0, 5)
+                                    .map(([type, count]) => (
+                                        <div key={type} className="flex justify-between items-center">
+                                            <span className="text-gray-300">{type}</span>
+                                            <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">{count}</span>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">🎓 Top Majors</h3>
+                            <div className="space-y-2">
+                                {Object.entries(stats.majorCounts)
+                                    .sort((a, b) => b[1] - a[1])
+                                    .slice(0, 5)
+                                    .map(([major, count]) => (
+                                        <div key={major} className="flex justify-between items-center">
+                                            <span className="text-gray-300 truncate">{major}</span>
+                                            <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">{count}</span>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">📅 Year Distribution</h3>
+                            <div className="space-y-2">
+                                {Object.entries(stats.yearCounts)
+                                    .sort((a, b) => b[1] - a[1])
+                                    .map(([year, count]) => (
+                                        <div key={year} className="flex justify-between items-center">
+                                            <span className="text-gray-300">{year}</span>
+                                            <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">{count}</span>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Top Events */}
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                        <h3 className="text-2xl font-bold mb-4">🏆 Top 10 Events by Attendance</h3>
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="border-b border-gray-700">
+                                    <tr>
+                                        <th className="text-left py-3 px-4">Rank</th>
+                                        <th className="text-left py-3 px-4">Event</th>
+                                        <th className="text-left py-3 px-4">Type</th>
+                                        <th className="text-left py-3 px-4">Date</th>
+                                        <th className="text-left py-3 px-4">Attendance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {attendanceByEvent
+                                        .sort((a, b) => b.attendees.length - a.attendees.length)
+                                        .slice(0, 10)
+                                        .map((event, idx) => (
+                                            <tr key={event.name} className="border-b border-gray-700 hover:bg-gray-750">
+                                                <td className="py-3 px-4">#{idx + 1}</td>
+                                                <td className="py-3 px-4 font-semibold">{event.name}</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="bg-blue-600 px-2 py-1 rounded text-sm">{event.type}</span>
+                                                </td>
+                                                <td className="py-3 px-4 text-gray-400">{event.date}</td>
+                                                <td className="py-3 px-4">
+                                                    <span className="text-green-400 font-bold">{event.attendees.length}</span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Stat Card Component
+        function StatCard({ title, value, gradient }) {
+            return (
+                <div className={`bg-gradient-to-br ${gradient} rounded-lg p-6 text-white shadow-lg`}>
+                    <div className="text-sm opacity-90 mb-2">{title}</div>
+                    <div className="text-4xl font-bold">{value}</div>
+                </div>
+            );
+        }
+
+        // Members Tab Component
+        function MembersTab({ members, searchTerm, setSearchTerm, filterPaid, setFilterPaid, filterYear, setFilterYear, selectedMember, setSelectedMember }) {
+            return (
+                <div>
+                    {/* Filters */}
+                    <div className="bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <input
+                                type="text"
+                                placeholder="Search by name, email, uniqname..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white"
+                            />
+                            <select
+                                value={filterPaid}
+                                onChange={(e) => setFilterPaid(e.target.value)}
+                                className="bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white"
+                            >
+                                <option value="all">All Payment Status</option>
+                                <option value="paid">Paid Only</option>
+                                <option value="unpaid">Unpaid Only</option>
+                            </select>
+                            <select
+                                value={filterYear}
+                                onChange={(e) => setFilterYear(e.target.value)}
+                                className="bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white"
+                            >
+                                <option value="all">All Years</option>
+                                <option value="1st">1st Year</option>
+                                <option value="2nd">2nd Year</option>
+                                <option value="3rd">3rd Year</option>
+                                <option value="4th">4th Year</option>
+                                <option value="5th">5th+ Year</option>
+                            </select>
+                            <button
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setFilterPaid('all');
+                                    setFilterYear('all');
+                                }}
+                                className="bg-gray-600 hover:bg-gray-500 rounded px-4 py-2"
+                            >
+                                Clear Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Members Table */}
+                    <div className="bg-gray-800 rounded-lg overflow-hidden border border-gray-700">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="bg-gray-700 border-b border-gray-600">
+                                    <tr>
+                                        <th className="text-left py-3 px-4">Name</th>
+                                        <th className="text-left py-3 px-4">Email</th>
+                                        <th className="text-left py-3 px-4">Major</th>
+                                        <th className="text-left py-3 px-4">Year</th>
+                                        <th className="text-left py-3 px-4">Status</th>
+                                        <th className="text-left py-3 px-4">Points</th>
+                                        <th className="text-left py-3 px-4">Events</th>
+                                        <th className="text-left py-3 px-4">Tier</th>
+                                        <th className="text-left py-3 px-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-700">
+                                    {members.map(member => (
+                                        <tr key={member.uniqname} className="hover:bg-gray-750">
+                                            <td className="py-3 px-4">
+                                                <div className="font-semibold">{member.displayName || member.name}</div>
+                                                <div className="text-sm text-gray-400">{member.uniqname}</div>
+                                            </td>
+                                            <td className="py-3 px-4 text-sm text-gray-300">{member.email}</td>
+                                            <td className="py-3 px-4 text-sm">{member.major || member.Major || 'N/A'}</td>
+                                            <td className="py-3 px-4 text-sm">{member.year || member.Year || 'N/A'}</td>
+                                            <td className="py-3 px-4">
+                                                {member.isPaid ? (
+                                                    <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">PAID</span>
+                                                ) : (
+                                                    <span className="bg-gray-600 text-gray-300 px-2 py-1 rounded text-xs">UNPAID</span>
+                                                )}
+                                            </td>
+                                            <td className="py-3 px-4 font-bold text-blue-400">{member.totalPoints || 0}</td>
+                                            <td className="py-3 px-4">{member.eventCount || 0}</td>
+                                            <td className="py-3 px-4">
+                                                <span className={`px-2 py-1 rounded text-xs ${
+                                                    member.tier === 'Gold' ? 'bg-yellow-600' :
+                                                    member.tier === 'Silver' ? 'bg-gray-400 text-gray-900' :
+                                                    member.tier === 'Bronze' ? 'bg-orange-600' : 'bg-gray-600'
+                                                }`}>
+                                                    {member.tier || 'None'}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                <button
+                                                    onClick={() => setSelectedMember(member)}
+                                                    className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm"
+                                                >
+                                                    View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Member Detail Modal */}
+                    {selectedMember && (
+                        <MemberDetailModal member={selectedMember} onClose={() => setSelectedMember(null)} />
+                    )}
+                </div>
+            );
+        }
+
+        // Member Detail Modal
+        function MemberDetailModal({ member, onClose }) {
+            const nationalDues = (member.national_dues || member['National Dues'] || '').toString().toLowerCase();
+            const duesStatus = nationalDues.includes('yes') || nationalDues.includes('paid') ? '✅ Paid' :
+                              nationalDues.includes('no') || nationalDues.includes('unpaid') ? '❌ Unpaid' : '❓ Unknown';
+            
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4" onClick={onClose}>
+                    <div className="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6">
+                            <div className="flex justify-between items-start mb-6">
+                                <h2 className="text-3xl font-bold">{member.displayName || member.name}</h2>
+                                <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl">&times;</button>
+                            </div>
+
+                            <div className="space-y-6">
+                                {/* Basic Info */}
+                                <div className="bg-gray-700 p-4 rounded">
+                                    <h3 className="font-semibold text-lg mb-3">Contact Information</h3>
+                                    <div className="space-y-2 text-sm">
+                                        <div><span className="text-gray-400">Email:</span> {member.email}</div>
+                                        <div><span className="text-gray-400">Uniqname:</span> {member.uniqname}</div>
+                                    </div>
+                                </div>
+
+                                {/* Demographics */}
+                                <div className="bg-gray-700 p-4 rounded">
+                                    <h3 className="font-semibold text-lg mb-3">Demographics</h3>
+                                    <div className="space-y-2 text-sm">
+                                        <div>
+                                            <span className="text-gray-400">Major:</span>{' '}
+                                            <span className="text-purple-300">{member.major || member.Major || 'Not specified'}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-400">Year:</span>{' '}
+                                            <span className="text-blue-300">{member.year || member.Year || 'Not specified'}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-400">National Dues:</span>{' '}
+                                            <span className={nationalDues.includes('yes') || nationalDues.includes('paid') ? 'text-green-400' : 'text-red-400'}>
+                                                {duesStatus}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Points & Tier */}
+                                <div className="bg-gray-700 p-4 rounded">
+                                    <h3 className="font-semibold text-lg mb-3">Points & Status</h3>
+                                    <div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span className="text-gray-400">Total Points:</span>{' '}
+                                            <span className="text-2xl font-bold text-blue-400">{member.totalPoints || 0}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-400">Events Attended:</span>{' '}
+                                            <span className="text-2xl font-bold text-green-400">{member.eventCount || 0}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-400">Tier:</span>{' '}
+                                            <span className="text-xl font-bold text-yellow-400">{member.tier || 'None'}</span>
+                                        </div>
+                                        <div>
+                                            <span className="text-gray-400">Payment:</span>{' '}
+                                            {member.isPaid ? (
+                                                <span className="text-green-400 font-semibold">✅ Paid</span>
+                                            ) : (
+                                                <span className="text-gray-400">❌ Unpaid</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Event History */}
+                                <div className="bg-gray-700 p-4 rounded">
+                                    <h3 className="font-semibold text-lg mb-3">Event History ({member.eventHistory?.length || 0})</h3>
+                                    <div className="max-h-64 overflow-y-auto space-y-1">
+                                        {member.eventHistory && member.eventHistory.length > 0 ? (
+                                            member.eventHistory.map((event, idx) => (
+                                                <div key={idx} className="text-sm bg-gray-600 px-3 py-2 rounded">
+                                                    {event}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="text-gray-400 text-sm">No events attended yet</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Events Tab Component
+        function EventsTab({ attendanceByEvent, exportEventAttendance }) {
+            const [selectedType, setSelectedType] = useState('all');
+            const [selectedEvent, setSelectedEvent] = useState(null);
+
+            const filteredEvents = selectedType === 'all' 
+                ? attendanceByEvent 
+                : attendanceByEvent.filter(e => e.type === selectedType);
+
+            const eventTypes = ['all', ...new Set(attendanceByEvent.map(e => e.type))];
+
+            return (
+                <div>
+                    {/* Filters */}
+                    <div className="bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700">
+                        <div className="flex gap-4 items-center">
+                            <label className="text-gray-300">Filter by Type:</label>
+                            <select
+                                value={selectedType}
+                                onChange={(e) => setSelectedType(e.target.value)}
+                                className="bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white"
+                            >
+                                {eventTypes.map(type => (
+                                    <option key={type} value={type}>
+                                        {type === 'all' ? 'All Types' : type}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="ml-auto text-gray-400">
+                                Showing {filteredEvents.length} events
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Events Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {filteredEvents.map(event => (
+                            <div key={event.name} className="bg-gray-800 rounded-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-shadow">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <h3 className="text-xl font-bold mb-2">{event.name}</h3>
+                                        <div className="space-y-1 text-sm text-gray-400">
+                                            <div>📅 {event.date}</div>
+                                            {event.location && <div>📍 {event.location}</div>}
+                                            {event.contact && <div>👤 {event.contact}</div>}
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="inline-block bg-blue-600 px-3 py-1 rounded text-sm mb-2">{event.type}</span>
+                                        <div className="text-3xl font-bold text-green-400">{event.attendees.length}</div>
+                                        <div className="text-xs text-gray-400">attendees</div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setSelectedEvent(event)}
+                                        className="flex-1 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
+                                    >
+                                        View Attendees
+                                    </button>
+                                    <button
+                                        onClick={() => exportEventAttendance(event.name)}
+                                        className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
+                                    >
+                                        📥 Export
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Event Detail Modal */}
+                    {selectedEvent && (
+                        <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} exportAttendance={exportEventAttendance} />
+                    )}
+                </div>
+            );
+        }
+
+        // Event Detail Modal
+        function EventDetailModal({ event, onClose, exportAttendance }) {
+            return (
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4" onClick={onClose}>
+                    <div className="bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6">
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <h2 className="text-3xl font-bold mb-2">{event.name}</h2>
+                                    <div className="space-y-1 text-gray-400">
+                                        <div>📅 {event.date}</div>
+                                        {event.location && <div>📍 {event.location}</div>}
+                                        {event.contact && <div>👤 {event.contact}</div>}
+                                    </div>
+                                </div>
+                                <button onClick={onClose} className="text-gray-400 hover:text-white text-2xl">&times;</button>
+                            </div>
+
+                            <div className="mb-4 flex justify-between items-center">
+                                <h3 className="text-xl font-bold">Attendees ({event.attendees.length})</h3>
+                                <button
+                                    onClick={() => exportAttendance(event.name)}
+                                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
+                                >
+                                    📥 Export Attendance
+                                </button>
+                            </div>
+
+                            <div className="bg-gray-700 rounded overflow-hidden">
+                                <table className="w-full">
+                                    <thead className="bg-gray-600">
+                                        <tr>
+                                            <th className="text-left py-2 px-4">Name</th>
+                                            <th className="text-left py-2 px-4">Email</th>
+                                            <th className="text-left py-2 px-4">Major</th>
+                                            <th className="text-left py-2 px-4">Year</th>
+                                            <th className="text-left py-2 px-4">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-600">
+                                        {event.attendees.map((attendee, idx) => (
+                                            <tr key={idx} className="hover:bg-gray-650">
+                                                <td className="py-2 px-4">{attendee.name}</td>
+                                                <td className="py-2 px-4 text-sm text-gray-300">{attendee.email}</td>
+                                                <td className="py-2 px-4 text-sm">{attendee.major || 'N/A'}</td>
+                                                <td className="py-2 px-4 text-sm">{attendee.year || 'N/A'}</td>
+                                                <td className="py-2 px-4">
+                                                    {attendee.isPaid ? (
+                                                        <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">PAID</span>
+                                                    ) : (
+                                                        <span className="bg-gray-600 text-gray-300 px-2 py-1 rounded text-xs">UNPAID</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Analytics Tab Component
+        function AnalyticsTab({ stats, attendanceByEvent, members }) {
+            useEffect(() => {
+                // Event Type Distribution Chart
+                const eventTypeCtx = document.getElementById('eventTypeChart');
+                if (eventTypeCtx) {
+                    new Chart(eventTypeCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: Object.keys(stats.eventTypeCounts),
+                            datasets: [{
+                                data: Object.values(stats.eventTypeCounts),
+                                backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#14B8A6']
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: true }
+                    });
+                }
+
+                // Major Distribution Chart
+                const majorCtx = document.getElementById('majorChart');
+                if (majorCtx) {
+                    const topMajors = Object.entries(stats.majorCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 10);
+                    
+                    new Chart(majorCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: topMajors.map(([major]) => major.length > 20 ? major.substring(0, 20) + '...' : major),
+                            datasets: [{
+                                label: 'Students',
+                                data: topMajors.map(([, count]) => count),
+                                backgroundColor: '#8B5CF6'
+                            }]
+                        },
+                        options: { 
+                            responsive: true, 
+                            maintainAspectRatio: true,
+                            indexAxis: 'y'
+                        }
+                    });
+                }
+
+                // Attendance Over Time
+                const attendanceCtx = document.getElementById('attendanceChart');
+                if (attendanceCtx) {
+                    const sortedEvents = [...attendanceByEvent].sort((a, b) => a.dateObj - b.dateObj);
+                    
+                    new Chart(attendanceCtx, {
+                        type: 'line',
+                        data: {
+                            labels: sortedEvents.map(e => e.date),
+                            datasets: [{
+                                label: 'Attendance',
+                                data: sortedEvents.map(e => e.attendees.length),
+                                borderColor: '#3B82F6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: { 
+                            responsive: true, 
+                            maintainAspectRatio: true,
+                            scales: {
+                                x: { display: false }
+                            }
+                        }
+                    });
+                }
+            }, []);
+
+            return (
+                <div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">Event Type Distribution</h3>
+                            <canvas id="eventTypeChart"></canvas>
+                        </div>
+
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">Top 10 Majors</h3>
+                            <canvas id="majorChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 mb-6">
+                        <h3 className="text-xl font-bold mb-4">Attendance Over Time</h3>
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+
+                    {/* Demographics Summary */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">Payment Status</h3>
+                            <div className="space-y-3">
+                                <div className="flex justify-between">
+                                    <span>Paid:</span>
+                                    <span className="text-green-400 font-bold">{stats.paidMembers} ({Math.round(stats.paidMembers / stats.totalMembers * 100)}%)</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Unpaid:</span>
+                                    <span className="text-gray-400 font-bold">{stats.totalMembers - stats.paidMembers}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">Engagement</h3>
+                            <div className="space-y-3">
+                                <div className="flex justify-between">
+                                    <span>Avg Events/Member:</span>
+                                    <span className="text-blue-400 font-bold">
+                                        {(members.reduce((sum, m) => sum + (m.eventCount || 0), 0) / members.length).toFixed(1)}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Avg Points/Member:</span>
+                                    <span className="text-purple-400 font-bold">{stats.avgPoints}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                            <h3 className="text-xl font-bold mb-4">Event Stats</h3>
+                            <div className="space-y-3">
+                                <div className="flex justify-between">
+                                    <span>Total Events:</span>
+                                    <span className="text-yellow-400 font-bold">{stats.totalEvents}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span>Avg Attendance:</span>
+                                    <span className="text-green-400 font-bold">{stats.avgAttendance}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Export Tab Component
+        function ExportTab({ exportMembersCSV, exportEventsCSV, attendanceByEvent, exportEventAttendance }) {
+            const [selectedEvent, setSelectedEvent] = useState('');
+
+            return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                        <h3 className="text-2xl font-bold mb-4">📊 Member Roster</h3>
+                        <p className="text-gray-400 mb-6">Export complete member list with demographics, points, and tier information.</p>
+                        <button
+                            onClick={exportMembersCSV}
+                            className="w-full bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold"
+                        >
+                            Download Members CSV
+                        </button>
+                    </div>
+
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+                        <h3 className="text-2xl font-bold mb-4">📅 All Events Summary</h3>
+                        <p className="text-gray-400 mb-6">Export all events with attendance counts and details.</p>
+                        <button
+                            onClick={exportEventsCSV}
+                            className="w-full bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold"
+                        >
+                            Download Events CSV
+                        </button>
+                    </div>
+
+                    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 md:col-span-2">
+                        <h3 className="text-2xl font-bold mb-4">🎯 Single Event Attendance</h3>
+                        <p className="text-gray-400 mb-4">Export detailed attendance list for a specific event.</p>
+                        <div className="flex gap-4">
+                            <select
+                                value={selectedEvent}
+                                onChange={(e) => setSelectedEvent(e.target.value)}
+                                className="flex-1 bg-gray-700 border border-gray-600 rounded px-4 py-3 text-white"
+                            >
+                                <option value="">Select an event...</option>
+                                {attendanceByEvent.map(event => (
+                                    <option key={event.name} value={event.name}>
+                                        {event.name} ({event.attendees.length} attendees)
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                onClick={() => selectedEvent && exportEventAttendance(selectedEvent)}
+                                disabled={!selectedEvent}
+                                className={`px-6 py-3 rounded-lg font-semibold ${
+                                    selectedEvent
+                                        ? 'bg-orange-600 hover:bg-orange-700'
+                                        : 'bg-gray-600 cursor-not-allowed'
+                                }`}
+                            >
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render App
+        ReactDOM.render(<AdminDashboard />, document.getElementById('root'));
+    </script>
+</body>
+</html>

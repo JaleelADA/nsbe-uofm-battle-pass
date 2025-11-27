@@ -1,0 +1,2 @@
+ Dynamically fetch calendar data from calendat.txt (not embedded)
+✅ Event matching: match by date first, then by event type, with name fallback as tiebreaker

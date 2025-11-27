@@ -9,119 +9,6 @@ const SHEETS_CONFIG = {
   API_KEY: 'AIzaSyDSy7s_QYYX26D0ySIJQJ7zWAfBxUIGvOg'
 };
 
-// Member demographics mapping
-const MEMBER_DEMOGRAPHICS = {
-    'makaelaw': { major: 'Civil Engineering, Architecture', year: '2nd' },
-    'ericahay': { major: 'Computer Science (LSA)', year: '3rd' },
-    'natoriaw': { major: 'Mechanical Engineering', year: '5th+' },
-    'mdlong': { major: 'Industrial and Operations Engineering', year: '3rd' },
-    'ericdom': { major: 'Biomedical Engineering', year: '2nd' },
-    'bsnkpah': { major: 'Data Science', year: '4th' },
-    'devinmap': { major: 'Materials Science and Engineering', year: '5th+' },
-    'ugonnao': { major: 'Computer Science (CoE)', year: '4th' },
-    'malawis': { major: 'Computer Science (LSA)', year: '4th' },
-    'desta': { major: 'Civil Engineering', year: '3rd' },
-    'giannaw': { major: 'Electrical Engineering', year: '4th' },
-    'cmonie': { major: 'Industrial and Operations Engineering', year: '3rd' },
-    'cjakombi': { major: 'Mechanical Engineering', year: '4th' },
-    'regind': { major: 'Electrical Engineering', year: '3rd' },
-    'kingjj': { major: 'Urban Technology', year: '3rd' },
-    'plafave': { major: 'Biomedical Engineering, Cellular and Molecular Biomedical Sciences', year: '4th' },
-    'sayoodus': { major: 'Computer Science (LSA)', year: '2nd' },
-    'msmbayo': { major: 'Computer Science (LSA)', year: '2nd' },
-    'brynnw': { major: 'Computer Science (LSA)', year: '2nd' },
-    'kwabenaf': { major: 'Mechanical Engineering', year: '2nd' },
-    'donjm': { major: 'Computer Engineering', year: '5th+' },
-    'landond': { major: 'Computer Science (LSA)', year: '2nd' },
-    'daniecam': { major: 'Civil Engineering', year: '3rd' },
-    'hunegnaw': { major: 'Industrial and Operations Engineering', year: '2nd' },
-    'adna@umich.edu': { major: 'Civil Engineering', year: '4th' },
-    'owadugea': { major: 'Computer Science (LSA)', year: '4th' },
-    'ariaf': { major: 'Computer Science (LSA)', year: '3rd' },
-    'laurennn': { major: 'Biomedical Engineering', year: '5th+' },
-    'ayeyiyp': { major: 'Civil Engineering', year: '4th' },
-    'obiohac': { major: 'Computer Science (LSA)', year: '2nd' },
-    'aressom': { major: 'Computer Science (LSA)', year: '2nd' },
-    'gpears': { major: 'Biomedical Engineering', year: '3rd' },
-    'samueltk@umich.edu': { major: 'Computer Science (CoE)', year: '3rd' },
-    'akodjo': { major: 'Electrical Engineering', year: '3rd' },
-    'bsoumare': { major: 'Biomedical Engineering', year: '4th' },
-    'kylemoni': { major: 'Electrical Engineering', year: '1st' },
-    'kaibilal': { major: 'Engineering Physics', year: '1st' },
-    'grcesar': { major: 'Industrial and Operations Engineering, Robotics, Undeclared', year: '1st' },
-    'stjulius': { major: 'Computer Engineering', year: '1st' },
-    'alexbing': { major: 'Computer Science (CoE)', year: '1st' },
-    'aayungo': { major: 'Computer Science (CoE)', year: '1st' },
-    'jjbishaw': { major: 'Computer Science (CoE)', year: '1st' },
-    'haarun': { major: 'Computer Science (LSA)', year: '1st' },
-    'mekiyabe': { major: 'Biomedical Engineering, Undeclared', year: '1st' },
-    'aphall': { major: 'Biomedical Engineering', year: '1st' },
-    'onimisi': { major: 'Computer Engineering', year: '1st' },
-    'kerylfo@umich.edu': { major: 'Electrical Engineering', year: '1st' },
-    'kmonie': { major: 'Mechanical Engineering', year: '1st' },
-    'njokuc': { major: 'Mechanical Engineering', year: '1st' },
-    'tparham': { major: 'Undeclared', year: '1st' },
-    'gomarr': { major: 'Computer Science (LSA)', year: '1st' },
-    'lsfifer': { major: 'Computer Science (LSA)', year: '1st' },
-    'matipa': { major: 'Computer Science (CoE)', year: '1st' },
-    'rareno': { major: 'Mechanical Engineering', year: '2nd' },
-    'jadlewis': { major: 'Naval Architecture and Marine Engineering', year: '4th' },
-    'hadegbit': { major: 'Mechanical Engineering', year: '3rd' },
-    'tchonang': { major: 'Industrial and Operations Engineering', year: '4th' },
-    'justn': { major: 'Computer Science (CoE)', year: '1st' },
-    'lindsis': { major: 'Electrical Engineering', year: '1st' },
-    'dcadjer': { major: 'Undeclared', year: '1st' },
-    'kenley': { major: 'Electrical Engineering', year: '4th' },
-    'dantepar': { major: 'Computer Science (LSA)', year: '2nd' },
-    'howardsl': { major: 'Computer Science (LSA)', year: '4th' },
-    'gavynw': { major: 'Mechanical Engineering', year: '1st' },
-    'ghonore': { major: 'Aerospace Engineering', year: '2nd' },
-    'mdinku': { major: 'Chemical Engineering', year: '2nd' },
-    'layiolus': { major: 'Computer Science (LSA)', year: '4th' },
-    'jaedarae': { major: 'Biomedical Engineering', year: '2nd' },
-    'uneak': { major: 'Electrical Engineering', year: '4th' },
-    'jadaree': { major: 'Materials Science and Engineering', year: '3rd' },
-    'dtellis': { major: 'Computer Science (LSA)', year: '1st' },
-    'mseade': { major: 'Computer Science (LSA)', year: '1st' },
-    'zakyahe': { major: 'Chemical Engineering', year: '4th' },
-    'travic': { major: 'Mechanical Engineering', year: '5th+' },
-    'ihairsto': { major: 'Computer Engineering', year: '4th' },
-    'nnennabr': { major: 'Biomedical Engineering', year: '3rd' },
-    'achoroj': { major: 'Computer Science (CoE)', year: '2nd' },
-    'odumk': { major: 'Computer Science (LSA)', year: '3rd' },
-    'mirionb': { major: 'Aerospace Engineering', year: '2nd' },
-    'jodhiamb': { major: 'Public policy', year: '4th' },
-    'sjjohn': { major: 'Industrial and Operations Engineering', year: '1st' },
-    'shantiah': { major: 'Electrical Engineering', year: '3rd' },
-    'sbroddie': { major: 'Electrical Engineering', year: '5th+' },
-    'wcjulian': { major: 'Mechanical Engineering', year: '1st' },
-    'orukotan': { major: 'Biomedical Engineering', year: '1st' }
-};
-
-// Hardcoded paid chapter members list (supplemental to Google Sheet)
-// This ensures accurate paid member tracking even if sheet is not updated
-const PAID_CHAPTER_MEMBERS = new Set([
-    'iodetola', 'chiomaa', 'henoky', 'aphall', 'mikkoh', 'howardsl', 'uneak',
-    'imanahme', 'cjakombi', 'alexbing', 'malawis', 'thewfica', 'bsoumare',
-    'odumk', 'donjm', 'ojadon', 'savannae', 'yohannl', 'brynnw', 'kellm',
-    'kerylfo@umich.edu', 'sayoodus', 'jbowman', 'kaibilal', 'kylemoni',
-    'onimisi', 'gpears', 'gavynw', 'hunegnaw', 'landond', 'kmonie', 'kingjj',
-    'zhariahu', 'kwabenaf', 'regind', 'choyceja', 'giannaw', 'grcesar',
-    'sashahil', 'ihairsto', 'jasminew', 'jadlewis', 'adna@umich.edu',
-    'cmonie', 'daniecam', 'jdronesa', 'bsnkpah', 'etaylor', 'kinziebr',
-    'lsfifer', 'rareno', 'matipa', 'layiolus', 'aayungo', 'msmbayo',
-    'zakyahe', 'islyndwa', 'rayankam', 'achoroj', 'azaryahc', 'dtellis',
-    'mseade', 'toddbi', 'shantiah', 'johnsand', 'lindsis', 'kyrajcha',
-    'owadugea', 'kendallm', 'boyantv', 'skylars', 'aniyalew', 'ayeyiyp',
-    'londynj', 'haarun', 'sadiew', 'travic', 'tolunigh', 'kaidenda',
-    'tparham', 'divineos', 'kyrahud', 'mosesm', 'megann', 'otoboego',
-    'njokuc', 'davidang', 'jjbishaw', 'bryonyk', 'shayldod', 'ryanhobb',
-    'chiderao', 'nevaehmm', 'dantepar', 'benhopki', 'princeu', 'ghonore',
-    'rasheedj', 'ariaf', 'ugonnao', 'skylared', 'jeovajones', 'chitoemech',
-    'mdinku', 'jandyari', 'jadaree', 'mobadewa', 'jodhiamb', 'mdlong',
-    'shaniam', 'nnennabr', 'kenley', 'elvisc'
-].map(u => u.toLowerCase().trim()));
-
 // Application state
 window.CSV_OVERRIDE_DATA = null;
 window.CSV_CUTOFF_DATE = new Date('2025-09-26T00:00:00');
@@ -190,16 +77,8 @@ async function fetchWithRetry(url, maxRetries = 2, initialDelay = 2000) {
 // Function to parse and prepare CSV data for use in the system
 async function parseCSVData() {
   try {
-    console.log('[CSV Parser] Fetching event_data.csv...');
     const response = await fetch('./data/event_data.csv');
-    
-    if (!response.ok) {
-      console.error('[CSV Parser] Failed to fetch CSV:', response.status, response.statusText);
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
     const csvText = await response.text();
-    console.log('[CSV Parser] CSV loaded, size:', csvText.length, 'bytes');
     
     // Parse CSV manually to handle the space-padded headers
     const lines = csvText.split('\n').filter(line => line.trim());
@@ -208,11 +87,8 @@ async function parseCSVData() {
       return [];
     }
     
-    console.log('[CSV Parser] Processing', lines.length, 'lines...');
-    
     // Parse headers and normalize them
     const rawHeaders = lines[0].split(',');
-    console.log('[CSV Parser] Headers:', rawHeaders.slice(0, 5));
     
     const data = [];
     for (let i = 1; i < lines.length; i++) {
@@ -277,16 +153,6 @@ async function parseCSVData() {
         const timestampField = rawHeaders.find(h => h.toLowerCase().includes('timestamp'));
         entry['Timestamp'] = timestampField ? entry[timestampField.trim()]?.trim() || '' : '';
         
-        // Extract demographics fields
-        const majorField = rawHeaders.find(h => h.toLowerCase().includes('major'));
-        entry['Major'] = majorField ? entry[majorField.trim()]?.trim() || '' : '';
-        
-        const yearField = rawHeaders.find(h => h.toLowerCase().includes('year'));
-        entry['Year'] = yearField ? entry[yearField.trim()]?.trim() || '' : '';
-        
-        const nationalDuesField = rawHeaders.find(h => h.toLowerCase().includes('paid national dues'));
-        entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'] = nationalDuesField ? entry[nationalDuesField.trim()]?.trim() || '' : '';
-        
         // Only add if we have both email and event
         if (entry['Email Address'] && entry['Event']) {
           data.push(entry);
@@ -304,13 +170,10 @@ async function parseCSVData() {
 
 // Initialize CSV data (async)
 parseCSVData().then(data => {
-    console.log('[CSV Parser] ✅ CSV data loaded successfully:', data.length, 'entries');
-    if (data.length > 0) {
-        console.log('[CSV Parser] Sample entry:', data[0]);
-    }
+    console.log('[CSV Parser] CSV data loaded successfully:', data.length, 'entries');
     window.CSV_OVERRIDE_DATA = data;
 }).catch(error => {
-    console.error('[CSV Parser] ❌ Failed to load CSV data:', error);
+    console.error('[CSV Parser] Failed to load CSV data:', error);
     window.CSV_OVERRIDE_DATA = []; // Set to empty array instead of leaving it null
 });
 
@@ -594,16 +457,16 @@ async function fetchPaidMembers() {
             return [];
         }
         
-        // This sheet has no header row - just a title row and data
-        // Columns are: [blank, ID, First Name, Last Name, Year, Date, National Dues, Email]
-        const headers = ['', 'ID', 'First Name', 'Last Name', 'Year', 'Date', 'National Dues', 'email'];
+        // Skip title row (row 0), use row 1 as headers
+        const headerLine = lines[1];
+        const headers = headerLine.split(',').map(h => h.trim().replace(/"/g, ''));
         
-        console.log('[Data Manager] Using manual headers for paid members:', headers);
+        console.log('[Data Manager] Paid members sheet headers:', headers);
         
         const processedData = [];
         
-        // Process data rows (starting from row 1 - no header row exists!)
-        for (let i = 1; i < lines.length; i++) {
+        // Process data rows (starting from row 2)
+        for (let i = 2; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
             
@@ -957,19 +820,18 @@ async function calculateMemberPoints(signInData) {
         }
     });
     
-    // Helper function to check if member is paid (using paid members sheet + hardcoded list)
-    const isPaidMemberFast = (email, uniqname) => {
+    // Helper function to check if member is paid (using only paid members sheet and CSV data)
+    const isPaidMemberFast = (email) => {
         const normalizedEmail = email.toLowerCase().trim();
-        const normalizedUniqname = uniqname ? uniqname.toLowerCase().trim() : '';
-        
-        // Check paid members sheet
-        if (paidMemberEmails.has(normalizedEmail)) return true;
-        
-        // Check hardcoded paid chapter members list
-        if (normalizedUniqname && PAID_CHAPTER_MEMBERS.has(normalizedUniqname)) return true;
-        if (PAID_CHAPTER_MEMBERS.has(normalizedEmail)) return true;
-        
-        return false;
+        return (
+            paidMemberEmails.has(normalizedEmail) ||  // From paid members sheet only
+            // For CSV data, treat all as paid (historical NSBE members)
+            (window.CSV_OVERRIDE_DATA && window.CSV_OVERRIDE_DATA.some(csvEntry => {
+                const csvEmailField = Object.keys(csvEntry).find(k => k.toLowerCase().includes('email'));
+                const csvEmail = csvEmailField ? csvEntry[csvEmailField] : '';
+                return csvEmail && csvEmail.toLowerCase().trim() === normalizedEmail;
+            }))
+        );
     };
     
     // Process each entry
@@ -994,16 +856,11 @@ async function calculateMemberPoints(signInData) {
                 displayName = email.split('@')[0]; // Use email username as fallback
             }
             
-            // Get demographics from sign-in entry first
-            let major = entry['Major'] || '';
-            let year = entry['Year'] || '';
-            const nationalDues = entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'] || '';
-            
-            // Override with hardcoded demographics if available
-            if (MEMBER_DEMOGRAPHICS[normalizedUniqname]) {
-                major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-            }
+            // Find demographics from paid members list
+            const paidMemberData = paidMembersList.find(pm => 
+                (pm.email && pm.email.toLowerCase().trim() === normalizedEmail) ||
+                ((pm.Uniqname || pm.uniqname || '').toLowerCase().trim() === normalizedUniqname)
+            );
             
             memberStats[normalizedUniqname] = {
                 email: normalizedEmail,
@@ -1012,36 +869,14 @@ async function calculateMemberPoints(signInData) {
                 totalPoints: 0,
                 eventHistory: [],
                 eventCount: 0,
-                isPaid: isPaidMemberFast(normalizedEmail, normalizedUniqname),
-                major: major,
-                Major: major, // Alias
-                year: year,
-                Year: year, // Alias
-                national_dues: nationalDues,
-                'National Dues': nationalDues // Alias
+                isPaid: isPaidMemberFast(normalizedEmail), // Set paid status here
+                major: paidMemberData?.Major || paidMemberData?.major || '',
+                Major: paidMemberData?.Major || paidMemberData?.major || '',
+                year: paidMemberData?.Year || paidMemberData?.year || '',
+                Year: paidMemberData?.Year || paidMemberData?.year || '',
+                national_dues: paidMemberData?.['National Dues'] || paidMemberData?.national_dues || '',
+                'National Dues': paidMemberData?.['National Dues'] || paidMemberData?.national_dues || ''
             };
-        } else {
-            // Update demographics if this entry has more complete data
-            // But always prefer hardcoded demographics
-            if (MEMBER_DEMOGRAPHICS[normalizedUniqname]) {
-                memberStats[normalizedUniqname].major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                memberStats[normalizedUniqname].Major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                memberStats[normalizedUniqname].year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-                memberStats[normalizedUniqname].Year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-            } else {
-                if (entry['Major'] && !memberStats[normalizedUniqname].major) {
-                    memberStats[normalizedUniqname].major = entry['Major'];
-                    memberStats[normalizedUniqname].Major = entry['Major'];
-                }
-                if (entry['Year'] && !memberStats[normalizedUniqname].year) {
-                    memberStats[normalizedUniqname].year = entry['Year'];
-                    memberStats[normalizedUniqname].Year = entry['Year'];
-                }
-            }
-            if (entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'] && !memberStats[normalizedUniqname].national_dues) {
-                memberStats[normalizedUniqname].national_dues = entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'];
-                memberStats[normalizedUniqname]['National Dues'] = entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'];
-            }
         }
         
         // Calculate points for this specific event using your original system
@@ -1075,34 +910,6 @@ async function calculateMemberPoints(signInData) {
             memberStats[normalizedUniqname].eventCount++;
         }
     }
-    
-    // After processing all events, merge national dues data from paid members sheet
-    console.log('[Demographics] Merging national dues data from paid members sheet...');
-    let nationalDuesMerged = 0;
-    paidMembersList.forEach(paidMember => {
-        if (!paidMember.email) return;
-        
-        const normalizedEmail = paidMember.email.toLowerCase().trim();
-        
-        // Find the member in memberStats by email
-        for (const uniqname in memberStats) {
-            const member = memberStats[uniqname];
-            if (member.email === normalizedEmail) {
-                // Only update if the paid members sheet has national dues data
-                const nationalDues = paidMember['National Dues'] || paidMember['national_dues'] || '';
-                if (nationalDues && nationalDues.toString().trim() !== '') {
-                    // Only override if the member doesn't already have national dues data
-                    if (!member.national_dues || member.national_dues.toString().trim() === '') {
-                        member.national_dues = nationalDues;
-                        member['National Dues'] = nationalDues;
-                        nationalDuesMerged++;
-                    }
-                }
-                break;
-            }
-        }
-    });
-    console.log(`[Demographics] Merged national dues data for ${nationalDuesMerged} members from paid members sheet`);
     
     console.log(`[Points] Calculated points for ${Object.keys(memberStats).length} members using original system (performance optimized)`);
     return memberStats;
@@ -1154,75 +961,6 @@ function generateLeaderboard(memberStats) {
     return members;
 }
 
-// Load events from the Events folder (pre-GBM2 events)
-async function loadEventsFromFolder() {
-    const eventFiles = [
-        { file: 'Attendance Data - GBM 1.csv', name: '1st GBM w/ Ford', type: 'GBM', date: '9/12/2025' },
-        { file: 'Attendance Data - Park Cleanup.csv', name: 'Peninsula Park Cleanup', type: 'Community Service', date: '9/20/2025' },
-        { file: 'Attendance Data - Study Jamz #2.csv', name: 'Study Jamz', type: 'Academic', date: '9/22/2025' },
-        { file: 'Attendance Data - Study Jamz #3.csv', name: 'Study Jamz', type: 'Academic', date: '9/29/2025' },
-        { file: 'Attendance Data - Mentorship Mixer.csv', name: 'Mentorship Mixer: Estimathon', type: 'Mentorship Events', date: '10/1/2025' },
-        { file: 'Attendance Data - Bowling W_ Coinbase.csv', name: 'Bowling w/ Coinbase', type: 'Social Events', date: '10/8/2025' },
-        { file: 'Attendance Data - Lunch & Learn.csv', name: 'Lunch & Learn Series #1', type: 'Professional Development', date: '10/16/2025' }
-    ];
-    
-    const eventsData = [];
-    for (const eventFile of eventFiles) {
-        try {
-            const response = await fetch(`data/Events/${eventFile.file}`);
-            if (!response.ok) {
-                console.warn(`[Events] Could not load ${eventFile.file}: ${response.status}`);
-                continue;
-            }
-            const text = await response.text();
-            
-            // Simple CSV parser
-            const lines = text.split('\n').filter(l => l.trim());
-            const headers = lines[0].toLowerCase().split(',').map(h => h.trim().replace(/"/g, ''));
-            
-            const attendees = [];
-            for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-                const attendee = {};
-                headers.forEach((header, idx) => {
-                    attendee[header] = values[idx] || '';
-                });
-                
-                const uniqname = (attendee.uniqname || '').toLowerCase().trim();
-                const email = attendee.email || attendee['email address'] || '';
-                const fullName = attendee['full name (first & last)'] || 
-                               attendee['full name'] || 
-                               `${attendee['first name'] || ''} ${attendee['last name'] || ''}`.trim();
-                
-                if (uniqname) {
-                    attendees.push({
-                        uniqname,
-                        email,
-                        fullName,
-                        timestamp: eventFile.date,
-                        eventType: eventFile.type,
-                        eventName: eventFile.name,
-                        major: attendee.major || '',
-                        year: attendee.year || ''
-                    });
-                }
-            }
-            
-            eventsData.push({
-                name: eventFile.name,
-                type: eventFile.type,
-                date: eventFile.date,
-                attendees
-            });
-            console.log(`[Events] Loaded ${eventFile.name}: ${attendees.length} attendees`);
-        } catch (error) {
-            console.warn(`[Events] Error loading ${eventFile.file}:`, error.message);
-        }
-    }
-    
-    return eventsData;
-}
-
 // Calculate tier based on rank position (percentile-based system)
 // NOTE: This function is now deprecated in favor of percentile calculation in generateLeaderboard
 // Kept for backward compatibility but tiers are now calculated based on ranking
@@ -1259,94 +997,10 @@ async function getLocalLeaderboard() {
     console.log('[Main] Getting local leaderboard...');
     
     try {
-        const [signInData, eventsFromFolder] = await Promise.all([
-            fetchSignInData(),
-            loadEventsFromFolder()
-        ]);
+        const signInData = await fetchSignInData();
         console.log(`[Main] Loaded ${signInData.length} sign-in records`);
-        console.log(`[Main] Loaded ${eventsFromFolder.length} events from folder`);
         
         const memberStats = await calculateMemberPoints(signInData);
-        
-        // Add points from Events folder (pre-GBM2 events)
-        let folderEventsAdded = 0;
-        eventsFromFolder.forEach(folderEvent => {
-            folderEvent.attendees.forEach(attendee => {
-                const normalizedUniqname = attendee.uniqname.toLowerCase().trim();
-                
-                // Check if member exists in memberStats
-                if (memberStats[normalizedUniqname]) {
-                    // Calculate points for this event
-                    let points = window.NEW_POINT_SYSTEM?.activities[folderEvent.type] || 0;
-                    if (folderEvent.type === 'Community Service') {
-                        points = 5;
-                    }
-                    if (!memberStats[normalizedUniqname].isPaid && folderEvent.type !== 'Community Service') {
-                        points = Math.min(points, 5);
-                    }
-                    
-                    // Check if this event is already in their history (avoid duplicates)
-                    const eventDate = new Date(folderEvent.date).toLocaleDateString('en-US');
-                    const alreadyExists = memberStats[normalizedUniqname].eventHistory.some(e => {
-                        const existingDate = e.timestamp ? new Date(e.timestamp).toLocaleDateString('en-US') : '';
-                        return e.eventType === folderEvent.type && existingDate === eventDate;
-                    });
-                    
-                    if (!alreadyExists) {
-                        // Add to event history
-                        memberStats[normalizedUniqname].eventHistory.push({
-                            eventType: folderEvent.type,
-                            eventName: folderEvent.name,
-                            timestamp: folderEvent.date,
-                            totalPoints: points,
-                            source: 'folder'
-                        });
-                        memberStats[normalizedUniqname].totalPoints += points;
-                        memberStats[normalizedUniqname].eventCount++;
-                        folderEventsAdded++;
-                    }
-                } else {
-                    // Member doesn't exist in sign-in data, create new entry
-                    let points = window.NEW_POINT_SYSTEM?.activities[folderEvent.type] || 0;
-                    if (folderEvent.type === 'Community Service') {
-                        points = 5;
-                    }
-                    
-                    // Get demographics from hardcoded mapping if available
-                    let major = attendee.major || '';
-                    let year = attendee.year || '';
-                    if (MEMBER_DEMOGRAPHICS[normalizedUniqname]) {
-                        major = MEMBER_DEMOGRAPHICS[normalizedUniqname].major;
-                        year = MEMBER_DEMOGRAPHICS[normalizedUniqname].year;
-                    }
-                    
-                    memberStats[normalizedUniqname] = {
-                        email: attendee.email || '',
-                        uniqname: normalizedUniqname,
-                        displayName: attendee.fullName || attendee.uniqname,
-                        totalPoints: points,
-                        eventHistory: [{
-                            eventType: folderEvent.type,
-                            eventName: folderEvent.name,
-                            timestamp: folderEvent.date,
-                            totalPoints: points,
-                            source: 'folder'
-                        }],
-                        eventCount: 1,
-                        isPaid: PAID_CHAPTER_MEMBERS.has(normalizedUniqname) || PAID_CHAPTER_MEMBERS.has((attendee.email || '').toLowerCase().trim()),
-                        major: major,
-                        Major: major,
-                        year: year,
-                        Year: year,
-                        national_dues: '',
-                        'National Dues': ''
-                    };
-                    folderEventsAdded++;
-                }
-            });
-        });
-        console.log(`[Main] Added ${folderEventsAdded} folder event entries to member stats`);
-        
         const leaderboard = generateLeaderboard(memberStats);
         const tierThresholds = calculateDynamicTierThresholds(leaderboard);
         
@@ -1373,47 +1027,8 @@ async function getMemberAttendanceHistory(memberIdentifier) {
     console.log(`[Attendance] Getting attendance history for: ${memberIdentifier}`);
     
     try {
-        const [signInData, eventsFromFolder] = await Promise.all([
-            fetchSignInData(),
-            loadEventsFromFolder()
-        ]);
+        const signInData = await fetchSignInData();
         const memberStats = await calculateMemberPoints(signInData);
-        
-        // Add points from Events folder (same logic as getLocalLeaderboard)
-        let folderEventsAddedForMember = 0;
-        eventsFromFolder.forEach(folderEvent => {
-            folderEvent.attendees.forEach(attendee => {
-                const normalizedUniqname = attendee.uniqname.toLowerCase().trim();
-                
-                if (memberStats[normalizedUniqname]) {
-                    let points = window.NEW_POINT_SYSTEM?.activities[folderEvent.type] || 0;
-                    if (folderEvent.type === 'Community Service') {
-                        points = 5;
-                    }
-                    if (!memberStats[normalizedUniqname].isPaid && folderEvent.type !== 'Community Service') {
-                        points = Math.min(points, 5);
-                    }
-                    
-                    const eventDate = new Date(folderEvent.date).toLocaleDateString('en-US');
-                    const alreadyExists = memberStats[normalizedUniqname].eventHistory.some(e => {
-                        const existingDate = e.timestamp ? new Date(e.timestamp).toLocaleDateString('en-US') : '';
-                        return e.eventType === folderEvent.type && existingDate === eventDate;
-                    });
-                    
-                    if (!alreadyExists) {
-                        memberStats[normalizedUniqname].eventHistory.push({
-                            eventType: folderEvent.type,
-                            eventName: folderEvent.name,
-                            timestamp: folderEvent.date,
-                            totalPoints: points,
-                            source: 'folder'
-                        });
-                        memberStats[normalizedUniqname].totalPoints += points;
-                        memberStats[normalizedUniqname].eventCount++;
-                    }
-                }
-            });
-        });
         
         // Find member by email, uniqname, or display name
         const identifier = memberIdentifier.toLowerCase().trim();
@@ -1429,8 +1044,6 @@ async function getMemberAttendanceHistory(memberIdentifier) {
                 identifier.includes(member.displayName.toLowerCase())
             ) {
                 targetMember = member;
-                // Count folder events for this specific member
-                folderEventsAddedForMember = targetMember.eventHistory.filter(e => e.source === 'folder').length;
                 break;
             }
         }
@@ -1439,8 +1052,6 @@ async function getMemberAttendanceHistory(memberIdentifier) {
             console.log(`[Attendance] No member found matching: ${memberIdentifier}`);
             return null;
         }
-        
-        console.log(`[Attendance] Found member ${targetMember.displayName} with ${targetMember.eventHistory.length} total events (${folderEventsAddedForMember} from Events folder)`);
         
         // Sort events by timestamp (most recent first)
         const sortedHistory = [...targetMember.eventHistory].sort((a, b) => {

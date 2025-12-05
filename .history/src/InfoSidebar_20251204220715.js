@@ -84,6 +84,26 @@ function InfoSidebar() {
 						</div>
 					</div>
 				);
+			case 'events':
+				return (
+					<div className="p-4 sm:p-6">
+						<SectionTitle theme="gold">📅 UPCOMING EVENTS</SectionTitle>
+						<div className="space-y-3 sm:space-y-4">
+							{EVENTS_DATA.map((event, index) => (
+								<div key={index} className="p-3 sm:p-4 bg-gray-800/50 border border-gray-600" style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}>
+									<div className="font-bold text-yellow-400 mb-2 text-sm sm:text-base">{event.date} – {event.title}</div>
+									<div className="text-gray-300 text-xs sm:text-sm mb-1">{event.time}</div>
+									<div className="text-gray-400 text-xs sm:text-sm">{event.location}</div>
+								</div>
+							))}
+							<a href="https://tr.ee/kXIev9hrt3" target="_blank" rel="noopener noreferrer" 
+								 className="block p-3 sm:p-4 text-sm sm:text-base text-center font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 text-black hover:from-yellow-500 hover:to-yellow-700 transition-all" 
+								 style={{ clipPath: 'polygon(12px 0%, 100% 0%, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0% 100%, 0% 12px)' }}>
+								📅 Add the NSBEUM Calendar
+							</a>
+						</div>
+					</div>
+				);
 			case 'announcements':
 				return (
 					<div className="p-4 sm:p-6">

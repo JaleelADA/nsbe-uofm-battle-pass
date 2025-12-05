@@ -754,17 +754,11 @@ window.NEW_POINT_SYSTEM = {
     'Professional Development': 10,      // PD Events, workshops, panels
     'P-Zone': 5,                        // Peer Zone events
     'Mentorship Events': 7,             // Mentor mixers, speed mentoring
-    'Mentorship': 7,                    // Alias for Mentorship Events
     'E-Board Meeting': 7,               // Leadership meetings
     'JEB Events': 7,                    // Junior Exec Board events
     'Community Service': 5,             // Volunteering events
     'Convention Attendance': 15,        // Regional/National conventions
-    'Conference': 15,                   // Alias for Convention Attendance
     'Social Events': 7,                 // BBQ, flag football, game nights
-    'Social': 7,                        // Alias for Social Events
-    'Academic': 5,                      // Study sessions, academic events
-    'Tabling': 3,                       // Tabling events
-    'PCI': 5,                           // Pre-college initiative events
     'Mentorship Program Participation': 10 // Active mentorship engagement
   },
   
@@ -848,7 +842,7 @@ function calculateMemberPointsOriginal(memberData, paidMembersList = [], memberH
   
   if (eventType.includes('1') || eventTypeLower.includes('gbm')) {
     normalizedEventType = 'GBM';
-  } else if (eventType.includes('2') || eventTypeLower.includes('professional') || eventTypeLower === 'pd') {
+  } else if (eventType.includes('2') || eventTypeLower.includes('professional')) {
     normalizedEventType = 'Professional Development';
   } else if (eventType.includes('3') || eventTypeLower.includes('p-zone')) {
     normalizedEventType = 'P-Zone';
@@ -860,16 +854,10 @@ function calculateMemberPointsOriginal(memberData, paidMembersList = [], memberH
     normalizedEventType = 'JEB Events';
   } else if (eventType.includes('7') || eventTypeLower.includes('community') || eventTypeLower.includes('service')) {
     normalizedEventType = 'Community Service';
-  } else if (eventType.includes('8') || eventTypeLower.includes('convention') || eventTypeLower.includes('conference')) {
+  } else if (eventType.includes('8') || eventTypeLower.includes('convention')) {
     normalizedEventType = 'Convention Attendance';
   } else if (eventType.includes('9') || eventTypeLower.includes('social')) {
     normalizedEventType = 'Social Events';
-  } else if (eventTypeLower.includes('academic') || eventTypeLower.includes('study')) {
-    normalizedEventType = 'Academic';
-  } else if (eventTypeLower.includes('tabling')) {
-    normalizedEventType = 'Tabling';
-  } else if (eventTypeLower.includes('pci')) {
-    normalizedEventType = 'PCI';
   } else {
     normalizedEventType = 'Unknown Event';
   }

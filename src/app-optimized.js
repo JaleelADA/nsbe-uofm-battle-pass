@@ -12,6 +12,94 @@ if (!SHARED_STYLES) {
 
 const { useState, useEffect } = React;
 
+// ===== WELCOME POPUP =====
+function WelcomePopup({ onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.8)' }}>
+      <div 
+        className="relative max-w-md w-full p-6 sm:p-8 text-center"
+        style={{
+          background: 'linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 50%, #0a0f1c 100%)',
+          border: '3px solid #FFD700',
+          clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+          boxShadow: '0 0 60px rgba(255, 215, 0, 0.4), inset 0 0 40px rgba(255, 215, 0, 0.1)'
+        }}
+      >
+        {/* Decorative corner accents */}
+        <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-yellow-400"></div>
+        <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-yellow-400"></div>
+        <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-yellow-400"></div>
+        <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-yellow-400"></div>
+        
+        {/* Fire emoji header */}
+        <div className="text-5xl sm:text-6xl mb-4 animate-bounce">🔥</div>
+        
+        {/* Title */}
+        <h2 className="text-2xl sm:text-3xl font-black mb-2 tracking-wider" style={{
+          fontFamily: 'Orbitron, monospace',
+          background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          WELCOME BACK!
+        </h2>
+        
+        {/* Subtitle */}
+        <div className="text-lg sm:text-xl text-yellow-400 font-bold mb-4" style={{ fontFamily: 'Orbitron, monospace' }}>
+          SEMESTER TWO
+        </div>
+        
+        {/* Message */}
+        <p className="text-gray-300 text-sm sm:text-base mb-4 leading-relaxed">
+          Ready to level up? New semester, <span className="text-cyan-400 font-semibold">fresh points reset!</span> 
+          Your Fall '25 attendance is archived, but Winter '26 is a clean slate.
+        </p>
+        
+        <p className="text-gray-400 text-xs sm:text-sm mb-6 leading-relaxed">
+          Keep attending events, paying your dues, and climbing the leaderboard. 
+          <span className="text-yellow-400 font-semibold"> Let's get it! 💪</span>
+        </p>
+        
+        {/* Stats teaser */}
+        <div className="grid grid-cols-3 gap-2 mb-6 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+          <div className="text-center">
+            <div className="text-xl sm:text-2xl">🔄</div>
+            <div className="text-xs text-gray-400">Points Reset</div>
+          </div>
+          <div className="text-center">
+            <div className="text-xl sm:text-2xl">📚</div>
+            <div className="text-xs text-gray-400">F25 Archived</div>
+          </div>
+          <div className="text-center">
+            <div className="text-xl sm:text-2xl">🎯</div>
+            <div className="text-xs text-gray-400">New Goals</div>
+          </div>
+        </div>
+        
+        {/* CTA Button */}
+        <button
+          onClick={onClose}
+          className="w-full py-3 px-6 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-black text-sm sm:text-base tracking-wider transition-all duration-300 transform hover:scale-105"
+          style={{
+            fontFamily: 'Orbitron, monospace',
+            clipPath: 'polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px)'
+          }}
+        >
+          LET'S GO! 🚀
+        </button>
+        
+        {/* Skip link */}
+        <button 
+          onClick={onClose}
+          className="mt-3 text-gray-500 hover:text-gray-300 text-xs transition-colors"
+        >
+          Don't show again this session
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ===== REUSABLE UI COMPONENTS =====
 
 function StyledSection({ children, theme = 'blue', className = '', style = {} }) {
@@ -89,113 +177,106 @@ window.StyledButton = StyledButton;
 
 // ===== MAIN COMPONENTS =====
 
-function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userName = '', onNameChange, hasUserData = false }) {
-  const progress = hasUserData && userXP ? (userXP / maxXP) * 100 : 0;
+// Slim, compact header - follows Fitts's Law (important elements easily reachable)
+function BattlePassHeader({ userLevel = null, userXP = null, maxXP = 6000, userName = '', onNameChange, hasUserData = false, userStats = {} }) {
+  const progress = hasUserData && userXP ? Math.min((userXP / maxXP) * 100, 100) : 0;
   
   return (
-    <div className="relative p-3 sm:p-4 lg:p-5 mb-3 sm:mb-4 lg:mb-5" style={{
+    <div className="relative p-3 sm:p-4 mb-3 sm:mb-4" style={{
       background: 'linear-gradient(135deg, #0a0f1c 0%, #1a1f2e 50%, #0a0f1c 100%)',
-      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
+      clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
       border: '2px solid #FFD700',
-      boxShadow: '0 0 30px rgba(255, 215, 0, 0.4), inset 0 0 50px rgba(255, 215, 0, 0.1)'
+      boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)'
     }}>
-      
-      <div className="flex flex-col lg:flex-row items-center lg:justify-between space-y-4 lg:space-y-0">
-        <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-3 lg:space-x-6 w-full lg:w-auto">
-          {/* NSBE Torch Logo */}
-          <div className="relative shrink-0">
-            <div className="w-14 h-16 sm:w-16 sm:h-20 lg:w-20 lg:h-24 flex items-center justify-center relative" style={{
-              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-              clipPath: SHARED_STYLES.clipPaths.badge,
-              boxShadow: '0 0 25px rgba(255, 215, 0, 0.6)'
-            }}>
-              <div className="w-10 h-14 sm:w-12 sm:h-16 lg:w-14 lg:h-18 flex items-center justify-center relative" style={{
-                background: 'linear-gradient(135deg, #0a0f1c, #1a1f2e)',
-                clipPath: SHARED_STYLES.clipPaths.badge,
-                border: '2px solid #FFD700'
-              }}>
-                <div className="text-base sm:text-lg lg:text-xl">🔥</div>
-              </div>
-            </div>
+      {/* Top row: Logo, Title, Search */}
+      <div className="flex items-center justify-between gap-3 sm:gap-4">
+        {/* Logo + Title */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center" style={{
+            background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+            clipPath: SHARED_STYLES.clipPaths.badge,
+            boxShadow: '0 0 15px rgba(255, 215, 0, 0.5)'
+          }}>
+            <span className="text-lg sm:text-xl">🔥</span>
           </div>
-          
-          <div className="flex-1 text-center sm:text-left w-full">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 lg:space-x-4 mb-3 lg:mb-4">
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-black tracking-wider" style={{
-                fontFamily: 'Orbitron, monospace',
-                background: SHARED_STYLES.gradients.gold,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textShadow: '0 0 30px rgba(255, 215, 0, 0.8)',
-                letterSpacing: '0.15em'
-              }}>NSBE</h1>
-              <h2 className="text-base sm:text-lg md:text-xl lg:text-3xl font-bold text-yellow-400" style={{
-                fontFamily: 'Orbitron, monospace',
-                letterSpacing: '0.1em'
-              }}>UofM BATTLE PASS</h2>
-            </div>
-            
-            {/* Name Input */}
-            <div className="mb-3 lg:mb-4">
-              <input
-                type="text"
-                placeholder="Enter your name, uniqname, or email to see your XP"
-                value={userName}
-                onChange={(e) => onNameChange(e.target.value)}
-                className="w-full max-w-sm lg:max-w-md bg-gray-900/90 border-2 border-yellow-400/60 px-3 py-2 lg:px-3 lg:py-2 text-sm lg:text-base text-yellow-100 focus:border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 transition-all duration-300"
-                style={{ 
-                  fontFamily: 'Orbitron, monospace',
-                  clipPath: SHARED_STYLES.clipPaths.card,
-                  boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)'
-                }}
-              />
-            </div>
-            
-            {/* Progress Bar - only show when user has data */}
-            {hasUserData && (
-              <div className="w-full max-w-sm lg:max-w-md bg-gray-900 h-5 lg:h-6 relative" style={{
-                border: '2px lg:border-3 solid #FFD700',
-                clipPath: SHARED_STYLES.clipPaths.card,
-                boxShadow: '0 0 25px rgba(255, 215, 0, 0.4)'
-              }}>
-                <div className="h-full relative overflow-hidden transition-all duration-1000" 
-                     style={{
-                       width: `${progress}%`,
-                       background: 'linear-gradient(90deg, #FFD700, #FFA500, #FF8C00)',
-                       boxShadow: '0 0 30px rgba(255, 215, 0, 0.8)'
-                     }}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-pulse"></div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Level/XP display - only show when user has data */}
-        {hasUserData && (
-          <div className="text-center lg:text-right">
-            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black" style={{
+          <div>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-black tracking-wider leading-none" style={{
               fontFamily: 'Orbitron, monospace',
               background: SHARED_STYLES.gradients.gold,
               WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 0 40px rgba(255, 215, 0, 0.8)'
-            }}>{userLevel}</div>
-            <div className="text-sm sm:text-base lg:text-lg text-yellow-300 font-bold" style={{
-              fontFamily: 'Orbitron, monospace'
-            }}>
-              {userXP}/{maxXP} XP
-            </div>
-            {userName && (
-              <div className="text-yellow-400 font-bold mt-2 lg:mt-2 text-sm sm:text-base lg:text-base" style={{
-                fontFamily: 'Orbitron, monospace'
-              }}>
-                Welcome, {userName}!
-              </div>
-            )}
+              WebkitTextFillColor: 'transparent'
+            }}>NSBE BATTLE PASS</h1>
+            <div className="text-xs text-yellow-400/70" style={{ fontFamily: 'Orbitron, monospace' }}>UofM Chapter</div>
           </div>
-        )}
+        </div>
+        
+        {/* Search Input - centered/flexible */}
+        <div className="flex-1 max-w-xs sm:max-w-sm lg:max-w-md">
+          <input
+            type="text"
+            placeholder="🔍 Search by name or uniqname..."
+            value={userName}
+            onChange={(e) => onNameChange(e.target.value)}
+            className="w-full bg-gray-900/80 border border-yellow-400/50 px-3 py-2 text-sm text-yellow-100 focus:border-yellow-400 focus:outline-none focus:ring-1 focus:ring-yellow-400/30 transition-all"
+            style={{ 
+              fontFamily: 'Orbitron, monospace',
+              clipPath: 'polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px)'
+            }}
+          />
+        </div>
       </div>
+      
+      {/* Stats Bar - only show when user has data (Progressive Disclosure) */}
+      {hasUserData && (
+        <div className="mt-3 pt-3 border-t border-yellow-400/30">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            {/* Quick Stats - Miller's Law: chunked info */}
+            <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl sm:text-3xl font-black" style={{
+                  fontFamily: 'Orbitron, monospace',
+                  background: SHARED_STYLES.gradients.gold,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>LV{userLevel}</span>
+              </div>
+              <div className="h-6 w-px bg-yellow-400/30 hidden sm:block"></div>
+              <div className="text-sm">
+                <span className="text-gray-400">XP:</span>
+                <span className="text-yellow-400 font-bold ml-1">{userXP}</span>
+              </div>
+              <div className="h-6 w-px bg-yellow-400/30 hidden sm:block"></div>
+              <div className="text-sm">
+                <span className="text-gray-400">Rank:</span>
+                <span className="text-yellow-400 font-bold ml-1">#{userStats.rank || '-'}</span>
+              </div>
+              <div className="h-6 w-px bg-yellow-400/30 hidden sm:block"></div>
+              <div className="text-sm">
+                <span className={`font-bold px-2 py-0.5 rounded text-xs ${
+                  userStats.tier === 'Gold' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-400/50' :
+                  userStats.tier === 'Silver' ? 'bg-gray-400/20 text-gray-300 border border-gray-400/50' :
+                  userStats.tier === 'Bronze' ? 'bg-orange-500/20 text-orange-400 border border-orange-400/50' :
+                  'bg-blue-500/20 text-blue-400 border border-blue-400/50'
+                }`}>{userStats.tier || 'Participant'}</span>
+              </div>
+            </div>
+            
+            {/* XP Progress Bar */}
+            <div className="flex-1 min-w-[150px] max-w-xs">
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Progress</span>
+                <span>{Math.round(progress)}%</span>
+              </div>
+              <div className="bg-gray-800 h-2 rounded-full overflow-hidden" style={{ border: '1px solid #4a5568' }}>
+                <div className="h-full transition-all duration-700" style={{
+                  width: `${progress}%`,
+                  background: 'linear-gradient(90deg, #FFD700, #FFA500)'
+                }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -220,129 +301,216 @@ function SkipNavigation() {
   );
 }
 
+// Compact tier badges - visual hierarchy showing available tiers
 function BadgeSection() {
-  return (
-    <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-5">
-      {BADGES_CONFIG.map((badge, index) => (
-        <div key={index} className={`bg-gradient-to-br ${badge.color} ${
-          badge.active ? 'opacity-100' : 'opacity-40'
-        } p-2 sm:p-3 lg:p-4 text-center min-w-[90px] sm:min-w-[110px] lg:min-w-[120px] transform hover:scale-105 transition-all duration-300 relative`}
-        style={{
-          clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
-          border: `2px solid ${badge.active ? badge.border : '#4a5568'}`,
-          boxShadow: badge.active ? `0 0 25px ${badge.border}40, inset 0 0 15px rgba(255,255,255,0.1)` : 'none'
-        }}>
-          {/* Inner glow effect */}
-          {badge.active && (
-            <div className="absolute inset-0" style={{
-              background: `linear-gradient(135deg, transparent 0%, ${badge.border}20 50%, transparent 100%)`,
-              clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)'
-            }}></div>
-          )}
-          <div className={`${badge.textColor} font-bold text-xs sm:text-sm tracking-wider relative z-10`} style={{
-            fontFamily: 'Orbitron, monospace',
-            textShadow: badge.active ? '0 0 10px rgba(0,0,0,0.5)' : 'none'
-          }}>{badge.name}</div>
-        </div>
-      ))}
-    </div>
-  );
+  return null; // Removed - tiers now shown in InfoSidebar only to reduce clutter
 }
 
-function MentorshipSection({ onMentorshipClick }) {
+// Compact Badge Progress Grid - follows Miller's Law (chunked visual info)
+function BadgeProgressTracker({ userName }) {
+  const [memberBadges, setMemberBadges] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [expandedBadge, setExpandedBadge] = useState(null);
+
+  // Auto-search when userName changes
+  useEffect(() => {
+    if (userName && userName.trim()) {
+      handleMemberSearch(userName);
+    } else {
+      setMemberBadges(null);
+    }
+  }, [userName]);
+
+  // Calculate badge progress for a member
+  const calculateMemberBadgeProgress = (memberStats) => {
+    if (!memberStats || !window.TRACKABLE_BADGES_CONFIG) return [];
+    
+    return window.TRACKABLE_BADGES_CONFIG.map(badge => {
+      let earned = false;
+      let progress = 0;
+      let progressText = '';
+
+      switch (badge.type) {
+        case 'status':
+          if (badge.requirement === 'paid_status') {
+            earned = memberStats.paid_member === 'Yes';
+            progressText = earned ? 'Paid Member' : 'Not paid';
+            progress = earned ? 1 : 0;
+          }
+          break;
+        case 'count':
+          const currentCount = memberStats[badge.requirement.field] || 0;
+          const targetCount = badge.requirement.value;
+          earned = currentCount >= targetCount;
+          progress = Math.min(currentCount / targetCount, 1);
+          progressText = `${currentCount}/${targetCount}`;
+          break;
+        case 'variety':
+          const eventCategories = [];
+          Object.keys(memberStats).forEach(key => {
+            if (memberStats[key] > 0 && !['total_points', 'total_events', 'paid_member', 'member', 'uniqname', 'email', 'event_categories', 'eventHistory'].includes(key)) {
+              eventCategories.push(key);
+            }
+          });
+          const uniqueCategories = memberStats.event_categories || eventCategories.length;
+          const targetCategories = badge.requirement.value;
+          earned = uniqueCategories >= targetCategories;
+          progress = Math.min(uniqueCategories / targetCategories, 1);
+          progressText = `${uniqueCategories}/${targetCategories} types`;
+          break;
+      }
+
+      return { ...badge, earned, progress, progressText };
+    });
+  };
+
+  const handleMemberSearch = async (query) => {
+    if (!query || !query.trim()) return;
+    setIsLoading(true);
+    try {
+      const memberStats = await window.getMemberStats(query.trim());
+      if (memberStats) {
+        const badges = calculateMemberBadgeProgress(memberStats);
+        setMemberBadges({ member: memberStats.member, badges, stats: memberStats });
+      } else {
+        setMemberBadges(null);
+      }
+    } catch (error) {
+      console.error('Error looking up member:', error);
+      setMemberBadges(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const earnedCount = memberBadges?.badges?.filter(b => b.earned).length || 0;
+  const totalCount = memberBadges?.badges?.length || 0;
+
+  // Don't render if no user searched
+  if (!userName) return null;
+
   return (
     <StyledSection style={{
-      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-    }} className="p-3 sm:p-4 lg:p-5 h-fit">
-      <div className="text-center">
-        <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 relative" style={{
-          background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-          clipPath: SHARED_STYLES.clipPaths.badge,
-          boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)'
-        }}>
-          <div className="absolute inset-1 sm:inset-2 flex items-center justify-center" style={{
-            background: 'linear-gradient(135deg, #1a1f2e, #16213e)',
-            clipPath: SHARED_STYLES.clipPaths.badge
-          }}>
-            <span className="text-xl sm:text-2xl lg:text-3xl">👥</span>
-          </div>
-        </div>
-        <SectionTitle theme="blue">MENTORSHIP</SectionTitle>
-        <div className="p-2 sm:p-3 mb-2 sm:mb-3 relative" style={{
-          background: 'rgba(55, 65, 81, 0.7)',
-          clipPath: SHARED_STYLES.clipPaths.card,
-          border: '1px solid #6b7280'
-        }}>
-          <div className="font-bold text-sm sm:text-base lg:text-lg mb-1" style={{
-            background: SHARED_STYLES.gradients.gold,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}>ONE-ON-ONE</div>
-        </div>
-        <button
-          onClick={onMentorshipClick}
-          className="text-white text-sm sm:text-base lg:text-lg font-semibold tracking-wide cursor-pointer hover:scale-105 transition-all duration-300 hover:text-yellow-400 hover:shadow-lg"
-          style={{
-            fontFamily: 'Orbitron, monospace',
-            background: 'none',
-            border: 'none',
-            textShadow: '0 0 10px rgba(255, 215, 0, 0.3)'
-          }}
-        >
-          🔥 MENTORSHIP MODE
-        </button>
+      clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
+    }} className="p-3 sm:p-4">
+      {/* Header with count */}
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm sm:text-base font-bold text-yellow-400" style={{ fontFamily: 'Orbitron, monospace' }}>
+          🏆 BADGES
+        </h3>
+        {memberBadges && (
+          <span className="text-xs text-gray-400">
+            {earnedCount}/{totalCount} earned
+          </span>
+        )}
+        {isLoading && <div className="animate-spin w-4 h-4 border-2 border-yellow-400 border-t-transparent rounded-full"></div>}
       </div>
+
+      {/* Compact Badge Grid - Gestalt Principle of Proximity */}
+      {memberBadges?.badges && (
+        <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2">
+          {memberBadges.badges.map((badge) => (
+            <div
+              key={badge.id}
+              onClick={() => setExpandedBadge(expandedBadge === badge.id ? null : badge.id)}
+              className={`relative p-2 text-center cursor-pointer transition-all duration-200 hover:scale-110 ${
+                badge.earned 
+                  ? 'bg-gradient-to-br from-yellow-900/60 to-orange-900/60 border-yellow-400' 
+                  : badge.progress > 0
+                  ? 'bg-gradient-to-br from-blue-900/40 to-cyan-900/40 border-blue-400/50'
+                  : 'bg-gray-800/50 border-gray-600/50'
+              } border rounded-lg`}
+              title={`${badge.name}: ${badge.progressText}`}
+            >
+              <span className="text-xl sm:text-2xl block" style={{
+                filter: badge.earned ? 'drop-shadow(0 0 8px rgba(255,215,0,0.8))' : badge.progress > 0 ? 'none' : 'grayscale(1) brightness(0.5)'
+              }}>{badge.icon}</span>
+              
+              {/* Progress indicator ring */}
+              {!badge.earned && badge.progress > 0 && (
+                <div className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-blue-500 text-[8px] text-white flex items-center justify-center font-bold">
+                  {Math.round(badge.progress * 100) > 99 ? '!' : Math.round(badge.progress * 10)}
+                </div>
+              )}
+              
+              {/* Earned checkmark */}
+              {badge.earned && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-500 text-[10px] text-white flex items-center justify-center">✓</div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Expanded badge details - Progressive Disclosure */}
+      {expandedBadge && memberBadges?.badges && (
+        <div className="mt-3 p-2 bg-gray-800/50 border border-gray-600 rounded-lg text-xs">
+          {(() => {
+            const badge = memberBadges.badges.find(b => b.id === expandedBadge);
+            if (!badge) return null;
+            return (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{badge.icon}</span>
+                  <div>
+                    <div className="font-bold text-white">{badge.name}</div>
+                    <div className="text-gray-400">{badge.desc}</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  {badge.earned ? (
+                    <span className="text-green-400 font-bold">+{badge.xp} XP ✓</span>
+                  ) : (
+                    <div>
+                      <div className="text-gray-300">{badge.progressText}</div>
+                      <div className="w-16 h-1.5 bg-gray-700 rounded-full mt-1">
+                        <div className="h-full bg-blue-500 rounded-full" style={{ width: `${badge.progress * 100}%` }}></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* Empty/Loading state */}
+      {!memberBadges && !isLoading && userName && (
+        <div className="text-center py-4 text-gray-500 text-xs">No badge data found</div>
+      )}
     </StyledSection>
   );
 }
 
+// Compact action card - Fitts's Law (large touch targets for key actions)
 function MemberStats({ userStats, userName, onViewHistory }) {
+  if (!userStats || !userStats.rank) return null;
+  
   return (
     <StyledSection style={{
-      clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-    }} className="p-3 sm:p-4 lg:p-5 h-fit">
-      <div className="text-center">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-3 sm:mb-4 relative" style={{
-          background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
-          clipPath: SHARED_STYLES.clipPaths.badge,
-          boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)'
-        }}>
-          <div className="absolute inset-2 sm:inset-3 lg:inset-4 flex items-center justify-center" style={{
-            background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
-            clipPath: SHARED_STYLES.clipPaths.badge
-          }}>
-            <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 flex items-center justify-center relative" style={{
-              background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
-              clipPath: SHARED_STYLES.clipPaths.badge
-            }}>
-              <span className="text-black text-lg sm:text-xl lg:text-2xl font-bold">⚡</span>
-            </div>
-          </div>
-        </div>
-        <SectionTitle theme="gold">MEMBER STATS</SectionTitle>
-        {userStats && userStats.rank && (
-          <div className="mt-3 sm:mt-4 space-y-2">
-            <div className="p-2 sm:p-2 relative bg-gray-800/70 border border-gray-600" style={{
-              clipPath: SHARED_STYLES.clipPaths.button
-            }}>
-              <div className="text-xs sm:text-sm text-gray-300">Tier: <span className="text-yellow-400 font-bold">{userStats.tier}</span></div>
-            </div>
-            <div className="p-2 sm:p-2 relative bg-gray-800/70 border border-gray-600" style={{
-              clipPath: SHARED_STYLES.clipPaths.button
-            }}>
-              <div className="text-xs sm:text-sm text-gray-300">Rank: <span className="text-yellow-400 font-bold">#{userStats.rank}</span></div>
-            </div>
-            {userName && (
-              <StyledButton 
-                onClick={() => onViewHistory(userName)}
-                className="text-xs py-2 px-3 mt-3 w-full"
-                theme="blue"
-              >
-                📋 View History
-              </StyledButton>
-            )}
-          </div>
-        )}
+      clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
+    }} className="p-3 sm:p-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm sm:text-base font-bold text-yellow-400" style={{ fontFamily: 'Orbitron, monospace' }}>
+          ⚡ QUICK ACTIONS
+        </h3>
+      </div>
+      <div className="mt-3 flex gap-2">
+        <button
+          onClick={() => onViewHistory(userName)}
+          className="flex-1 p-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-xs sm:text-sm font-bold transition-all rounded-lg border border-blue-400/50"
+        >
+          📋 View History
+        </button>
+        <a
+          href="https://mynsbe.nsbe.org/s/joinprocess"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 p-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-xs sm:text-sm font-bold transition-all rounded-lg border border-green-400/50 text-center"
+        >
+          💳 Pay Dues
+        </a>
       </div>
     </StyledSection>
   );
@@ -621,12 +789,17 @@ function Leaderboard({ userName, onUserDataFound }) {
       clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
     }} className="p-3 sm:p-4 lg:p-5 h-fit">
       <div className="flex flex-col sm:flex-row items-center justify-between mb-4 sm:mb-5 space-y-2 sm:space-y-0">
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-black font-futuristic tracking-wider text-center sm:text-left" style={{
-          background: SHARED_STYLES.gradients.gold,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          textShadow: '0 0 30px rgba(255, 215, 0, 0.8)'
-        }}>LEADERBOARD</h2>
+        <div>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black font-futuristic tracking-wider text-center sm:text-left" style={{
+            background: SHARED_STYLES.gradients.gold,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textShadow: '0 0 30px rgba(255, 215, 0, 0.8)'
+          }}>LEADERBOARD</h2>
+          <div className="text-xs text-cyan-400 text-center sm:text-left">
+            Winter 2026 • Points Reset
+          </div>
+        </div>
         {loading && (
           <div className="animate-spin w-5 h-5 sm:w-6 sm:h-6 border-2 border-yellow-400 border-t-transparent rounded-full"></div>
         )}
@@ -696,8 +869,11 @@ function Leaderboard({ userName, onUserDataFound }) {
 
 function App() {
   const [userName, setUserName] = useState('');
-  const [mentorshipMode, setMentorshipMode] = useState(false);
   const [attendanceHistoryMode, setAttendanceHistoryMode] = useState(false);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(() => {
+    // Check if user has already dismissed the popup this session
+    return !sessionStorage.getItem('nsbe_welcome_dismissed_w25');
+  });
   const [userStats, setUserStats] = useState({
     level: null,
     xp: null,
@@ -705,6 +881,11 @@ function App() {
     tier: null,
     rank: null
   });
+  
+  const handleCloseWelcome = () => {
+    setShowWelcomePopup(false);
+    sessionStorage.setItem('nsbe_welcome_dismissed_w25', 'true');
+  };
 
   // Admin panel keyboard shortcut (Ctrl+Shift+A)
   useEffect(() => {
@@ -747,16 +928,6 @@ function App() {
 
   const hasUserData = userName.trim() && userStats.level !== null;
 
-  // If mentorship mode is active, render the MentorshipHub
-  if (mentorshipMode) {
-    return <MentorshipHub 
-      onBackClick={() => setMentorshipMode(false)} 
-      userData={userStats}
-      eventData={[]} // Legacy prop, now using localDataManager
-      localDataManager={window.LocalDataManager} // Pass the data manager for live tracking
-    />;
-  }
-
   // If attendance history mode is active, render the AttendanceHistory
   if (attendanceHistoryMode) {
     return <AttendanceHistory 
@@ -766,13 +937,17 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8 font-futuristic" style={{
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%)'
+    <div className="min-h-screen p-3 sm:p-4 lg:p-6 font-futuristic" style={{
+      background: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)'
     }}>
+      {/* Welcome Back Popup */}
+      {showWelcomePopup && <WelcomePopup onClose={handleCloseWelcome} />}
+      
       <SkipNavigation />
       {window.InfoSidebar && React.createElement(window.InfoSidebar)}
       
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
+        {/* Slim Header */}
         <BattlePassHeader 
           userLevel={userStats.level} 
           userXP={userStats.xp} 
@@ -780,94 +955,73 @@ function App() {
           userName={userName}
           onNameChange={handleNameChange}
           hasUserData={hasUserData}
+          userStats={userStats}
         />
         
-        {/* Show main dashboard content */}
-        {hasUserData ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
-            <div className="lg:col-span-2 xl:col-span-2">
-              <BadgeSection />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
-                <MentorshipSection onMentorshipClick={() => setMentorshipMode(true)} />
-                <MemberStats 
-                  userStats={userStats} 
-                  userName={userName}
-                  onViewHistory={() => setAttendanceHistoryMode(true)}
-                />
-              </div>
-            </div>
+        {/* Main Dashboard - Side by side layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 sm:gap-4">
+          {/* Left Column: Stats & Badges (3/5 width) */}
+          <div className="lg:col-span-3 space-y-3">
+            {/* Quick Actions - only show when user has data */}
+            {hasUserData && (
+              <MemberStats 
+                userStats={userStats} 
+                userName={userName}
+                onViewHistory={() => setAttendanceHistoryMode(true)}
+              />
+            )}
             
-            <div className="lg:col-span-2 xl:col-span-1">
-              <div id="leaderboard-section">
-                <Leaderboard 
-                  userName={userName}
-                  onUserDataFound={handleUserDataFound}
-                />
-              </div>
+            {/* Badge Progress Grid */}
+            <BadgeProgressTracker userName={userName} />
+            
+            {/* Welcome message when no user */}
+            {!hasUserData && (
+              <StyledSection style={{
+                clipPath: 'polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px)',
+              }} className="p-4 sm:p-6 text-center">
+                <div className="text-4xl mb-3">🎮</div>
+                <h3 className="text-lg sm:text-xl font-bold text-yellow-400 mb-2" style={{ fontFamily: 'Orbitron, monospace' }}>
+                  Welcome to Battle Pass!
+                </h3>
+                <p className="text-gray-400 text-sm mb-4">
+                  Search your name or uniqname above to see your stats, rank, and badge progress.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                  <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSfXgbgogJ_yIhwgmjH6N--WQLRF2ewLf7KkJZTQSCndZCaiNQ/viewform"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black text-sm font-bold rounded-lg transition-all"
+                  >
+                    📝 Sign In to Events
+                  </a>
+                  <a
+                    href="https://mynsbe.nsbe.org/s/joinprocess"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-bold rounded-lg transition-all"
+                  >
+                    💳 Pay NSBE Dues
+                  </a>
+                </div>
+              </StyledSection>
+            )}
+          </div>
+          
+          {/* Right Column: Leaderboard (2/5 width) */}
+          <div className="lg:col-span-2">
+            <div id="leaderboard-section">
+              <Leaderboard 
+                userName={userName}
+                onUserDataFound={handleUserDataFound}
+              />
             </div>
           </div>
-        ) : (
-          /* Show main dashboard without user-specific data */
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
-            <div className="lg:col-span-2 xl:col-span-2">
-              <BadgeSection />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
-                <MentorshipSection onMentorshipClick={() => setMentorshipMode(true)} />
-                <StyledSection style={{
-                  clipPath: 'polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px)',
-                }} className="p-3 sm:p-4 lg:p-5 h-fit">
-                  <div className="text-center">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-3 sm:mb-4 relative" style={{
-                      background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
-                      clipPath: SHARED_STYLES.clipPaths.badge,
-                      boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)'
-                    }}>
-                      <div className="absolute inset-2 sm:inset-3 lg:inset-4 flex items-center justify-center" style={{
-                        background: 'linear-gradient(135deg, #1a1f2e, #16213e)',
-                        clipPath: SHARED_STYLES.clipPaths.badge,
-                        border: '2px solid #ffd700'
-                      }}>
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 flex items-center justify-center relative" style={{
-                          background: SHARED_STYLES.gradients.gold.replace('135deg', '135deg'),
-                          clipPath: SHARED_STYLES.clipPaths.badge
-                        }}>
-                          <span className="text-black text-lg sm:text-xl lg:text-2xl font-bold">📋</span>
-                        </div>
-                      </div>
-                    </div>
-                    <SectionTitle theme="gold">BATTLE PASS INFO</SectionTitle>
-                    <p className="mt-4 text-gray-300 text-sm sm:text-base">Click the INFO button in the top-right corner to view tiers, points system, events, and more!</p>
-                  </div>
-                </StyledSection>
-              </div>
-            </div>
-            
-            <div className="lg:col-span-2 xl:col-span-1">
-              <div id="leaderboard-section">
-                <Leaderboard 
-                  userName={userName}
-                  onUserDataFound={handleUserDataFound}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
         
-        {/* User stats display when name is entered */}
-        {userName && userStats.rank && (
-          <StyledSection theme="gold" className="mt-4 sm:mt-5 text-center p-2 sm:p-3">
-            <p className="text-yellow-400 font-bold text-sm sm:text-base lg:text-lg" style={{
-              fontFamily: 'Orbitron, monospace'
-            }}>
-              {userName} - Rank #{userStats.rank} | {userStats.tier} Tier | {userStats.xp} XP
-            </p>
-          </StyledSection>
-        )}
-        
-        {/* Debug info */}
-        <div className="mt-4 sm:mt-5 text-center text-gray-500 text-xs sm:text-sm">
-          <p>Data Source: Sign-in Forms & Paid Members Directory</p>
-          <p>Last updated: {new Date().toLocaleTimeString()}</p>
+        {/* Minimal footer */}
+        <div className="mt-4 text-center text-gray-600 text-xs">
+          <p>Data refreshes automatically • Last updated: {new Date().toLocaleTimeString()}</p>
         </div>
       </div>
     </div>

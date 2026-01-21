@@ -127,6 +127,53 @@ window.CSV_OVERRIDE_DATA = null;
 window.CSV_CUTOFF_DATE = new Date('2025-09-26T00:00:00');
 window.EMAIL_UNIQNAME_MAPPING = new Map();
 
+// Semester configuration - Points reset for Winter 2026
+// Events before this date are archived for records but don't count towards current leaderboard
+const SEMESTER_CONFIG = {
+    currentSemester: 'Winter 2026',
+    // Only events on or after January 1, 2026 count for points
+    pointsCutoffDate: new Date('2026-01-01T00:00:00'),
+    // Keep all attendance records for historical tracking
+    archiveAllAttendance: true
+};
+
+// Export for use in other modules
+window.SEMESTER_CONFIG = SEMESTER_CONFIG;
+
+// Helper function to check if an event counts for current semester points
+function isEventInCurrentSemester(timestamp) {
+    if (!timestamp) return false;
+    
+    // Parse various timestamp formats (MM/DD/YYYY, M/D/YYYY, etc.)
+    let eventDate;
+    
+    if (typeof timestamp === 'string') {
+        // Handle Google Sheets format: "1/15/2026 10:30:00" or "01/15/2026"
+        const datePart = timestamp.split(/[\s,]+/)[0]; // Get date part only
+        const parts = datePart.split('/');
+        if (parts.length === 3) {
+            const month = parseInt(parts[0], 10) - 1; // JS months are 0-indexed
+            const day = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+            eventDate = new Date(year, month, day);
+        } else {
+            eventDate = new Date(timestamp);
+        }
+    } else {
+        eventDate = new Date(timestamp);
+    }
+    
+    // Check if valid date and on/after cutoff
+    if (isNaN(eventDate.getTime())) {
+        console.warn('[Semester] Invalid date format:', timestamp);
+        return false;
+    }
+    
+    return eventDate >= SEMESTER_CONFIG.pointsCutoffDate;
+}
+
+window.isEventInCurrentSemester = isEventInCurrentSemester;
+
 // Cache for API requests with timestamps
 const API_CACHE = {
     paidMembers: { data: null, timestamp: 0, ttl: 5 * 60 * 1000 }, // 5 minutes cache
@@ -1070,6 +1117,9 @@ async function calculateMemberPoints(signInData) {
         });
         
         if (!alreadyExists) {
+            // Check if this event counts for current semester points
+            const countsForPoints = isEventInCurrentSemester(timestamp);
+            
             // Use the fast paid member check (already cached)
             const isPaidMember = memberStats[normalizedUniqname].isPaid;
             
@@ -1082,9 +1132,18 @@ async function calculateMemberPoints(signInData) {
                 pointResult.totalPoints = 5; // Update the point result for history
             }
             
+            // Mark if event is from previous semester (for display purposes)
+            pointResult.isArchived = !countsForPoints;
+            pointResult.semester = countsForPoints ? SEMESTER_CONFIG.currentSemester : 'Fall 2025';
+            
+            // Always add to event history for records
             memberStats[normalizedUniqname].eventHistory.push(pointResult);
-            memberStats[normalizedUniqname].totalPoints += pointsToAdd;
             memberStats[normalizedUniqname].eventCount++;
+            
+            // Only add points if event is in current semester
+            if (countsForPoints) {
+                memberStats[normalizedUniqname].totalPoints += pointsToAdd;
+            }
         }
     }
     

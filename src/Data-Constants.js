@@ -159,11 +159,11 @@ window.TRACKABLE_BADGES_CONFIG = [
     icon: '🚀', 
     color: '#06b6d4', 
     glow: 'rgba(6, 182, 212, 0.5)', 
-    desc: 'Attend 3 Professional Development Events', 
+    desc: 'Attend 1 Professional Development Event', 
     xp: 35, 
     category: 'professional', 
     type: 'count',
-    requirement: { field: 'Professional Development', value: 3 }
+    requirement: { field: 'Professional Development', value: 1 }
   },
   { 
     id: 'pd-master', 
@@ -171,11 +171,11 @@ window.TRACKABLE_BADGES_CONFIG = [
     icon: '🎯', 
     color: '#8b5cf6', 
     glow: 'rgba(139, 92, 246, 0.5)', 
-    desc: 'Attend 5+ Professional Development Events', 
+    desc: 'Attend 3+ Professional Development Events', 
     xp: 60, 
     category: 'professional', 
     type: 'count',
-    requirement: { field: 'Professional Development', value: 5 }
+    requirement: { field: 'Professional Development', value: 3 }
   },
   
   // Conference and Major Events

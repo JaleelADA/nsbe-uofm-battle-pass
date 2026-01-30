@@ -558,26 +558,21 @@ async function getLiveSheetData() {
             entry[header] = row[index] || '';
         });
         
-        // Handle both old format (with Email) and new secure format (Uniqname only)
-        const hasUniqname = entry['Uniqname'] && entry['Uniqname'].trim();
-        const hasEmail = entry['Email Address'] && entry['Email Address'].trim();
-        
-        if (hasUniqname || hasEmail) {
+        // Process the new nationals-required fields
+        if (entry['Email Address'] && entry['Email Address'].trim()) {
             // Normalize field names for consistency
+            entry['Email Address'] = entry['Email Address'].trim();
             entry['Uniqname'] = (entry['Uniqname'] || '').trim();
-            entry['Email Address'] = (entry['Email Address'] || '').trim();
             entry['Full Name'] = (entry['Full Name (First & Last)'] || entry['Full Name'] || '').trim();
             entry['Event'] = (entry['Event'] || '').trim();
             entry['Major'] = (entry['Major'] || '').trim();
             entry['Year'] = (entry['Year'] || '').trim();
             
+            // Process other nationals-required fields (Major, Year) but not paid dues
+            // Paid dues verification is handled only through the dedicated paid members sheet
+            
             // Add timestamp if available
             entry['Timestamp'] = (entry['Timestamp'] || '').trim();
-            
-            // If no email but has uniqname, generate email from uniqname
-            if (!entry['Email Address'] && entry['Uniqname']) {
-                entry['Email Address'] = `${entry['Uniqname'].toLowerCase()}@umich.edu`;
-            }
             
             processedData.push(entry);
         }

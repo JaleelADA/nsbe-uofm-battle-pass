@@ -3,9 +3,6 @@
 
 // Google Sheets IDs and configuration
 const SHEETS_CONFIG = {
-  // SECURE: Apps Script endpoint - only exposes Timestamp, Uniqname, Event (no PII)
-  SIGN_IN_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbz-XkiwyBLy4dGVBDg9sdDiXSAodHc5hHovW2oXy3hzHTJHdbi97g0CUQR8APDXYVk9Mg/exec',
-  // Legacy direct sheet access (kept for fallback, but sheet should be private)
   SIGN_IN_SHEET_ID: '13V1DAObDLnUP48n7Tv70aPfU_B26SklxCsz-RLs1fjk',
   SIGN_IN_SHEET_GID: '1227397870', // "Form Responses 1" tab
   PAID_MEMBERS_SHEET_ID: '1INkzEpMsH8Ow85FtKv6DnbKxI1ysu6SKYsmu3JcXDKg',
@@ -446,31 +443,13 @@ async function getLiveSheetData() {
     
     // URLs to try (multiple fallbacks for sheet access)
     const accessMethods = [
-        // Method 1 (PRIMARY): Secure Apps Script endpoint - only exposes safe data
+        // Method 1: CSV export with specific gid (most reliable)
         async () => {
-            console.log('[Data Manager] Fetching from secure Apps Script endpoint...');
-            const response = await fetchWithRetry(SHEETS_CONFIG.SIGN_IN_SCRIPT_URL, 2, 3000);
-            if (!response.ok) throw new Error(`Apps Script failed: ${response.status}`);
-            
-            const jsonData = await response.json();
-            if (!jsonData.values || jsonData.values.length === 0) throw new Error('No data from Apps Script');
-            
-            console.log(`[Data Manager] ✅ Got ${jsonData.values.length - 1} entries from secure endpoint`);
-            return jsonData;
-        },
-        // Method 2 (FALLBACK): CSV export with specific gid
-        async () => {
-            console.log('[Data Manager] Fallback: trying CSV export...');
             const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/export?format=csv&gid=${SHEETS_CONFIG.SIGN_IN_SHEET_GID}`;
-            const response = await fetchWithRetry(csvUrl, 1, 3000);
+            const response = await fetchWithRetry(csvUrl, 1, 3000); // Reduced retries, longer delay
             if (!response.ok) throw new Error(`CSV export with gid ${SHEETS_CONFIG.SIGN_IN_SHEET_GID} failed: ${response.status}`);
             
             const csvText = await response.text();
-            
-            // Check if we got HTML (login page) instead of CSV
-            if (csvText.includes('<!DOCTYPE html>') || csvText.includes('<html')) {
-                throw new Error('CSV export requires authentication - sheet may be private');
-            }
             
             // Parse CSV properly handling line breaks in fields and quoted values
             const parseCSV = (csvText) => {
@@ -523,6 +502,40 @@ async function getLiveSheetData() {
             const values = parsedData;
             
             return { values };
+        },
+        // Method 2: CSV export with default gid
+        async () => {
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/export?format=csv&gid=0`;
+            const response = await fetchWithRetry(csvUrl, 1, 3000);
+            if (!response.ok) throw new Error(`CSV export with gid=0 failed: ${response.status}`);
+            
+            const csvText = await response.text();
+            const lines = csvText.split('\n').filter(line => line.trim());
+            if (lines.length === 0) throw new Error('No CSV data');
+            
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            const values = [headers];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                values.push(row);
+            }
+            
+            return { values };
+        },
+        // Method 3: API with Sheet1
+        async () => {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/values/Sheet1?key=${SHEETS_CONFIG.API_KEY}`;
+            const response = await fetchWithRetry(url, 1, 3000);
+            if (!response.ok) throw new Error(`API Sheet1 failed: ${response.status}`);
+            return await response.json();
+        },
+        // Method 4: API with Form Responses 1
+        async () => {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEETS_CONFIG.SIGN_IN_SHEET_ID}/values/Form%20Responses%201?key=${SHEETS_CONFIG.API_KEY}`;
+            const response = await fetchWithRetry(url, 1, 3000);
+            if (!response.ok) throw new Error(`API Form Responses 1 failed: ${response.status}`);
+            return await response.json();
         }
     ];
     
@@ -558,26 +571,21 @@ async function getLiveSheetData() {
             entry[header] = row[index] || '';
         });
         
-        // Handle both old format (with Email) and new secure format (Uniqname only)
-        const hasUniqname = entry['Uniqname'] && entry['Uniqname'].trim();
-        const hasEmail = entry['Email Address'] && entry['Email Address'].trim();
-        
-        if (hasUniqname || hasEmail) {
+        // Process the new nationals-required fields
+        if (entry['Email Address'] && entry['Email Address'].trim()) {
             // Normalize field names for consistency
+            entry['Email Address'] = entry['Email Address'].trim();
             entry['Uniqname'] = (entry['Uniqname'] || '').trim();
-            entry['Email Address'] = (entry['Email Address'] || '').trim();
             entry['Full Name'] = (entry['Full Name (First & Last)'] || entry['Full Name'] || '').trim();
             entry['Event'] = (entry['Event'] || '').trim();
             entry['Major'] = (entry['Major'] || '').trim();
             entry['Year'] = (entry['Year'] || '').trim();
             
+            // Process other nationals-required fields (Major, Year) but not paid dues
+            // Paid dues verification is handled only through the dedicated paid members sheet
+            
             // Add timestamp if available
             entry['Timestamp'] = (entry['Timestamp'] || '').trim();
-            
-            // If no email but has uniqname, generate email from uniqname
-            if (!entry['Email Address'] && entry['Uniqname']) {
-                entry['Email Address'] = `${entry['Uniqname'].toLowerCase()}@umich.edu`;
-            }
             
             processedData.push(entry);
         }

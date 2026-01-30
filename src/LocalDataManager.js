@@ -237,184 +237,33 @@ async function fetchWithRetry(url, maxRetries = 2, initialDelay = 2000) {
     throw lastError;
 }
 
-// Function to parse and prepare CSV data for use in the system
-async function parseCSVData() {
-  try {
-    console.log('[CSV Parser] Fetching event_data.csv...');
-    const response = await fetch('./data/event_data.csv');
-    
-    if (!response.ok) {
-      console.error('[CSV Parser] Failed to fetch CSV:', response.status, response.statusText);
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const csvText = await response.text();
-    console.log('[CSV Parser] CSV loaded, size:', csvText.length, 'bytes');
-    
-    // Parse CSV manually to handle the space-padded headers
-    const lines = csvText.split('\n').filter(line => line.trim());
-    if (lines.length === 0) {
-      console.warn('[CSV Parser] No data in CSV file');
-      return [];
-    }
-    
-    console.log('[CSV Parser] Processing', lines.length, 'lines...');
-    
-    // Parse headers and normalize them
-    const rawHeaders = lines[0].split(',');
-    console.log('[CSV Parser] Headers:', rawHeaders.slice(0, 5));
-    
-    const data = [];
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      
-      // Split line into values, handling commas in quoted fields
-      const values = [];
-      let current = '';
-      let inQuotes = false;
-      
-      for (let j = 0; j < line.length; j++) {
-        const char = line[j];
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          values.push(current.trim());
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      values.push(current.trim()); // Add the last value
-      
-      // Create entry object
-      const entry = {};
-      rawHeaders.forEach((header, index) => {
-        const cleanHeader = header.trim();
-        entry[cleanHeader] = values[index] || '';
-      });
-      
-      // Find the email field (handle variations in spacing)
-      const emailField = rawHeaders.find(h => h.toLowerCase().includes('email'));
-      const emailValue = emailField ? entry[emailField.trim()]?.trim() : '';
-      
-      if (emailField && emailValue) {
-        // Normalize common fields for easier access
-        entry['Email Address'] = emailValue;
-        
-        const eventField = rawHeaders.find(h => h.toLowerCase().includes('event'));
-        entry['Event'] = eventField ? entry[eventField.trim()]?.trim() || '' : '';
-        
-        const uniqnameField = rawHeaders.find(h => h.toLowerCase().includes('uniqname'));
-        entry['Uniqname'] = uniqnameField ? entry[uniqnameField.trim()]?.trim().toLowerCase() || '' : '';
-        
-        // Fix name field detection - look for "full name" with first/last indicators
-        const nameField = rawHeaders.find(h => {
-          const lowerH = h.toLowerCase();
-          return lowerH.includes('full name') && (
-            (lowerH.includes('first') && lowerH.includes('last')) ||
-            (lowerH.includes('first') && lowerH.includes('&')) ||
-            lowerH === 'full name'
-          );
-        });
-        entry['Full Name'] = nameField ? entry[nameField.trim()]?.trim() || '' : '';
-        
-        // Fallback: if no full name found, try to use uniqname as display name
-        if (!entry['Full Name'] && entry['Uniqname']) {
-          entry['Full Name'] = entry['Uniqname'];
-        }
-        
-        const timestampField = rawHeaders.find(h => h.toLowerCase().includes('timestamp'));
-        entry['Timestamp'] = timestampField ? entry[timestampField.trim()]?.trim() || '' : '';
-        
-        // Extract demographics fields
-        const majorField = rawHeaders.find(h => h.toLowerCase().includes('major'));
-        entry['Major'] = majorField ? entry[majorField.trim()]?.trim() || '' : '';
-        
-        const yearField = rawHeaders.find(h => h.toLowerCase().includes('year'));
-        entry['Year'] = yearField ? entry[yearField.trim()]?.trim() || '' : '';
-        
-        const nationalDuesField = rawHeaders.find(h => h.toLowerCase().includes('paid national dues'));
-        entry['Paid National Dues? (Note this due is separate from the chapter dues and required for conferences & scholarships)'] = nationalDuesField ? entry[nationalDuesField.trim()]?.trim() || '' : '';
-        
-        // Only add if we have both email and event
-        if (entry['Email Address'] && entry['Event']) {
-          data.push(entry);
-        }
-      }
-    }
-    
-    return data;
-    
-  } catch (error) {
-    console.error('[CSV Parser] Error loading CSV:', error);
-    return [];
-  }
-}
+// =====================================================
+// WINTER 2026 - CLEAN SLATE
+// All Fall 2025 data is archived in: data/FALL_2025_FINAL_LEADERBOARD.csv
+// Now using only live Google Sheets data via secure Apps Script
+// Legacy CSV parsing has been removed for clean slate
+// =====================================================
 
-// Initialize CSV data (async)
-parseCSVData().then(data => {
-    console.log('[CSV Parser] ✅ CSV data loaded successfully:', data.length, 'entries');
-    if (data.length > 0) {
-        console.log('[CSV Parser] Sample entry:', data[0]);
-    }
-    window.CSV_OVERRIDE_DATA = data;
-}).catch(error => {
-    console.error('[CSV Parser] ❌ Failed to load CSV data:', error);
-    window.CSV_OVERRIDE_DATA = []; // Set to empty array instead of leaving it null
-});
+// No legacy CSV data - fresh start for Winter 2026
+window.CSV_OVERRIDE_DATA = [];
 
-// Function to fetch sign-in data (CSV override + live data combined)
+// Function to fetch sign-in data (now uses only live Apps Script data)
 async function fetchSignInData() {
-    // Start with CSV override data
-    let csvData = [];
-    if (window.CSV_OVERRIDE_DATA) {
-        csvData = window.CSV_OVERRIDE_DATA;
-    } else if (window.CSV_OVERRIDE_DATA === null) {
-        // Wait for CSV data to load if not ready yet
-        await new Promise(resolve => {
-            const checkData = () => {
-                if (window.CSV_OVERRIDE_DATA !== null) {
-                    resolve();
-                } else {
-                    setTimeout(checkData, 100);
-                }
-            };
-            checkData();
-        });
-        csvData = window.CSV_OVERRIDE_DATA || [];
-    }
-    
-    // Try to get live data from new sign-in sheet
+    // Get live data from secure Apps Script endpoint
     let liveData = [];
     try {
         liveData = await getLiveSheetData();
+        console.log(`[Data Manager] ✅ Fetched ${liveData.length} entries from live data`);
     } catch (error) {
-        console.warn('[Data Manager] Could not fetch live data, using CSV only:', error.message);
+        console.error('[Data Manager] ❌ Could not fetch live data:', error.message);
+        return [];
     }
-    
-    // Combine CSV and live data - include ALL events from both sources
-    const combinedData = [...csvData];
-    
-    // Add ALL live data entries (they represent new events after CSV cutoff)
-    for (const liveEntry of liveData) {
-        const liveUniqname = (liveEntry['Uniqname'] || '').toLowerCase();
-        if (liveUniqname) {
-            // Add event timestamp if missing to distinguish from CSV events
-            if (!liveEntry['Timestamp']) {
-                liveEntry['Timestamp'] = new Date().toISOString();
-            }
-            combinedData.push(liveEntry);
-        }
-    }
-    
-    const liveEntriesAdded = combinedData.length - csvData.length;
     
     // AUTO-CLEANSE DATA: Standardize event types and remove duplicates
-    if (window.DataCleanser && combinedData.length > 0) {
+    if (window.DataCleanser && liveData.length > 0) {
         console.log('🧹 [Data Cleanser] Auto-cleansing sign-in data...');
         const cleanser = new window.DataCleanser();
-        const { cleansedData, report, corrections } = cleanser.cleanseData(combinedData);
+        const { cleansedData, report, corrections } = cleanser.cleanseData(liveData);
         
         // Store cleansing stats globally for admin dashboard
         window.CLEANSING_STATS = corrections;

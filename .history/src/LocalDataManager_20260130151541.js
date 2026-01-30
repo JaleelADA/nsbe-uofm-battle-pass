@@ -838,7 +838,6 @@ function calculateMemberPointsOriginal(memberData, paidMembersList = [], memberH
   
   // Extract data from form response using flexible column header matching
   const eventTypeHeaders = [
-    'Event (If you are unsure ask an E-board member, false reporting will result in a lack of points)',
     'Event (1. GBM\n2. Professional Development\n3. P-Zone\n4. Mentorship Events\n5. E-Board Meeting\n6. JEB Events\n7. Community Service\n8. Convention Attendance)',
     'Event (1. GBM 2. Professional Development 3. P-Zone 4. Mentorship Events 5. E-Board Meeting 6. JEB Events 7. Community Service 8. Convention Attendance)',
     'Event Type',

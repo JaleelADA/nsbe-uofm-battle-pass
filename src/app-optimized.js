@@ -593,7 +593,7 @@ function AttendanceHistory({ userName, onClose }) {
           <div className="mb-6 p-4 bg-gray-800/50 border border-gray-600" style={{
             clipPath: SHARED_STYLES.clipPaths.card
           }}>
-            <h3 className="text-lg font-bold text-yellow-400 mb-2">{attendanceData.member.displayName}</h3>
+            <h3 className="text-lg font-bold text-yellow-400 mb-2">{attendanceData.member.uniqname || attendanceData.member.displayName}</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-gray-400">Total Points: </span>
@@ -673,6 +673,22 @@ function Leaderboard({ userName, onUserDataFound }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const getDisplayHandle = (member) => {
+    if (member?.uniqname && member.uniqname.trim()) return member.uniqname.trim();
+    if (member?.email && member.email.includes('@')) return member.email.split('@')[0];
+    return member?.name || 'member';
+  };
+
+  const normalizeLeaderEntry = (entry) => {
+    const rawScore = entry?.score ?? entry?.totalPoints ?? entry?.total_points ?? 0;
+    const numericScore = Number(rawScore);
+
+    return {
+      ...entry,
+      score: Number.isFinite(numericScore) ? numericScore : 0
+    };
+  };
+
   useEffect(() => {
     fetchLeaderboardData();
     // Refresh every 5 minutes
@@ -689,12 +705,19 @@ function Leaderboard({ userName, onUserDataFound }) {
     }
     if (allLeaders.length > 0) {
       // Filter full list for matches
-      const matches = allLeaders.filter(leader => 
-        leader.name.toLowerCase().includes(userName.toLowerCase()) ||
-        userName.toLowerCase().includes(leader.name.toLowerCase()) ||
-        (leader.email && leader.email.toLowerCase().includes(userName.toLowerCase())) ||
-        (leader.uniqname && leader.uniqname.toLowerCase().includes(userName.toLowerCase()))
-      );
+      const query = userName.toLowerCase();
+      const matches = allLeaders.filter(leader => {
+        const fullName = (leader.name || '').toLowerCase();
+        const uniqname = (leader.uniqname || '').toLowerCase();
+        const displayHandle = getDisplayHandle(leader).toLowerCase();
+        return (
+          displayHandle.includes(query) ||
+          fullName.includes(query) ||
+          query.includes(fullName) ||
+          query.includes(uniqname) ||
+          (leader.email && leader.email.toLowerCase().includes(query))
+        );
+      });
       // Display matches
       setLeaders(matches);
       // If first match exists, notify parent for stats
@@ -731,8 +754,9 @@ function Leaderboard({ userName, onUserDataFound }) {
         
         if (leaderboardResult && leaderboardResult.leaderboard && leaderboardResult.leaderboard.length > 0) {
           console.log('[Leaderboard] Setting leaders:', leaderboardResult.leaderboard.length, 'members');
-          setAllLeaders(leaderboardResult.leaderboard);
-          setLeaders(leaderboardResult.leaderboard.slice(0, 10));
+          const normalizedLeaderboard = leaderboardResult.leaderboard.map(normalizeLeaderEntry);
+          setAllLeaders(normalizedLeaderboard);
+          setLeaders(normalizedLeaderboard.slice(0, 10));
           
           // Store dynamic tier thresholds globally for display
           window.CURRENT_TIER_THRESHOLDS = leaderboardResult.tierThresholds;
@@ -813,11 +837,16 @@ function Leaderboard({ userName, onUserDataFound }) {
       
       <div className="space-y-2 sm:space-y-3 max-h-64 sm:max-h-80 overflow-y-auto">
         {leaders.map((leader, index) => {
+          const displayHandle = getDisplayHandle(leader);
+          const query = userName.toLowerCase();
+          const fullName = (leader.name || '').toLowerCase();
+          const uniqname = (leader.uniqname || '').toLowerCase();
           const isCurrentUser = userName && (
-            leader.name.toLowerCase().includes(userName.toLowerCase()) ||
-            userName.toLowerCase().includes(leader.name.toLowerCase()) ||
-            (leader.email && leader.email.toLowerCase().includes(userName.toLowerCase())) ||
-            (leader.uniqname && leader.uniqname.toLowerCase().includes(userName.toLowerCase()))
+            displayHandle.toLowerCase().includes(query) ||
+            fullName.includes(query) ||
+            query.includes(fullName) ||
+            query.includes(uniqname) ||
+            (leader.email && leader.email.toLowerCase().includes(query))
           );
           
           return (
@@ -836,7 +865,7 @@ function Leaderboard({ userName, onUserDataFound }) {
                   <div className={`font-bold text-xs sm:text-sm lg:text-base ${
                     isCurrentUser ? 'text-yellow-300' : 'text-white'
                   }`}>
-                    {leader.name} {isCurrentUser && '(You)'}
+                    {displayHandle} {isCurrentUser && '(You)'}
                     {leader.isPaid && <span className="ml-1 text-xs text-green-400">💳</span>}
                   </div>
                   <div className={`text-xs sm:text-xs font-semibold ${getTierColor(leader.tier)}`}>
@@ -845,9 +874,10 @@ function Leaderboard({ userName, onUserDataFound }) {
                 </div>
               </div>
               <span className="font-black text-base sm:text-lg" style={{
-                background: SHARED_STYLES.gradients.gold,
+                color: '#ffd700',
+                background: SHARED_STYLES?.gradients?.gold || 'none',
                 WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                WebkitTextFillColor: SHARED_STYLES?.gradients?.gold ? 'transparent' : '#ffd700'
               }}>{leader.score}</span>
             </div>
           );

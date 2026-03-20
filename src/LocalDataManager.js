@@ -116,6 +116,8 @@ const SEMESTER_CONFIG = {
     currentSemester: 'Winter 2026',
     // Only events on or after January 1, 2026 count for points
     pointsCutoffDate: new Date('2026-01-01T00:00:00'),
+    // Live secure feed sometimes omits timestamp; treat undated rows as current semester.
+    countUndatedAsCurrentSemester: true,
     // Keep all attendance records for historical tracking
     archiveAllAttendance: true
 };
@@ -125,7 +127,9 @@ window.SEMESTER_CONFIG = SEMESTER_CONFIG;
 
 // Helper function to check if an event counts for current semester points
 function isEventInCurrentSemester(timestamp) {
-    if (!timestamp) return false;
+    if (!timestamp || (typeof timestamp === 'string' && !timestamp.trim())) {
+        return SEMESTER_CONFIG.countUndatedAsCurrentSemester === true;
+    }
     
     // Parse various timestamp formats (MM/DD/YYYY, M/D/YYYY, etc.)
     let eventDate;
@@ -149,7 +153,7 @@ function isEventInCurrentSemester(timestamp) {
     // Check if valid date and on/after cutoff
     if (isNaN(eventDate.getTime())) {
         console.warn('[Semester] Invalid date format:', timestamp);
-        return false;
+        return SEMESTER_CONFIG.countUndatedAsCurrentSemester === true;
     }
     
     return eventDate >= SEMESTER_CONFIG.pointsCutoffDate;
@@ -285,7 +289,7 @@ async function getLiveSheetData() {
             if (!jsonData.values || jsonData.values.length === 0) throw new Error('No data from Apps Script');
             
             console.log(`[Data Manager] ✅ Got ${jsonData.values.length - 1} entries from secure endpoint`);
-            return jsonData;
+            return { source: 'apps-script', values: jsonData.values };
         },
         // Method 2 (FALLBACK): CSV export with specific gid
         async () => {
@@ -351,22 +355,29 @@ async function getLiveSheetData() {
             
             const values = parsedData;
             
-            return { values };
+            return { source: 'csv-export', values };
         }
     ];
-    
-    let data = null;
-    let lastError = null;
-    
+
+    let appsScriptData = null;
+    let csvExportData = null;
+
     for (let i = 0; i < accessMethods.length; i++) {
         try {
-            data = await accessMethods[i]();
-            break;
+            const result = await accessMethods[i]();
+            if (result?.source === 'csv-export') {
+                csvExportData = result;
+            } else if (result?.source === 'apps-script') {
+                appsScriptData = result;
+            }
         } catch (error) {
-            lastError = error;
+            console.warn(`[Data Manager] Access method ${i + 1} failed:`, error.message);
         }
     }
-    
+
+    // Prefer CSV export when available because it contains full sheet history.
+    const data = csvExportData || appsScriptData;
+
     if (!data) {
         console.warn('[Data Manager] All sign-in sheet access methods failed. Using CSV override data only.');
         return [];
@@ -396,12 +407,15 @@ async function getLiveSheetData() {
             entry['Uniqname'] = (entry['Uniqname'] || '').trim();
             entry['Email Address'] = (entry['Email Address'] || '').trim();
             entry['Full Name'] = (entry['Full Name (First & Last)'] || entry['Full Name'] || '').trim();
-            entry['Event'] = (entry['Event'] || '').trim();
+            const rawEvent = entry['Event'] || entry['Event Type'] || entry['What type of event is this?'] || '';
+            const rawTimestamp = entry['Timestamp'] || entry['Column 1'] || entry['Date'] || '';
+
+            entry['Event'] = rawEvent.trim();
             entry['Major'] = (entry['Major'] || '').trim();
             entry['Year'] = (entry['Year'] || '').trim();
             
-            // Add timestamp if available
-            entry['Timestamp'] = (entry['Timestamp'] || '').trim();
+            // Add timestamp if available (supports alternate export headers)
+            entry['Timestamp'] = rawTimestamp.trim();
             
             // If no email but has uniqname, generate email from uniqname
             if (!entry['Email Address'] && entry['Uniqname']) {
@@ -416,7 +430,7 @@ async function getLiveSheetData() {
     API_CACHE.signInData.data = processedData;
     API_CACHE.signInData.timestamp = Date.now();
     
-    console.log(`[Data Manager] Fetched ${processedData.length} live sign-in entries (cached for ${API_CACHE.signInData.ttl / 1000}s)`);
+    console.log(`[Data Manager] Fetched ${processedData.length} live sign-in entries from ${data.source} (cached for ${API_CACHE.signInData.ttl / 1000}s)`);
     
     return processedData;
 }

@@ -16,6 +16,29 @@ class DataCleanser {
     }
 
     /**
+     * Map raw event text to a canonical event bucket used by point logic.
+     */
+    normalizeEventType(rawEvent) {
+        if (!rawEvent || typeof rawEvent !== 'string') return '';
+
+        const value = rawEvent.toLowerCase();
+        if (value.includes('community') || value.includes('service')) return 'Community Service';
+        if (value.includes('gbm')) return 'GBM';
+        if (value.includes('professional') || value === 'pd') return 'Professional Development';
+        if (value.includes('p-zone') || value.includes('study jamz') || value.includes('m-zone')) return 'P-Zone';
+        if (value.includes('mentorship')) return 'Mentorship Events';
+        if (value.includes('e-board')) return 'E-Board Meeting';
+        if (value.includes('jeb')) return 'JEB Events';
+        if (value.includes('convention') || value.includes('conference')) return 'Convention Attendance';
+        if (value.includes('social') || value.includes('mixer') || value.includes('bbq')) return 'Social Events';
+        if (value.includes('academic') || value.includes('study')) return 'Academic';
+        if (value.includes('tabling')) return 'Tabling';
+        if (value.includes('pci')) return 'PCI';
+
+        return '';
+    }
+
+    /**
      * Main cleansing function - processes raw data and returns cleansed data
      * @param {Array} rawData - Array of sign-in objects
      * @returns {Object} { cleansedData, report }
@@ -126,15 +149,23 @@ class DataCleanser {
             const eventField = 'Event (If you are unsure ask an E-board member, false reporting will result in a lack of points)';
             const currentEvent = entry[eventField] || entry.event || entry.eventType;
             const correctEvent = this.eventTypeMapping[date];
+
+            const currentCanonical = this.normalizeEventType(currentEvent || '');
+            const majorityCanonical = this.normalizeEventType(correctEvent || '');
+            const shouldOverwrite = !!correctEvent && (
+                !currentEvent ||
+                !currentCanonical ||
+                currentCanonical === majorityCanonical
+            );
             
-            if (correctEvent && currentEvent !== correctEvent) {
+            if (shouldOverwrite && currentEvent !== correctEvent) {
                 this.corrections.eventTypesFixed++;
                 console.log(`  🔧 Fixed: ${entry.Uniqname || entry.uniqname} on ${date}: "${currentEvent}" → "${correctEvent}"`);
             }
             
             // Update the event field
             const updatedEntry = { ...entry };
-            if (correctEvent) {
+            if (shouldOverwrite) {
                 updatedEntry[eventField] = correctEvent;
                 if (entry.event) updatedEntry.event = correctEvent;
                 if (entry.eventType) updatedEntry.eventType = correctEvent;
@@ -155,6 +186,13 @@ class DataCleanser {
         data.forEach(entry => {
             const uniqname = (entry.Uniqname || entry.uniqname || '').toLowerCase().trim();
             const date = entry._date;
+
+            // Do not collapse rows with unknown dates; keep for manual/source reconciliation.
+            if (!date) {
+                deduplicatedData.push(entry);
+                return;
+            }
+
             const key = `${uniqname}_${date}`;
             
             if (!seen.has(key)) {

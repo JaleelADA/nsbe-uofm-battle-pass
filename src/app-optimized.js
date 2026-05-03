@@ -169,6 +169,84 @@ function StyledButton({ onClick, children, theme = 'gold', className = '', disab
   );
 }
 
+function SeasonClosedScreen({ config }) {
+  const archiveUrl = config?.archiveUrl;
+  const schoolYear = config?.schoolYear || '2025-26';
+
+  return (
+    <main className="min-h-screen p-4 sm:p-6 font-futuristic flex items-center justify-center" style={{
+      background: 'radial-gradient(circle at top, rgba(255, 215, 0, 0.14), transparent 32rem), linear-gradient(180deg, #0f172a 0%, #111827 100%)'
+    }}>
+      <section className="w-full max-w-3xl p-5 sm:p-8 text-center relative" style={{
+        background: 'linear-gradient(135deg, #0a0f1c 0%, #172033 52%, #0a0f1c 100%)',
+        clipPath: 'polygon(22px 0%, 100% 0%, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0% 100%, 0% 22px)',
+        border: '3px solid #FFD700',
+        boxShadow: '0 0 42px rgba(255, 215, 0, 0.24), inset 0 0 32px rgba(0, 212, 255, 0.08)'
+      }}>
+        <div className="absolute top-3 left-3 w-5 h-5 border-l-2 border-t-2 border-yellow-400"></div>
+        <div className="absolute top-3 right-3 w-5 h-5 border-r-2 border-t-2 border-yellow-400"></div>
+        <div className="absolute bottom-3 left-3 w-5 h-5 border-l-2 border-b-2 border-yellow-400"></div>
+        <div className="absolute bottom-3 right-3 w-5 h-5 border-r-2 border-b-2 border-yellow-400"></div>
+
+        <div className="mx-auto mb-5 w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center" style={{
+          background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+          clipPath: SHARED_STYLES.clipPaths.badge,
+          boxShadow: '0 0 26px rgba(255, 215, 0, 0.45)'
+        }}>
+          <span className="text-3xl sm:text-4xl">🏁</span>
+        </div>
+
+        <p className="text-xs sm:text-sm text-cyan-300 font-bold tracking-widest mb-3">
+          NSBE UofM BATTLE PASS {schoolYear}
+        </p>
+        <h1 className="text-3xl sm:text-5xl font-black tracking-wider leading-tight mb-4" style={{
+          fontFamily: 'Orbitron, monospace',
+          background: SHARED_STYLES.gradients.gold,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          {config?.headline || 'Battle Pass Closed'}
+        </h1>
+
+        <p className="text-gray-200 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto mb-3">
+          {config?.message || 'The Battle Pass is closed for the school year.'}
+        </p>
+        <p className="text-gray-400 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+          {config?.nextSeasonMessage || 'We will reopen when the next school year starts.'}
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-7 mb-7">
+          <div className="p-4 bg-gray-900/70 border border-yellow-400/40" style={{ clipPath: SHARED_STYLES.clipPaths.card }}>
+            <div className="text-2xl mb-2">🔒</div>
+            <div className="text-yellow-300 text-sm font-bold">Sign-Ins Closed</div>
+          </div>
+          <div className="p-4 bg-gray-900/70 border border-cyan-400/40" style={{ clipPath: SHARED_STYLES.clipPaths.card }}>
+            <div className="text-2xl mb-2">📊</div>
+            <div className="text-cyan-300 text-sm font-bold">Scores Frozen</div>
+          </div>
+          <div className="p-4 bg-gray-900/70 border border-emerald-400/40" style={{ clipPath: SHARED_STYLES.clipPaths.card }}>
+            <div className="text-2xl mb-2">⏭️</div>
+            <div className="text-emerald-300 text-sm font-bold">Next Season Soon</div>
+          </div>
+        </div>
+
+        {archiveUrl && (
+          <a
+            href={archiveUrl}
+            className="inline-block px-5 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black text-sm sm:text-base font-black tracking-wider transition-all"
+            style={{
+              fontFamily: 'Orbitron, monospace',
+              clipPath: SHARED_STYLES.clipPaths.button
+            }}
+          >
+            Download Final Leaderboard
+          </a>
+        )}
+      </section>
+    </main>
+  );
+}
+
 // Expose reusable UI components to global scope for use in other modules
 window.StyledSection = StyledSection;
 window.SectionTitle = SectionTitle;
@@ -672,6 +750,7 @@ function Leaderboard({ userName, onUserDataFound }) {
   const [allLeaders, setAllLeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dataSource, setDataSource] = useState('google-sheets');
 
   const getDisplayHandle = (member) => {
     if (member?.uniqname && member.uniqname.trim()) return member.uniqname.trim();
@@ -694,6 +773,16 @@ function Leaderboard({ userName, onUserDataFound }) {
     // Refresh every 5 minutes
     const interval = setInterval(fetchLeaderboardData, 5 * 60 * 1000);
     return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!window.SupabaseDataManager?.shouldUseSupabase?.()) {
+      return undefined;
+    }
+
+    return window.SupabaseDataManager.subscribeToLeaderboardChanges(() => {
+      fetchLeaderboardData();
+    });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -757,6 +846,7 @@ function Leaderboard({ userName, onUserDataFound }) {
           const normalizedLeaderboard = leaderboardResult.leaderboard.map(normalizeLeaderEntry);
           setAllLeaders(normalizedLeaderboard);
           setLeaders(normalizedLeaderboard.slice(0, 10));
+          setDataSource(leaderboardResult.dataSource || 'google-sheets');
           
           // Store dynamic tier thresholds globally for display
           window.CURRENT_TIER_THRESHOLDS = leaderboardResult.tierThresholds;
@@ -769,7 +859,8 @@ function Leaderboard({ userName, onUserDataFound }) {
           console.warn('[Leaderboard] No data in result');
           setAllLeaders([]);
           setLeaders([]);
-          setError('No sign-in data found. Make sure members are using the new sign-in form!');
+          setDataSource(leaderboardResult?.dataSource || 'google-sheets');
+          setError('No leaderboard data found yet. Add attendance records to the configured backend.');
           setLoading(false);
           return;
         }
@@ -787,7 +878,7 @@ function Leaderboard({ userName, onUserDataFound }) {
       
     } catch (err) {
       console.error('Error fetching leaderboard:', err);
-      setError('Failed to load leaderboard data from sign-in forms. Please check your internet connection.');
+      setError('Failed to load leaderboard data. Check the configured data source and internet connection.');
       setLoading(false);
       
       // Fallback data
@@ -821,7 +912,7 @@ function Leaderboard({ userName, onUserDataFound }) {
             textShadow: '0 0 30px rgba(255, 215, 0, 0.8)'
           }}>LEADERBOARD</h2>
           <div className="text-xs text-cyan-400 text-center sm:text-left">
-            Winter 2026 • Points Reset
+            Winter 2026 • {dataSource === 'supabase' ? 'Live Supabase' : 'Google Sheets Fallback'}
           </div>
         </div>
         {loading && (
@@ -897,7 +988,7 @@ function Leaderboard({ userName, onUserDataFound }) {
   );
 }
 
-function App() {
+function ActiveBattlePassApp() {
   const [userName, setUserName] = useState('');
   const [attendanceHistoryMode, setAttendanceHistoryMode] = useState(false);
   const [showWelcomePopup, setShowWelcomePopup] = useState(() => {
@@ -1056,6 +1147,16 @@ function App() {
       </div>
     </div>
   );
+}
+
+function App() {
+  const closedSeasonConfig = window.APP_CONFIG?.closedSeason;
+
+  if (closedSeasonConfig?.enabled) {
+    return <SeasonClosedScreen config={closedSeasonConfig} />;
+  }
+
+  return <ActiveBattlePassApp />;
 }
 
 // Mount App once scripts are loaded

@@ -176,6 +176,43 @@ window.clearAPICache = function() {
     console.log('[Data Manager] API cache cleared');
 };
 
+function getConfiguredDataSource() {
+    return window.APP_CONFIG?.dataSource || 'auto';
+}
+
+function shouldUseSupabaseData() {
+    return Boolean(
+        window.SupabaseDataManager &&
+        typeof window.SupabaseDataManager.shouldUseSupabase === 'function' &&
+        window.SupabaseDataManager.shouldUseSupabase()
+    );
+}
+
+function isSupabaseRequired() {
+    return getConfiguredDataSource() === 'supabase';
+}
+
+function cleanSignInData(entries) {
+    if (window.DataCleanser && entries.length > 0) {
+        console.log('🧹 [Data Cleanser] Auto-cleansing sign-in data...');
+        const cleanser = new window.DataCleanser();
+        const { cleansedData, report, corrections } = cleanser.cleanseData(entries);
+
+        window.CLEANSING_STATS = corrections;
+
+        if (corrections.eventTypesFixed > 0 || corrections.duplicatesRemoved > 0) {
+            console.log('✅ [Data Cleanser] Cleansing complete:', corrections);
+            console.log(report);
+        } else {
+            console.log('✅ [Data Cleanser] No issues found - data already clean');
+        }
+
+        return cleansedData;
+    }
+
+    return entries;
+}
+
 // Check if running from file:// protocol and warn
 if (window.location.protocol === 'file:') {
     console.warn('⚠️ [Data Manager] Running from file:// protocol may cause CORS issues.');
@@ -233,6 +270,22 @@ window.CSV_OVERRIDE_DATA = [];
 
 // Function to fetch sign-in data (now uses only live Apps Script data)
 async function fetchSignInData() {
+    if (shouldUseSupabaseData()) {
+        try {
+            const supabaseData = await window.SupabaseDataManager.fetchAttendanceData();
+            const cleansedSupabaseData = cleanSignInData(supabaseData);
+            API_CACHE.signInData.data = cleansedSupabaseData;
+            API_CACHE.signInData.timestamp = Date.now();
+            console.log(`[Data Manager] ✅ Fetched ${cleansedSupabaseData.length} entries from Supabase`);
+            return cleansedSupabaseData;
+        } catch (error) {
+            console.error('[Data Manager] ❌ Could not fetch Supabase attendance data:', error.message);
+            if (isSupabaseRequired()) {
+                return [];
+            }
+        }
+    }
+
     // Get live data from secure Apps Script endpoint
     let liveData = [];
     try {
@@ -243,27 +296,7 @@ async function fetchSignInData() {
         return [];
     }
     
-    // AUTO-CLEANSE DATA: Standardize event types and remove duplicates
-    if (window.DataCleanser && liveData.length > 0) {
-        console.log('🧹 [Data Cleanser] Auto-cleansing sign-in data...');
-        const cleanser = new window.DataCleanser();
-        const { cleansedData, report, corrections } = cleanser.cleanseData(liveData);
-        
-        // Store cleansing stats globally for admin dashboard
-        window.CLEANSING_STATS = corrections;
-        
-        // Log cleansing results
-        if (corrections.eventTypesFixed > 0 || corrections.duplicatesRemoved > 0) {
-            console.log('✅ [Data Cleanser] Cleansing complete:', corrections);
-            console.log(report);
-        } else {
-            console.log('✅ [Data Cleanser] No issues found - data already clean');
-        }
-        
-        return cleansedData;
-    }
-    
-    return liveData;
+    return cleanSignInData(liveData);
 }
 
 // Function to fetch live Google Sheets sign-in data (for future use)
@@ -437,6 +470,21 @@ async function getLiveSheetData() {
 
 // Function to fetch paid members data
 async function fetchPaidMembers() {
+    if (shouldUseSupabaseData()) {
+        try {
+            const supabaseMembers = await window.SupabaseDataManager.fetchMembersData();
+            API_CACHE.paidMembers.data = supabaseMembers;
+            API_CACHE.paidMembers.timestamp = Date.now();
+            console.log(`[Data Manager] ✅ Fetched ${supabaseMembers.length} members from Supabase`);
+            return supabaseMembers;
+        } catch (error) {
+            console.error('[Data Manager] Error fetching paid members from Supabase:', error.message);
+            if (isSupabaseRequired()) {
+                return [];
+            }
+        }
+    }
+
     // Check cache first
     const now = Date.now();
     const cached = API_CACHE.paidMembers;
@@ -1098,7 +1146,8 @@ function calculateDynamicTierThresholds(leaderboard) {
 // Get local leaderboard (main function used by the app)
 // Winter 2026 - Clean slate, all data from live Google Sheet
 async function getLocalLeaderboard() {
-    console.log('[Main] Getting local leaderboard for Winter 2026...');
+    const dataSource = window.SupabaseDataManager?.getConnectionLabel?.() || 'google-sheets';
+    console.log(`[Main] Getting local leaderboard for Winter 2026 from ${dataSource}...`);
     
     try {
         const signInData = await fetchSignInData();
@@ -1114,14 +1163,16 @@ async function getLocalLeaderboard() {
         return {
             leaderboard: leaderboard,
             tierThresholds: tierThresholds,
-            totalMembers: leaderboard.length
+            totalMembers: leaderboard.length,
+            dataSource
         };
     } catch (error) {
         console.error('[Main] Error generating leaderboard:', error);
         return {
             leaderboard: [],
             tierThresholds: { gold: 0, silver: 0, bronze: 0, total: 0 },
-            totalMembers: 0
+            totalMembers: 0,
+            dataSource
         };
     }
 }

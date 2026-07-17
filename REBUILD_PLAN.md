@@ -2,6 +2,12 @@
 
 _Last updated: July 2026_
 
+> **Status:** Phases 0–2 are DONE (this branch): site restored on free GitHub
+> Pages, full rewrite to a no-build vanilla JS app configured entirely through
+> `config.json`, board guide in `SETUP.md`. Phase 3 (moving the repo to a
+> chapter GitHub org and the Google account handoff) is a manual step for the
+> board — checklist at the bottom of `SETUP.md`.
+
 ## Where things stand
 
 - The site is a **static site already hosted free on GitHub Pages**. It appears "down" only because the `CNAME` file points to the expired domain `nsbeum.live`, which breaks both the custom domain **and** the fallback `github.io` URL.

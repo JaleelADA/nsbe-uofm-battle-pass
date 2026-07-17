@@ -1,0 +1,352 @@
+/* =========================================================================
+   NSBE UM Battle Pass — style.css
+   Dark "battle pass" theme. No frameworks; plain CSS.
+   Brand colors live in the :root variables below.
+   ========================================================================= */
+
+:root {
+  --bg: #0d1117;
+  --bg-card: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --gold: #ffd700;
+  --gold-soft: rgba(255, 215, 0, 0.35);
+  --green: #00ffab;
+  --blue: #00d4ff;
+  --font-display: 'Orbitron', 'Segoe UI', sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+[hidden] { display: none !important; }
+
+body {
+  background:
+    radial-gradient(1200px 500px at 50% -10%, rgba(0, 212, 255, 0.08), transparent),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+a { color: var(--blue); }
+
+h1, h2, h3, .stat-big, .rank-cell, .points-cell {
+  font-family: var(--font-display);
+}
+
+h2 { font-size: 1.15rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
+
+.muted { color: var(--muted); font-size: 0.9rem; }
+.center { text-align: center; }
+
+/* ------------------------------------------------------------- header -- */
+
+.hero { text-align: center; padding: 3rem 1rem 2rem; }
+
+.hero-kicker {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-weight: 900;
+  margin: 0.4rem 0 0.2rem;
+  text-shadow: 0 0 24px rgba(0, 212, 255, 0.35);
+}
+
+.hero .accent {
+  background: linear-gradient(135deg, var(--gold), #ffa500);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-season {
+  font-family: var(--font-display);
+  color: var(--green);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+}
+
+/* ------------------------------------------------------------ buttons -- */
+
+.btn {
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.btn:hover { border-color: var(--gold); box-shadow: 0 0 14px var(--gold-soft); transform: translateY(-1px); }
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--gold), #ffa500);
+  color: #1a1a1a;
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.btn.small { padding: 0.3rem 0.7rem; font-size: 0.7rem; }
+
+/* -------------------------------------------------------------- cards -- */
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.4rem;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.section-tools { display: flex; align-items: center; gap: 0.6rem; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ------------------------------------------------------------- banner -- */
+
+.banner {
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.92rem;
+  border: 1px solid;
+}
+.banner.error { background: rgba(248, 81, 73, 0.1); border-color: rgba(248, 81, 73, 0.5); }
+.banner.warn  { background: rgba(255, 215, 0, 0.08); border-color: var(--gold-soft); }
+
+.setup-panel { border-color: var(--gold-soft); box-shadow: 0 0 24px rgba(255, 215, 0, 0.08); }
+.setup-panel ol { margin: 0.6rem 0 0.8rem 1.4rem; display: grid; gap: 0.35rem; }
+.setup-panel code { background: var(--bg); padding: 0.1rem 0.35rem; border-radius: 5px; }
+
+/* ------------------------------------------------------------- lookup -- */
+
+.lookup-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.7rem; }
+
+#lookup-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+}
+#lookup-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 10px rgba(0, 212, 255, 0.25); }
+
+.member-card { margin-top: 1.1rem; border-top: 1px solid var(--border); padding-top: 1.1rem; }
+
+.member-head { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+.member-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; }
+
+.tier-chip {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.member-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.7rem;
+  margin: 1rem 0;
+}
+
+.stat-tile {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem;
+  text-align: center;
+}
+.stat-big { font-size: 1.5rem; font-weight: 700; color: var(--gold); }
+.stat-label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+.member-cats { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.4rem; }
+.cat-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.member-badges-title { margin-top: 1rem; font-size: 1rem; }
+
+/* -------------------------------------------------------------- table -- */
+
+.table-wrap { overflow-x: auto; margin-top: 0.6rem; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+
+th {
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+}
+th.center { text-align: center; }
+
+td { padding: 0.55rem 0.7rem; border-bottom: 1px solid rgba(48, 54, 61, 0.6); }
+
+#leaderboard-body tr { cursor: pointer; transition: background 0.12s; }
+#leaderboard-body tr:hover { background: rgba(0, 212, 255, 0.06); }
+
+.rank-cell { color: var(--blue); font-weight: 700; }
+.points-cell { color: var(--gold); font-weight: 700; }
+.tier-cell { font-size: 0.8rem; white-space: nowrap; }
+.uniq-cell { font-weight: 600; }
+
+#leaderboard-toggle { margin-top: 0.8rem; }
+
+/* -------------------------------------------------------------- tiers -- */
+
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.9rem;
+  margin-top: 0.8rem;
+}
+
+.tier-card {
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+.tier-card .tier-icon { font-size: 1.6rem; }
+.tier-card .tier-name { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.05em; margin-top: 0.2rem; }
+.tier-card .tier-range { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.tier-card .tier-desc { font-size: 0.85rem; margin-top: 0.4rem; }
+
+.tier-gold        { border-color: rgba(255, 215, 0, 0.55);  box-shadow: 0 0 16px rgba(255, 215, 0, 0.12); }
+.tier-gold .tier-name { color: var(--gold); }
+.tier-silver      { border-color: rgba(192, 192, 192, 0.5); }
+.tier-silver .tier-name { color: #c0c0c0; }
+.tier-bronze      { border-color: rgba(205, 127, 50, 0.55); }
+.tier-bronze .tier-name { color: #cd7f32; }
+.tier-participant { border-color: rgba(59, 130, 246, 0.5); }
+.tier-participant .tier-name { color: #3b82f6; }
+
+/* ------------------------------------------------------------- badges -- */
+
+.badge-grid, .member-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.badge-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem;
+  text-align: center;
+}
+.badge-card .badge-icon { font-size: 1.7rem; }
+.badge-card .badge-name { font-family: var(--font-display); font-size: 0.78rem; font-weight: 700; margin-top: 0.3rem; }
+.badge-card .badge-desc { color: var(--muted); font-size: 0.74rem; margin-top: 0.2rem; }
+
+.member-badges .badge-card { opacity: 0.55; }
+.member-badges .badge-card.earned {
+  opacity: 1;
+  border-color: var(--green);
+  box-shadow: 0 0 14px rgba(0, 255, 171, 0.15);
+}
+
+.progress {
+  height: 6px;
+  background: var(--border);
+  border-radius: 999px;
+  margin-top: 0.55rem;
+  overflow: hidden;
+}
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); }
+.progress-label { color: var(--muted); font-size: 0.7rem; margin-top: 0.25rem; }
+
+/* ------------------------------------------------------ announcements -- */
+
+.announcement-list { display: grid; gap: 0.55rem; margin-top: 0.8rem; }
+
+.announcement {
+  display: block;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.92rem;
+  transition: border-color 0.15s, transform 0.1s;
+}
+.announcement:hover { border-color: var(--blue); transform: translateX(3px); }
+
+/* ------------------------------------------------------------- footer -- */
+
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.6rem 1rem 2.4rem;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-bottom: 0.7rem;
+}
+.footer-links a { color: var(--text); text-decoration: none; font-size: 0.9rem; }
+.footer-links a:hover { color: var(--gold); }
+
+/* -------------------------------------------------------- scrollbars -- */
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--gold), #ffa500); border-radius: 4px; }

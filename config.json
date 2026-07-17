@@ -1,0 +1,70 @@
+{
+  "_readme": "This is the ONLY file you need to edit each semester. Open SETUP.md for step-by-step instructions. Edit this file directly on GitHub.com (pencil icon) — no coding tools needed.",
+
+  "season": "Fall 2026",
+  "countPointsFrom": "2026-08-01",
+
+  "signInDataUrl": "https://script.google.com/macros/s/AKfycbz-XkiwyBLy4dGVBDg9sdDiXSAodHc5hHovW2oXy3hzHTJHdbi97g0CUQR8APDXYVk9Mg/exec",
+  "paidMembersUrl": "https://docs.google.com/spreadsheets/d/1INkzEpMsH8Ow85FtKv6DnbKxI1ysu6SKYsmu3JcXDKg/edit",
+
+  "links": {
+    "signInForm": "https://docs.google.com/forms/d/e/1FAIpQLSfXgbgogJ_yIhwgmjH6N--WQLRF2ewLf7KkJZTQSCndZCaiNQ/viewform",
+    "chapterSite": "https://nsbeum.weebly.com",
+    "linktree": "https://linktr.ee/nsbe_um",
+    "instagram": "https://instagram.com/nsbeum",
+    "email": "nsbe.membership@umich.edu",
+    "payDues": "https://mynsbe.nsbe.org/s/joinprocess"
+  },
+
+  "announcements": [
+    { "title": "📝 Sign In to Events", "url": "https://docs.google.com/forms/d/e/1FAIpQLSfXgbgogJ_yIhwgmjH6N--WQLRF2ewLf7KkJZTQSCndZCaiNQ/viewform" },
+    { "title": "💳 Pay NSBE Dues", "url": "https://mynsbe.nsbe.org/s/joinprocess" },
+    { "title": "🏆 Conference Info", "url": "https://convention.nsbe.org/" },
+    { "title": "💰 Scholarship Opportunities", "url": "https://nsbe.org/scholarships/" },
+    { "title": "🤝 Collab with NSBEUM!", "url": "https://docs.google.com/forms/d/e/1FAIpQLSdVzBy08R3Ex8FMrmlJQ1uCq-TJdHzwr_wGk0cvxztrTL_6ng/viewform" }
+  ],
+
+  "eventTypes": {
+    "GBM":                      { "label": "General Body Meeting",     "icon": "🏛️", "points": 7,  "code": "1", "keywords": ["gbm", "general body"] },
+    "Professional Development": { "label": "Professional Development", "icon": "📚", "points": 10, "code": "2", "keywords": ["professional", "pd", "workshop", "panel", "resume"] },
+    "P-Zone":                   { "label": "P-Zone / Study Sessions",  "icon": "⚡", "points": 5,  "code": "3", "keywords": ["p-zone", "pzone", "study", "academic"] },
+    "Mentorship":               { "label": "Mentorship Events",        "icon": "🌱", "points": 7,  "code": "4", "keywords": ["mentor"] },
+    "E-Board":                  { "label": "E-Board Meeting",          "icon": "🧭", "points": 7,  "code": "5", "keywords": ["e-board", "eboard"] },
+    "JEB":                      { "label": "JEB Events",               "icon": "🎓", "points": 7,  "code": "6", "keywords": ["jeb", "junior exec"] },
+    "Community Service":        { "label": "Community Service",        "icon": "🤝", "points": 5,  "code": "7", "keywords": ["community", "service", "volunteer", "cleanup"] },
+    "Convention":               { "label": "Convention / Conference",  "icon": "🏆", "points": 15, "code": "8", "keywords": ["convention", "conference"] },
+    "Social":                   { "label": "Social Events",            "icon": "🎉", "points": 7,  "code": "9", "keywords": ["social", "game night", "bbq", "bowling", "golf", "kickback"] },
+    "Tabling":                  { "label": "Tabling",                  "icon": "📋", "points": 3,  "keywords": ["tabling"] },
+    "PCI":                      { "label": "Pre-College Initiative",   "icon": "🏫", "points": 5,  "keywords": ["pci", "pre-college"] }
+  },
+  "otherEventPoints": 3,
+
+  "unpaidPointsCap": 5,
+  "bonuses": {
+    "broughtFriendFirst": 3,
+    "broughtFriendAdditional": 1
+  },
+
+  "tiers": [
+    { "name": "GOLD",        "icon": "🥇", "range": "Top 25%",  "desc": "NSBE Elite! Priority Conference RSVP, GBM shoutouts." },
+    { "name": "SILVER",      "icon": "🥈", "range": "25–50%",   "desc": "Consistent contributors. Prize raffles, mentorship perks, free NSBE swag." },
+    { "name": "BRONZE",      "icon": "🥉", "range": "50–75%",   "desc": "Active participants. Early invites to NSBE events." },
+    { "name": "PARTICIPANT", "icon": "🏅", "range": "Everyone", "desc": "You're on the board! Keep showing up to level up." }
+  ],
+
+  "badges": [
+    { "id": "paid-member",        "name": "Paid Member",        "icon": "💎", "desc": "Active paid NSBE member",          "type": "paid" },
+    { "id": "gbm-starter",        "name": "GBM Starter",        "icon": "🌟", "desc": "Attend your first GBM",            "type": "category", "category": "GBM",                      "count": 1 },
+    { "id": "gbm-regular",        "name": "GBM Regular",        "icon": "📅", "desc": "Attend 3 GBMs",                    "type": "category", "category": "GBM",                      "count": 3 },
+    { "id": "gbm-champion",       "name": "GBM Champion",       "icon": "👑", "desc": "Attend 5+ GBMs",                   "type": "category", "category": "GBM",                      "count": 5 },
+    { "id": "pd-explorer",        "name": "PD Explorer",        "icon": "🚀", "desc": "Attend 1 professional development event", "type": "category", "category": "Professional Development", "count": 1 },
+    { "id": "pd-master",          "name": "PD Master",          "icon": "🎯", "desc": "Attend 3+ professional development events", "type": "category", "category": "Professional Development", "count": 3 },
+    { "id": "conference-attendee","name": "Conference Attendee","icon": "🏆", "desc": "Attend a regional or national convention", "type": "category", "category": "Convention",         "count": 1 },
+    { "id": "community-helper",   "name": "Community Helper",   "icon": "🤝", "desc": "Complete 2 community service events", "type": "category", "category": "Community Service",     "count": 2 },
+    { "id": "social-connector",   "name": "Social Connector",   "icon": "🎉", "desc": "Attend 3 social events",           "type": "category", "category": "Social",                   "count": 3 },
+    { "id": "study-warrior",      "name": "Study Warrior",      "icon": "📚", "desc": "Attend 5 P-Zone study sessions",   "type": "category", "category": "P-Zone",                   "count": 5 },
+    { "id": "mentorship-seeker",  "name": "Mentorship Seeker",  "icon": "🌱", "desc": "Attend 2 mentorship events",       "type": "category", "category": "Mentorship",               "count": 2 },
+    { "id": "consistent-member",  "name": "Consistent Member",  "icon": "⚡", "desc": "Attend 4 different event types",   "type": "variety",  "count": 4 },
+    { "id": "super-member",       "name": "Super Member",       "icon": "🔥", "desc": "Attend 15+ events total",          "type": "total",    "count": 15 }
+  ]
+}

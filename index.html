@@ -5,7 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NSBE UM Battle Pass</title>
   <meta name="description" content="NSBE University of Michigan Battle Pass — sign in at events, earn points and badges, climb the leaderboard." />
+  <meta name="theme-color" content="#0d1117" />
+
+  <!-- Social link previews (GroupMe / iMessage / Slack / Twitter) -->
+  <meta property="og:title" content="NSBE UM Battle Pass" />
+  <meta property="og:description" content="Sign in at events. Earn points and badges. Climb the leaderboard. 🥇" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jaleelada.github.io/nsbe-uofm-battle-pass/" />
+  <meta property="og:image" content="https://jaleelada.github.io/nsbe-uofm-battle-pass/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <link rel="icon" type="image/x-icon" href="favicon.ico?v=3" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
@@ -17,10 +30,11 @@
     <h1>NSBE&nbsp;UM <span class="accent">Battle&nbsp;Pass</span></h1>
     <p class="hero-season" id="season-label"></p>
     <nav id="header-links" class="hero-links"></nav>
+    <div id="season-pulse" class="season-pulse" hidden></div>
   </header>
 
   <main>
-    <div id="banner" class="banner" hidden></div>
+    <div id="banner" class="banner" role="status" hidden></div>
 
     <!-- Shown only when config.json has no data source yet -->
     <section id="setup-panel" class="card setup-panel" hidden>
@@ -39,11 +53,13 @@
       <h2>🔎 Find your progress</h2>
       <p class="muted">Enter your uniqname (the part of your UMich email before the @).</p>
       <div class="lookup-row">
+        <label for="lookup-input" class="visually-hidden">Your uniqname</label>
         <input id="lookup-input" type="text" placeholder="e.g. wolverine" autocomplete="off"
                autocapitalize="off" spellcheck="false" />
         <button id="lookup-btn" class="btn primary">View my Battle Pass</button>
       </div>
-      <div id="member-card" class="member-card" hidden></div>
+      <div id="lookup-suggest" class="suggest-row" hidden></div>
+      <div id="member-card" class="member-card" aria-live="polite" hidden></div>
     </section>
 
     <section class="card" id="leaderboard-section">
@@ -53,6 +69,12 @@
           <span id="last-updated" class="muted"></span>
           <button id="refresh-btn" class="btn small">↻ Refresh</button>
         </div>
+      </div>
+      <div id="podium" class="podium" hidden></div>
+      <div class="board-filter-row">
+        <label for="board-filter" class="visually-hidden">Search the leaderboard</label>
+        <input id="board-filter" type="text" placeholder="🔎 Search uniqname…" autocomplete="off"
+               autocapitalize="off" spellcheck="false" />
       </div>
       <div class="table-wrap">
         <table>
@@ -67,7 +89,7 @@
 
     <section class="card">
       <h2>🎖️ Tiers</h2>
-      <p class="muted">Tiers are based on your rank at the end of the semester.</p>
+      <p class="muted">Tiers are based on your rank — climb the board to move up.</p>
       <div id="tier-cards" class="tier-grid"></div>
     </section>
 
@@ -99,6 +121,8 @@
     <div id="footer-links" class="footer-links"></div>
     <p class="muted">Built with ❤️ by NSBE UM · Board handoff &amp; setup guide: <a href="https://github.com/JaleelADA/nsbe-uofm-battle-pass/blob/main/SETUP.md">SETUP.md</a></p>
   </footer>
+
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
 
   <noscript><p style="text-align:center;padding:2rem">This site needs JavaScript to load the leaderboard.</p></noscript>
   <script src="app.js" defer></script>

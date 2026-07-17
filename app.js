@@ -10,13 +10,27 @@
        -> Google Sheet ("Form Responses" tab)
        -> this page fetches the sheet (shared link or Apps Script URL)
        -> points, tiers, and badges are calculated right here in the browser.
+
+   Nice-to-know: the page remembers the visitor's uniqname, celebrates newly
+   earned badges with confetti, and can generate a shareable "battle card"
+   image — all client-side, nothing is ever uploaded anywhere.
    ========================================================================= */
 
 'use strict';
 
-let CONFIG = null;      // contents of config.json
-let MEMBERS = [];       // computed member stats, sorted by points (desc)
+let CONFIG = null;        // contents of config.json
+let MEMBERS = [];         // computed member stats, sorted by points (desc)
 let PAID_SET = new Set(); // lowercase uniqnames of paid members
+let TOTAL_SIGNINS = 0;    // counted sign-ins this semester
+let EVENTS_HELD = 0;      // distinct event days this semester
+
+const STORE = {           // localStorage keys (per-device personalization)
+  uniqname: 'bp:uniqname',
+  badges: 'bp:badges:',   // + uniqname -> JSON array of earned badge ids
+  snapshot: 'bp:snap:'    // + uniqname -> JSON {points, rank, at}
+};
+
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------------------------------------------------------------- boot -- */
 
@@ -45,8 +59,7 @@ async function boot() {
 }
 
 async function loadData() {
-  const board = document.getElementById('leaderboard-body');
-  board.innerHTML = '<tr><td colspan="5" class="muted center">Loading sign-in data…</td></tr>';
+  renderSkeleton();
 
   try {
     const [signIns, paid] = await Promise.all([
@@ -62,11 +75,19 @@ async function loadData() {
 
     PAID_SET = buildPaidSet(paid);
     MEMBERS = computeStats(signIns);
+    renderSeasonPulse();
     renderLeaderboard();
     renderLastUpdated();
+
+    // Welcome back: auto-show the saved member's card.
+    const saved = localStorage.getItem(STORE.uniqname);
+    if (saved && MEMBERS.some(m => m.uniqname === saved)) {
+      document.getElementById('lookup-input').value = saved;
+      showMember(saved, { auto: true });
+    }
   } catch (err) {
     console.error(err);
-    board.innerHTML = '';
+    document.getElementById('leaderboard-body').innerHTML = '';
     showBanner('error',
       'Could not read the sign-in data. Most common fix: open the Google Sheet → Share → ' +
       'set “Anyone with the link” to “Viewer”. (Details for admins: ' + err.message + ')');
@@ -253,7 +274,9 @@ function buildPaidSet(rows) {
 function computeStats(rows) {
   const cutoff = CONFIG.countPointsFrom ? new Date(CONFIG.countPointsFrom) : null;
   const seen = new Set();       // dedupe: one credit per person/event/day
+  const eventDays = new Set();  // distinct day+category -> "events held"
   const members = new Map();
+  TOTAL_SIGNINS = 0;
 
   for (const row of rows) {
     const entry = extractSignIn(row);
@@ -268,6 +291,8 @@ function computeStats(rows) {
     const dedupeKey = entry.uniqname + '|' + dayKey + '|' + category;
     if (entry.date && seen.has(dedupeKey)) continue;
     seen.add(dedupeKey);
+    if (entry.date) eventDays.add(dayKey + '|' + category);
+    TOTAL_SIGNINS++;
 
     let m = members.get(entry.uniqname);
     if (!m) {
@@ -290,6 +315,7 @@ function computeStats(rows) {
     m.events.push({ category, date: entry.date, points: pts });
   }
 
+  EVENTS_HELD = eventDays.size;
   const list = [...members.values()].sort((a, b) => b.points - a.points);
 
   // Competition ranking (ties share a rank) + quartile tiers.
@@ -404,6 +430,7 @@ function renderStaticSections() {
   document.getElementById('lookup-btn').addEventListener('click', () => showMember(input.value));
   input.addEventListener('keydown', e => { if (e.key === 'Enter') showMember(input.value); });
   document.getElementById('refresh-btn').addEventListener('click', loadData);
+  document.getElementById('board-filter').addEventListener('input', renderLeaderboard);
 }
 
 function linkButton(text, href, cls) {
@@ -418,15 +445,55 @@ function footerLink(text, href) {
   return a;
 }
 
+/* Header stats strip: members, sign-ins, events, days left. */
+function renderSeasonPulse() {
+  const box = document.getElementById('season-pulse');
+  box.innerHTML = '';
+  const items = [
+    [String(MEMBERS.length), 'members on the board'],
+    [String(TOTAL_SIGNINS), 'sign-ins'],
+    [String(EVENTS_HELD), 'events held']
+  ];
+  if (CONFIG.seasonEndDate) {
+    const days = Math.ceil((new Date(CONFIG.seasonEndDate) - Date.now()) / 86400000);
+    if (days > 0) items.push([String(days), 'days left this season']);
+  }
+  for (const [num, label] of items) {
+    const it = el('div', 'pulse-item');
+    it.appendChild(el('span', 'pulse-num', num));
+    it.appendChild(el('span', 'pulse-label', label));
+    box.appendChild(it);
+  }
+  box.hidden = false;
+}
+
+function renderSkeleton() {
+  const tbody = document.getElementById('leaderboard-body');
+  tbody.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const tr = el('tr', 'skeleton-row');
+    for (let c = 0; c < 5; c++) {
+      const td = el('td');
+      td.appendChild(el('div', 'skeleton'));
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+}
+
 function renderLeaderboard() {
   const tbody = document.getElementById('leaderboard-body');
+  const podium = document.getElementById('podium');
+  const filter = cleanUniqname(document.getElementById('board-filter').value);
+  const you = localStorage.getItem(STORE.uniqname);
   tbody.innerHTML = '';
 
   if (MEMBERS.length === 0) {
+    podium.hidden = true;
     const tr = el('tr');
     const td = el('td', 'muted center');
     td.colSpan = 5;
-    td.innerHTML = 'No sign-ins yet this semester — be the first! ';
+    td.textContent = 'No sign-ins yet this semester — be the first! ';
     if (CONFIG.links && CONFIG.links.signInForm) {
       const a = el('a', null, 'Sign in at an event →');
       a.href = CONFIG.links.signInForm; a.target = '_blank'; a.rel = 'noopener';
@@ -434,17 +501,46 @@ function renderLeaderboard() {
     }
     tr.appendChild(td);
     tbody.appendChild(tr);
+    document.getElementById('leaderboard-toggle').hidden = true;
     return;
   }
 
+  // Podium for the top 3 (only when there are at least 3 and not filtering).
+  if (MEMBERS.length >= 3 && !filter) {
+    podium.innerHTML = '';
+    const order = [MEMBERS[1], MEMBERS[0], MEMBERS[2]]; // silver, gold, bronze
+    const places = ['second', 'first', 'third'];
+    order.forEach((m, i) => {
+      const spot = el('div', 'podium-spot ' + places[i]);
+      spot.appendChild(el('div', 'podium-medal', ['🥈', '🥇', '🥉'][i]));
+      spot.appendChild(el('div', 'podium-name', m.uniqname));
+      spot.appendChild(el('div', 'podium-points', m.points + ' pts'));
+      spot.addEventListener('click', () => showMember(m.uniqname));
+      podium.appendChild(spot);
+    });
+    podium.hidden = false;
+  } else {
+    podium.hidden = true;
+  }
+
+  const matches = filter ? MEMBERS.filter(m => m.uniqname.includes(filter)) : MEMBERS;
   const showAll = document.getElementById('leaderboard-section').dataset.showAll === '1';
-  const rows = showAll ? MEMBERS : MEMBERS.slice(0, 10);
+  const rows = (filter || showAll) ? matches : matches.slice(0, 10);
+
+  if (rows.length === 0) {
+    const tr = el('tr');
+    const td = el('td', 'muted center', 'No members match “' + filter + '”.');
+    td.colSpan = 5;
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  }
 
   for (const m of rows) {
     const tr = el('tr');
+    if (m.uniqname === you) tr.className = 'you-row';
     tr.appendChild(el('td', 'rank-cell', '#' + m.rank));
     tr.appendChild(el('td', 'tier-cell', m.tier.icon + ' ' + m.tier.name));
-    tr.appendChild(el('td', 'uniq-cell', m.uniqname));
+    tr.appendChild(el('td', 'uniq-cell', m.uniqname + (m.uniqname === you ? ' (you)' : '')));
     tr.appendChild(el('td', 'center', String(m.totalEvents)));
     tr.appendChild(el('td', 'points-cell', String(m.points)));
     tr.addEventListener('click', () => showMember(m.uniqname));
@@ -452,7 +548,7 @@ function renderLeaderboard() {
   }
 
   const toggle = document.getElementById('leaderboard-toggle');
-  if (MEMBERS.length > 10) {
+  if (!filter && MEMBERS.length > 10) {
     toggle.hidden = false;
     toggle.textContent = showAll ? 'Show top 10' : 'Show all ' + MEMBERS.length + ' members';
     toggle.onclick = () => {
@@ -464,9 +560,14 @@ function renderLeaderboard() {
   }
 }
 
-function showMember(value) {
+/* ------------------------------------------------------- member lookup -- */
+
+function showMember(value, opts) {
+  const auto = opts && opts.auto;
   const uniqname = cleanUniqname(value);
   const box = document.getElementById('member-card');
+  const suggestBox = document.getElementById('lookup-suggest');
+  suggestBox.hidden = true;
   box.hidden = false;
   box.innerHTML = '';
 
@@ -480,15 +581,49 @@ function showMember(value) {
     box.appendChild(el('p', 'muted',
       'No sign-ins found for “' + uniqname + '” this semester yet. ' +
       'Sign in at your next event and check back!'));
+    renderSuggestions(uniqname);
     return;
   }
+
+  // Remember this device's member and refresh the "you" highlight.
+  const prevSaved = localStorage.getItem(STORE.uniqname);
+  localStorage.setItem(STORE.uniqname, uniqname);
+  if (prevSaved !== uniqname) renderLeaderboard();
 
   const head = el('div', 'member-head');
   head.appendChild(el('div', 'member-name', m.uniqname));
   const chip = el('div', 'tier-chip tier-' + m.tier.name.toLowerCase(),
     m.tier.icon + ' ' + m.tier.name + ' · Rank #' + m.rank + ' of ' + MEMBERS.length);
   head.appendChild(chip);
+
+  const shareBtn = el('button', 'btn small', '📤 Share my card');
+  shareBtn.addEventListener('click', () => shareCard(m));
+  head.appendChild(shareBtn);
+
+  const forgetBtn = el('button', 'btn small ghost', 'Not you?');
+  forgetBtn.addEventListener('click', () => {
+    localStorage.removeItem(STORE.uniqname);
+    document.getElementById('lookup-input').value = '';
+    box.hidden = true;
+    renderLeaderboard();
+  });
+  head.appendChild(forgetBtn);
   box.appendChild(head);
+
+  // "Since your last visit" delta (stored per device).
+  const snapKey = STORE.snapshot + uniqname;
+  let prev = null;
+  try { prev = JSON.parse(localStorage.getItem(snapKey)); } catch (e) { /* ignore */ }
+  if (prev && (prev.points !== m.points || prev.rank !== m.rank)) {
+    const dp = m.points - prev.points;
+    const dr = prev.rank - m.rank; // positive = climbed
+    const bits = [];
+    if (dp > 0) bits.push('+' + dp + ' points');
+    if (dr > 0) bits.push('▲ up ' + dr + (dr === 1 ? ' spot' : ' spots'));
+    else if (dr < 0) bits.push('▼ down ' + (-dr) + (dr === -1 ? ' spot' : ' spots'));
+    if (bits.length) box.appendChild(el('p', 'delta-note', 'Since your last visit: ' + bits.join(' · ')));
+  }
+  localStorage.setItem(snapKey, JSON.stringify({ points: m.points, rank: m.rank, at: Date.now() }));
 
   const stats = el('div', 'member-stats');
   stats.appendChild(statTile(String(m.points), 'points'));
@@ -504,14 +639,24 @@ function showMember(value) {
   }
   box.appendChild(cats);
 
-  // Badges with progress
+  // Badges with progress; celebrate ones earned since last look.
+  const badgeKey = STORE.badges + uniqname;
+  let known = [];
+  try { known = JSON.parse(localStorage.getItem(badgeKey)) || []; } catch (e) { /* ignore */ }
+  const earnedNow = [];
+  const newlyEarned = [];
+
   const grid = el('div', 'member-badges');
   for (const b of CONFIG.badges) {
     const p = badgeProgress(b, m);
-    const card = el('div', 'badge-card' + (p.earned ? ' earned' : ''));
+    const isNew = p.earned && !known.includes(b.id);
+    if (p.earned) earnedNow.push(b.id);
+    if (isNew) newlyEarned.push(b);
+    const card = el('div', 'badge-card' + (p.earned ? ' earned' : '') + (isNew ? ' new-badge' : ''));
     card.appendChild(el('div', 'badge-icon', b.icon));
     card.appendChild(el('div', 'badge-name', b.name));
     card.appendChild(el('div', 'badge-desc', b.desc));
+    if (isNew) card.appendChild(el('div', 'new-badge-tag', 'NEW!'));
     if (!p.earned) {
       const bar = el('div', 'progress');
       const fill = el('div', 'progress-fill');
@@ -522,10 +667,55 @@ function showMember(value) {
     }
     grid.appendChild(card);
   }
+  localStorage.setItem(badgeKey, JSON.stringify(earnedNow));
+
   box.appendChild(el('h3', 'member-badges-title', 'Badges'));
   box.appendChild(grid);
 
-  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Only celebrate when the member actively looked themselves up (not on
+  // page load) or genuinely earned something new since last time.
+  if (newlyEarned.length > 0 && known.length > 0) fireConfetti();
+  else if (!auto && newlyEarned.length > 0) fireConfetti();
+
+  if (!auto) box.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'nearest' });
+}
+
+/** "Did you mean…?" — closest uniqnames by edit distance or prefix. */
+function renderSuggestions(input) {
+  const boxEl = document.getElementById('lookup-suggest');
+  const scored = MEMBERS
+    .map(m => ({ u: m.uniqname, d: editDistance(input, m.uniqname) }))
+    .filter(x => x.d <= 2 || x.u.startsWith(input.slice(0, 3)))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, 3);
+  if (scored.length === 0) { boxEl.hidden = true; return; }
+
+  boxEl.innerHTML = '';
+  boxEl.appendChild(el('span', 'muted', 'Did you mean: '));
+  for (const s of scored) {
+    const chip = el('button', 'suggest-chip', s.u);
+    chip.addEventListener('click', () => {
+      document.getElementById('lookup-input').value = s.u;
+      showMember(s.u);
+    });
+    boxEl.appendChild(chip);
+  }
+  boxEl.hidden = false;
+}
+
+function editDistance(a, b) {
+  const dp = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+      );
+    }
+  }
+  return dp[a.length][b.length];
 }
 
 function statTile(big, label) {
@@ -540,6 +730,173 @@ function renderLastUpdated() {
     'Data loaded ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
+/* ----------------------------------------------------- share card (🔥) -- */
+
+/**
+ * Draws a 1080x1350 (Instagram portrait) "battle card" PNG on a canvas and
+ * shares it via the native share sheet (mobile) or downloads it (desktop).
+ * Everything happens locally in the browser.
+ */
+function shareCard(m) {
+  const W = 1080, H = 1350;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  const tierColors = {
+    gold:        ['#ffd700', '#b8860b'],
+    silver:      ['#e8e8e8', '#8a8a8a'],
+    bronze:      ['#cd7f32', '#8b5a2b'],
+    participant: ['#3b82f6', '#1d4ed8']
+  };
+  const [c1, c2] = tierColors[m.tier.name.toLowerCase()] || tierColors.participant;
+
+  // Background
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, W, H);
+  const glow = ctx.createRadialGradient(W / 2, 300, 50, W / 2, 300, 700);
+  glow.addColorStop(0, hexWithAlpha(c1, 0.28));
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+
+  // Border frame
+  ctx.strokeStyle = c1;
+  ctx.lineWidth = 10;
+  roundRect(ctx, 40, 40, W - 80, H - 80, 36);
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '600 34px system-ui, sans-serif';
+  ctx.fillText('NSBE UNIVERSITY OF MICHIGAN', W / 2, 150);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '900 84px Orbitron, system-ui, sans-serif';
+  ctx.fillText('BATTLE PASS', W / 2, 250);
+
+  ctx.fillStyle = '#00ffab';
+  ctx.font = '700 40px Orbitron, system-ui, sans-serif';
+  ctx.fillText((CONFIG.season || '').toUpperCase(), W / 2, 320);
+
+  // Tier medal
+  ctx.font = '200px system-ui';
+  ctx.fillText(m.tier.icon, W / 2, 560);
+
+  const grad = ctx.createLinearGradient(0, 600, 0, 700);
+  grad.addColorStop(0, c1); grad.addColorStop(1, c2);
+  ctx.fillStyle = grad;
+  ctx.font = '900 96px Orbitron, system-ui, sans-serif';
+  ctx.fillText(m.tier.name, W / 2, 690);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '700 64px Orbitron, system-ui, sans-serif';
+  ctx.fillText(m.uniqname, W / 2, 790);
+
+  // Stat row
+  const earned = CONFIG.badges.filter(b => badgeProgress(b, m).earned).length;
+  const stats = [
+    [String(m.points), 'POINTS'],
+    ['#' + m.rank, 'RANK'],
+    [String(m.totalEvents), 'EVENTS'],
+    [String(earned), 'BADGES']
+  ];
+  const colW = (W - 160) / 4;
+  stats.forEach(([num, label], i) => {
+    const x = 80 + colW * i + colW / 2;
+    ctx.fillStyle = c1;
+    ctx.font = '900 72px Orbitron, system-ui, sans-serif';
+    ctx.fillText(num, x, 950);
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '600 28px system-ui, sans-serif';
+    ctx.fillText(label, x, 1000);
+  });
+
+  // Earned badge icons
+  const earnedBadges = CONFIG.badges.filter(b => badgeProgress(b, m).earned).slice(0, 8);
+  ctx.font = '64px system-ui';
+  const bw = 100;
+  const startX = W / 2 - (earnedBadges.length - 1) * bw / 2;
+  earnedBadges.forEach((b, i) => ctx.fillText(b.icon, startX + i * bw, 1120));
+
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '600 30px system-ui, sans-serif';
+  ctx.fillText('jaleelada.github.io/nsbe-uofm-battle-pass', W / 2, 1240);
+
+  canvas.toBlob(async blob => {
+    const file = new File([blob], 'nsbe-battle-card-' + m.uniqname + '.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'My NSBE Battle Pass',
+          text: 'My NSBE UM Battle Pass — ' + m.tier.name + ' tier, ' + m.points + ' points! 🥇'
+        });
+        return;
+      } catch (e) { /* user cancelled or unsupported — fall through to download */ }
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = file.name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }, 'image/png');
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function hexWithAlpha(hex, alpha) {
+  const n = parseInt(hex.slice(1), 16);
+  return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
+}
+
+/* ----------------------------------------------------------- confetti -- */
+
+function fireConfetti() {
+  if (REDUCED_MOTION) return;
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.display = 'block';
+
+  const colors = ['#ffd700', '#00ffab', '#00d4ff', '#ff6b6b', '#c084fc'];
+  const parts = Array.from({ length: 140 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -20 - Math.random() * canvas.height * 0.5,
+    size: 6 + Math.random() * 8,
+    color: colors[(Math.random() * colors.length) | 0],
+    vy: 2.5 + Math.random() * 3.5,
+    vx: -1.5 + Math.random() * 3,
+    rot: Math.random() * Math.PI,
+    vr: -0.1 + Math.random() * 0.2
+  }));
+
+  const t0 = performance.now();
+  (function frame(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const p of parts) {
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      ctx.restore();
+    }
+    if (t - t0 < 2800) requestAnimationFrame(frame);
+    else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.style.display = 'none'; }
+  })(t0);
+}
+
 /* --------------------------------------------------------- banners etc -- */
 
 function showBanner(kind, message) {
@@ -550,9 +907,7 @@ function showBanner(kind, message) {
 }
 
 function showSetupNeeded() {
-  const box = document.getElementById('setup-panel');
-  box.hidden = true;
-  box.hidden = false;
+  document.getElementById('setup-panel').hidden = false;
   document.getElementById('leaderboard-body').innerHTML =
     '<tr><td colspan="5" class="muted center">Waiting for setup…</td></tr>';
 }

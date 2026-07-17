@@ -89,6 +89,7 @@ uniqname/email found anywhere in that sheet. Paid members bypass the
 |---|---|
 | Change the semester name shown on the site | `"season"` |
 | Change when points start counting | `"countPointsFrom"` (YYYY-MM-DD) |
+| Change the "days left" countdown | `"seasonEndDate"` (YYYY-MM-DD, last day of classes) |
 | Change points per event type | the `"points"` number inside `"eventTypes"` |
 | Add a new event type | copy an existing line in `"eventTypes"`, change the name/points/keywords |
 | Change how form answers map to event types | the `"keywords"` lists (matching is case-insensitive) |

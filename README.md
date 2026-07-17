@@ -1,6 +1,6 @@
 ﻿## 🏆 NSBE UofM Battle Pass 2025
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://nsbeum.live)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://jaleelada.github.io/nsbe-uofm-battle-pass/)
 [![GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-blue)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -301,6 +301,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **🏆 Dynamic Tiers • 🏅 Trackable Badges • 📊 Real-time Data**
 
-[🔗 Live site](https://nsbeum.live) • [📧 Contact](mailto:jaleeldrones1@gmail.com) • [🐛 Report Bug](https://github.com/JaleelADA/nsbe-uofm-battle-pass/issues)
+[🔗 Live site](https://jaleelada.github.io/nsbe-uofm-battle-pass/) • [📧 Contact](mailto:jaleeldrones1@gmail.com) • [🐛 Report Bug](https://github.com/JaleelADA/nsbe-uofm-battle-pass/issues)
 
 </div>

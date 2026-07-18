@@ -486,6 +486,112 @@ footer {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
+/* ------------------------------------------- careers & company hub -- */
+
+.hero-sub { padding-bottom: 1rem; }
+.hero-kicker a { color: var(--muted); text-decoration: none; }
+.hero-kicker a:hover { color: var(--blue); }
+
+.profile-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.7rem; }
+.profile-row select, #days-select {
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.pathway-box { margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 0.9rem; }
+.pathway-title { font-family: var(--font-display); font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--green); }
+.pathway {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.tab-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.8rem 0; }
+.tab {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.tab.active { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 10px var(--gold-soft); }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+.chip {
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.chip.active { border-color: var(--blue); color: var(--blue); background: rgba(0, 212, 255, 0.08); }
+
+.check-label { display: flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+
+.job-list { margin-top: 1rem; display: grid; gap: 0.5rem; }
+.job-row {
+  display: block;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.12s, transform 0.1s;
+}
+.job-row:hover { border-color: var(--blue); transform: translateX(3px); }
+.job-main { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: baseline; }
+.job-company { font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--gold); }
+.job-title { font-size: 0.95rem; }
+.job-meta { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem; align-items: center; }
+.job-badge {
+  font-size: 0.68rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  color: var(--muted);
+}
+.job-badge.new { border-color: var(--green); color: var(--green); }
+.job-badge.fresh { border-color: var(--green); color: var(--green); }
+.job-badge.disc { border-color: rgba(0, 212, 255, 0.5); color: var(--blue); }
+.job-badge.status-confirmed, .job-badge.status-sponsor { border-color: var(--green); color: var(--green); }
+.job-badge.status-contacted { border-color: var(--gold); color: var(--gold); }
+.job-loc { color: var(--muted); font-size: 0.75rem; }
+
+.company-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.company-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.company-card.partner { border-color: rgba(0, 255, 171, 0.35); }
+.company-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.company-name { font-family: var(--font-display); font-weight: 700; color: var(--text); text-decoration: none; }
+.company-name:hover { color: var(--gold); }
+.company-orgs, .company-notes { font-size: 0.78rem; }
+.company-foot { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: auto; font-size: 0.78rem; }
+
 /* -------------------------------------------------------- scrollbars -- */
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }

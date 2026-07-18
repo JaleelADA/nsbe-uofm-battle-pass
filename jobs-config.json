@@ -1,0 +1,139 @@
+{
+  "_readme": "Config for the weekly careers pipeline (scripts/update_jobs.py) and the Careers page. Board-editable: add sources, tune keywords, edit pathways. No code changes needed.",
+
+  "sources": {
+    "simplify_internships": "https://raw.githubusercontent.com/SimplifyJobs/Summer2026-Internships/dev/.github/scripts/listings.json",
+    "simplify_newgrad": "https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/.github/scripts/listings.json"
+  },
+
+  "max_jobs_per_level": 1500,
+
+  "freshman_keywords": ["freshman", "first-year", "first year", "sophomore", "step intern", "explore intern", "meta university", "uber star", "palantir path", "early insight", "early id", "discovery program", "launch intern", "propel", "code2040", "emerging talent", "underclassmen"],
+
+  "disciplines": {
+    "CS":      { "label": "Computer Science",        "icon": "💻" },
+    "CE":      { "label": "Computer Engineering",    "icon": "🔌" },
+    "EE":      { "label": "Electrical Engineering",  "icon": "⚡" },
+    "ME":      { "label": "Mechanical Engineering",  "icon": "⚙️" },
+    "IOE":     { "label": "Industrial & Operations", "icon": "📊" },
+    "Aero":    { "label": "Aerospace Engineering",   "icon": "🚀" },
+    "BME":     { "label": "Biomedical Engineering",  "icon": "🧬" },
+    "ChemE":   { "label": "Chemical Engineering",    "icon": "⚗️" },
+    "Civil":   { "label": "Civil & Environmental",   "icon": "🏗️" },
+    "NERS":    { "label": "Nuclear Engineering",     "icon": "☢️" },
+    "Robotics":{ "label": "Robotics",                "icon": "🤖" },
+    "MatSci":  { "label": "Materials Science",       "icon": "🔬" },
+    "DS":      { "label": "Data Science",            "icon": "📈" },
+    "Other":   { "label": "Other / General",         "icon": "🧭" }
+  },
+
+  "taxonomy": {
+    "CS": {
+      "Software Engineering": ["software", "swe", "full stack", "fullstack", "backend", "back end", "frontend", "front end", "mobile", "ios", "android", "web develop", "developer", "programmer", "computer scien"],
+      "AI/ML": ["machine learning", "ml engineer", "artificial intelligence", "deep learning", "llm", "computer vision", "nlp", "perception", "ai engineer", "ai/ml", "genai", "generative ai"],
+      "Cloud/Infra": ["cloud", "devops", "site reliability", "sre", "infrastructure", "platform engineer", "systems engineer"],
+      "Cybersecurity": ["security", "cyber", "threat", "appsec", "infosec", "penetration"],
+      "Quant/FinTech": ["quant", "trading", "trader"]
+    },
+    "DS": {
+      "Data Science & Analytics": ["data scien", "data analy", "data engineer", "analytics", "business intelligence", "statistic"]
+    },
+    "CE": {
+      "Embedded/Firmware": ["embedded", "firmware", "rtos", "real time software", "real-time software"],
+      "Hardware": ["hardware", "asic", "soc design", "silicon", "chip design", "physical design", "design verification", "dv engineer", "validation engineer"],
+      "FPGA/Digital": ["fpga", "rtl", "verilog", "vhdl", "digital design"],
+      "Semiconductor": ["semiconductor", "wafer", "foundry", "lithography", "process integration", "yield engineer"]
+    },
+    "EE": {
+      "Electronics": ["electrical", "electronics", "circuit", "pcb", "analog", "mixed-signal", "mixed signal"],
+      "Power & Energy": ["power system", "power electronics", "grid", "transmission", "substation", "battery", "energy storage", "electrification"],
+      "Controls": ["controls engineer", "control system", "automation engineer", "plc", "instrumentation"],
+      "Signal/RF/Comms": ["signal processing", "dsp", "rf engineer", "radio frequency", "antenna", "telecom", "wireless", "radar"]
+    },
+    "ME": {
+      "Mechanical Design": ["mechanical", "product design", "design engineer", "cad", "nvh", "chassis", "powertrain"],
+      "Thermal/Fluids": ["hvac", "thermal", "fluids", "cfd", "stress engineer", "structural analysis"],
+      "Manufacturing": ["manufactur", "production engineer", "tooling", "weld", "machining", "cnc", "assembly engineer", "industrialization"],
+      "Automotive": ["automotive", "vehicle", "e-mobility"]
+    },
+    "IOE": {
+      "Operations & Supply Chain": ["supply chain", "logistics", "operations engineer", "operations research", "industrial engineer", "process improvement", "continuous improvement", "lean", "six sigma", "quality engineer"],
+      "Consulting & Optimization": ["consultant", "consulting", "business analyst", "strategy analyst", "optimization"]
+    },
+    "Aero": {
+      "Aerospace & Space": ["aerospace", "aeronautic", "flight", "aircraft", "avionics", "spacecraft", "satellite", "space systems", "propulsion", "gnc", "guidance", "aerodynamic", "mission engineer", "launch engineer", "orbit"]
+    },
+    "BME": {
+      "Biomedical & Health Tech": ["biomedical", "medical device", "biotech", "bioinformatic", "biolog", "clinical engineer", "pharma", "biopharm", "bioprocess", "healthcare technology"]
+    },
+    "ChemE": {
+      "Process & Chemicals": ["chemical engineer", "process engineer", "refin", "polymer", "catalys", "petrochemical", "specialty chemical"],
+      "Energy & Sustainability": ["sustainab", "renewable", "solar", "wind energy", "hydrogen", "carbon capture", "climate"]
+    },
+    "Civil": {
+      "Civil & Infrastructure": ["civil", "structural engineer", "geotech", "transportation engineer", "highway", "bridge", "water resources", "wastewater", "construction", "estimating", "land develop", "site engineer", "surveying", "environmental engineer", "remediation", "air quality"]
+    },
+    "NERS": {
+      "Nuclear": ["nuclear", "reactor", "radiation", "radiolog", "health physics"]
+    },
+    "Robotics": {
+      "Robotics & Autonomy": ["robotic", "autonom", "mechatronic", "motion planning", "slam", "self-driving", "drone", "uav"]
+    },
+    "MatSci": {
+      "Materials": ["materials engineer", "materials scien", "metallurg", "ceramic", "composite", "corrosion", "coating"]
+    }
+  },
+
+  "category_fallback": {
+    "AI/ML/Data": ["CS", "AI/ML"],
+    "Software": ["CS", "Software Engineering"],
+    "Software Engineering": ["CS", "Software Engineering"],
+    "Data Science, AI & Machine Learning": ["DS", "Data Science & Analytics"],
+    "Hardware": ["CE", "Hardware"],
+    "Hardware Engineering": ["CE", "Hardware"],
+    "Quant": ["CS", "Quant/FinTech"],
+    "Quantitative Finance": ["CS", "Quant/FinTech"],
+    "Product": ["Other", "Product"],
+    "Product Management": ["Other", "Product"]
+  },
+
+  "pathways": {
+    "CS":      ["CS → Software Engineer → Google / Microsoft / Stripe", "CS → AI/ML Engineer → NVIDIA / OpenAI / Waymo", "CS → Quant Developer → Jane Street / Citadel / Two Sigma"],
+    "CE":      ["CE → Embedded Engineer → Tesla / Garmin / Bosch", "CE → Silicon Engineer → NVIDIA / Apple / AMD / Intel", "CE → FPGA Engineer → SpaceX / Northrop / AMD"],
+    "EE":      ["EE → Hardware Engineer → NVIDIA / Apple / Texas Instruments", "EE → Power Engineer → DTE / GE Vernova / Tesla Energy", "EE → RF Engineer → Qualcomm / SpaceX / Raytheon"],
+    "ME":      ["ME → Automotive Engineer → Ford / GM / Rivian / Tesla", "ME → Robotics Engineer → Boston Dynamics / Agility", "ME → Manufacturing Engineer → Boeing / Caterpillar / 3M"],
+    "IOE":     ["IOE → Operations Engineer → Amazon / Apple Ops / Target", "IOE → Supply Chain → John Deere / P&G / Walmart", "IOE → Consulting → McKinsey / Deloitte / Accenture"],
+    "Aero":    ["Aero → Systems Engineer → NASA / Lockheed / Boeing", "Aero → Space Systems → SpaceX / Blue Origin / Anduril", "Aero → Propulsion → GE Aerospace / RTX"],
+    "BME":     ["BME → Medical Devices → Medtronic / Stryker / Abbott", "BME → Biotech → Genentech / Moderna / J&J"],
+    "ChemE":   ["ChemE → Process Engineer → Dow / DuPont / ExxonMobil", "ChemE → Energy Transition → Shell / NextEra / Air Products"],
+    "Civil":   ["Civil → Structural → AECOM / Jacobs / Arup", "Civil → Construction → Kiewit / Turner / Bechtel"],
+    "NERS":    ["NERS → Reactor Engineering → Constellation / Westinghouse / NuScale", "NERS → National Labs → INL / ORNL / Sandia"],
+    "Robotics":["Robotics → Autonomy → Waymo / Zoox / Nuro", "Robotics → Robotics SW → Boston Dynamics / FANUC / Amazon Robotics"],
+    "MatSci":  ["MatSci → Materials Engineer → 3M / Corning / Applied Materials", "MatSci → Batteries → Tesla / LG Energy / GM"],
+    "DS":      ["DS → Data Scientist → Meta / Airbnb / Capital One", "DS → Data Engineer → Databricks / Snowflake / Netflix"]
+  },
+
+  "freshman_programs": [
+    { "name": "Google STEP", "for": "1st–2nd years", "url": "https://buildyourfuture.withgoogle.com/programs/step", "opens": "~Sept–Nov" },
+    { "name": "Microsoft Explore", "for": "1st–2nd years", "url": "https://careers.microsoft.com/v2/global/en/exploremicrosoft", "opens": "~Aug–Oct" },
+    { "name": "Meta University", "for": "1st–2nd years (underrepresented)", "url": "https://www.metacareers.com/students", "opens": "~Jan–Feb" },
+    { "name": "Uber STAR", "for": "1st–2nd years (underrepresented)", "url": "https://www.uber.com/us/en/careers/teams/university/", "opens": "~Fall" },
+    { "name": "Palantir Path", "for": "Sophomores (underrepresented)", "url": "https://www.palantir.com/careers/students/path/", "opens": "~Winter" },
+    { "name": "Amazon Propel", "for": "Underrepresented underclassmen", "url": "https://amazon.jobs/content/en/career-programs/university", "opens": "~Fall" },
+    { "name": "NVIDIA Ignite", "for": "1st–2nd years (underrepresented)", "url": "https://www.nvidia.com/en-us/about-nvidia/careers/university-recruiting/", "opens": "~Fall" },
+    { "name": "Capital One Tech Early Internship", "for": "Freshmen/Sophomores", "url": "https://www.capitalonecareers.com/students", "opens": "~Fall" },
+    { "name": "Goldman Sachs Possibilities Summit", "for": "Freshmen (Black students)", "url": "https://www.goldmansachs.com/careers/students/programs-and-internships", "opens": "~Fall" },
+    { "name": "Code2040 Fellows", "for": "Black & Latinx CS students", "url": "https://www.code2040.org/fellows-program", "opens": "~Nov–Jan" },
+    { "name": "SEO Career", "for": "Underrepresented underclassmen", "url": "https://www.seo-usa.org/career/", "opens": "Rolling" },
+    { "name": "NSF REU (paid research)", "for": "All years, all engineering majors", "url": "https://www.nsf.gov/crssprgm/reu/reu_search.jsp", "opens": "~Dec–Feb" }
+  ],
+
+  "resources": [
+    { "title": "UM Handshake (log in for campus-exclusive roles)", "url": "https://umich.joinhandshake.com" },
+    { "title": "Levels.fyi — compensation data", "url": "https://www.levels.fyi" },
+    { "title": "Simplify internship tracker (source)", "url": "https://github.com/SimplifyJobs/Summer2026-Internships" },
+    { "title": "Simplify new-grad tracker (source)", "url": "https://github.com/SimplifyJobs/New-Grad-Positions" },
+    { "title": "NSBE Career Center", "url": "https://careers.nsbe.org" },
+    { "title": "UM Engineering Career Resource Center", "url": "https://career.engin.umich.edu" }
+  ]
+}

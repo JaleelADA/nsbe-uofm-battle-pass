@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Careers — NSBE UM Battle Pass</title>
+  <meta name="description" content="Engineering internships, co-ops, freshman programs, and full-time roles across every discipline — refreshed weekly." />
+  <meta name="theme-color" content="#0d1117" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="hero hero-sub">
+    <p class="hero-kicker"><a href="index.html">← Battle Pass</a> · <a href="outreach.html">Company Hub →</a></p>
+    <h1><span class="accent">Careers</span> Intelligence</h1>
+    <p class="hero-season" id="updated-label">Loading…</p>
+  </header>
+
+  <main>
+    <div id="banner" class="banner" role="status" hidden></div>
+
+    <section class="card">
+      <h2>🎓 Your profile</h2>
+      <p class="muted">Pick your major to auto-filter everything and see career pathways. Saved on this device only.</p>
+      <div class="profile-row">
+        <label for="major-select" class="visually-hidden">Your major</label>
+        <select id="major-select"><option value="">All majors / undecided</option></select>
+        <label for="year-select" class="visually-hidden">Your year</label>
+        <select id="year-select">
+          <option value="">Any year</option>
+          <option value="freshman">Freshman / Sophomore</option>
+          <option value="upper">Junior / Senior</option>
+          <option value="grad">Graduating — full-time</option>
+        </select>
+      </div>
+      <div id="pathways" class="pathway-box" hidden></div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>💼 Opportunities</h2>
+        <span id="result-count" class="muted"></span>
+      </div>
+      <div class="tab-row" id="level-tabs">
+        <button class="tab" data-level="fresh">🌱 Freshman &amp; Early</button>
+        <button class="tab active" data-level="intern">🛠️ Internships</button>
+        <button class="tab" data-level="newgrad">🚀 Full-Time</button>
+      </div>
+      <div class="lookup-row">
+        <label for="job-search" class="visually-hidden">Search roles</label>
+        <input id="job-search" type="text" placeholder="🔎 Search company, title, or location…" autocomplete="off" />
+        <select id="days-select">
+          <option value="">Any date</option>
+          <option value="7">Posted this week</option>
+          <option value="30">Posted this month</option>
+        </select>
+        <label class="check-label"><input type="checkbox" id="coop-only" /> Co-ops only</label>
+      </div>
+      <div id="disc-chips" class="chip-row"></div>
+      <div id="job-list" class="job-list"></div>
+      <button id="more-btn" class="btn small" hidden>Show more</button>
+    </section>
+
+    <section class="card">
+      <h2>🧰 More resources</h2>
+      <p class="muted">Sources we can't legally auto-index (login-walled or ToS-restricted) — go direct:</p>
+      <div id="resources" class="announcement-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="muted">Data refreshes every Monday via GitHub Actions · Sources: SimplifyJobs (community tracker) + public company job boards · <a href="index.html">Battle Pass</a> · <a href="outreach.html">Company Hub</a></p>
+  </footer>
+
+  <noscript><p style="text-align:center;padding:2rem">This page needs JavaScript.</p></noscript>
+  <script src="careers.js" defer></script>
+</body>
+</html>

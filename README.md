@@ -30,13 +30,25 @@ season name, sheet links, point values, badges, announcements.
 👉 **Read [`SETUP.md`](SETUP.md)** for the click-by-click guide (no coding
 needed, ~15 minutes per semester).
 
+## Careers Intelligence (new)
+
+- **[Careers](https://jaleelada.github.io/nsbe-uofm-battle-pass/careers.html)** — 2,700+ live internships, freshman programs, co-ops, and full-time roles across 14 engineering disciplines, auto-refreshed every Monday by GitHub Actions.
+- **[Company Hub](https://jaleelada.github.io/nsbe-uofm-battle-pass/outreach.html)** — employer intelligence: who partners with NSBE & student orgs, who recruits which majors, outreach tracker, recruiting events.
+- Roadmap to the full platform vision: [docs/ROADMAP.md](docs/ROADMAP.md)
+
 ## Repo layout
 
 ```
-index.html            Page structure
+index.html            Battle Pass page
+careers.html/.js      Careers intelligence page
+outreach.html/.js     Company Hub page
 style.css             Theme (colors/fonts in :root at the top)
-app.js                All logic: fetch sheet → score → render
-config.json           ⭐ The only file boards edit
+app.js                Battle Pass logic: fetch sheet → score → render
+config.json           ⭐ Battle Pass config (boards edit)
+jobs-config.json      ⭐ Careers taxonomy/sources/pathways (boards edit)
+data/companies.json   ⭐ Employer database & events (boards edit)
+data/jobs.json        Generated weekly — don't edit by hand
+scripts/update_jobs.py + .github/workflows/update-jobs.yml   The pipeline
 SETUP.md              ⭐ Board handoff & setup guide
 apps-script/Code.gs   Optional privacy endpoint for private sheets
 data/archive/         Past semesters' CSVs (records)

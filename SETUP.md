@@ -119,8 +119,8 @@ The Careers page and Company Hub refresh automatically every Monday via the
   (target/contacted/confirmed/sponsor), add companies (add an
   `"ats": "greenhouse:SLUG"` or `"lever:SLUG"` to get live role counts), and
   keep the events list current.
-- **Tuning:** point values… sorry, wrong page — job *keywords*, pathways, and
-  first-year programs all live in `jobs-config.json`.
+- **Tuning:** job keywords, career pathways, and the first-year program list
+  all live in `jobs-config.json`.
 
 ## 🤝 Board handoff checklist (do this every spring)
 

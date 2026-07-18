@@ -106,6 +106,22 @@ missing comma/quote. You can validate the file for free at
 
 ---
 
+## 💼 Careers & Company Hub (runs itself)
+
+The Careers page and Company Hub refresh automatically every Monday via the
+"Update careers data" workflow (repo → Actions tab → you can also click
+**Run workflow** anytime). Board maintenance is just:
+
+- **Each recruiting cycle (~August):** in `jobs-config.json`, update the two
+  `sources` URLs to the new season's SimplifyJobs repos (e.g. change
+  `Summer2026-Internships` → `Summer2027-Internships`).
+- **Anytime:** edit `data/companies.json` to update outreach statuses
+  (target/contacted/confirmed/sponsor), add companies (add an
+  `"ats": "greenhouse:SLUG"` or `"lever:SLUG"` to get live role counts), and
+  keep the events list current.
+- **Tuning:** point values… sorry, wrong page — job *keywords*, pathways, and
+  first-year programs all live in `jobs-config.json`.
+
 ## 🤝 Board handoff checklist (do this every spring)
 
 - [ ] Add the incoming webmaster/membership chair as a **collaborator** on this GitHub repo (Settings → Collaborators), or better: move the repo to a chapter-owned GitHub organization.

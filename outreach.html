@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Company Hub — NSBE UM Battle Pass</title>
+  <meta name="description" content="NSBE UM's employer intelligence hub: which companies partner with NSBE and student orgs, which majors they recruit, and upcoming recruiting events." />
+  <meta name="theme-color" content="#0d1117" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="hero hero-sub">
+    <p class="hero-kicker"><a href="index.html">← Battle Pass</a> · <a href="careers.html">Careers →</a></p>
+    <h1>Company <span class="accent">Hub</span></h1>
+    <p class="hero-season" id="hub-stats"></p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>📅 Upcoming recruiting events</h2>
+      <div id="events" class="announcement-list"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>🏢 Employer directory</h2>
+        <span id="company-count" class="muted"></span>
+      </div>
+      <p class="muted">Which companies partner with NSBE &amp; student orgs, and which majors they recruit. Board members: edit <code>data/companies.json</code> on GitHub to update outreach status.</p>
+      <div class="lookup-row">
+        <label for="co-search" class="visually-hidden">Search companies</label>
+        <input id="co-search" type="text" placeholder="🔎 Search companies…" autocomplete="off" />
+        <label class="check-label"><input type="checkbox" id="partner-only" /> NSBE partners only</label>
+      </div>
+      <div id="sector-chips" class="chip-row"></div>
+      <div id="major-chips" class="chip-row"></div>
+      <div id="company-grid" class="company-grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="muted">Open-role counts refresh weekly from public job boards · Partner flags are board-curated — verify each year · <a href="index.html">Battle Pass</a> · <a href="careers.html">Careers</a></p>
+  </footer>
+
+  <noscript><p style="text-align:center;padding:2rem">This page needs JavaScript.</p></noscript>
+  <script src="outreach.js" defer></script>
+</body>
+</html>

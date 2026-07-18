@@ -1,0 +1,1337 @@
+{
+  "_readme": "Board-curated employer database for the Company Hub. Edit freely on GitHub \u2014 the weekly pipeline only refreshes 'open_student_roles' counts for companies with an 'ats' slug (greenhouse:SLUG or lever:SLUG) and never touches your other fields. 'partner' means known NSBE national Board of Corporate Affiliates / frequent NSBE recruiter \u2014 verify each year. 'status' is your outreach tracker: target | contacted | confirmed | sponsor.",
+  "events": [
+    {
+      "title": "NSBE Annual Convention",
+      "when": "March (annual)",
+      "url": "https://convention.nsbe.org/",
+      "note": "Largest Black engineering career fair in the country"
+    },
+    {
+      "title": "NSBE Fall Regional Conference (Region IV)",
+      "when": "October\u2013November",
+      "url": "https://nsbe.org/",
+      "note": "Regional career fair + workshops"
+    },
+    {
+      "title": "UM SWE/TBP Career Fair",
+      "when": "September (annual)",
+      "url": "https://career.engin.umich.edu/",
+      "note": "Biggest on-campus engineering fair"
+    },
+    {
+      "title": "UM Engineering Career Fair Week",
+      "when": "January",
+      "url": "https://career.engin.umich.edu/",
+      "note": "Winter recruiting cycle"
+    }
+  ],
+  "companies": [
+    {
+      "name": "Google",
+      "sectors": [
+        "MAANG",
+        "Tech"
+      ],
+      "majors": [
+        "CS",
+        "CE",
+        "EE",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://careers.google.com/students",
+      "status": "target",
+      "notes": "STEP program for freshmen/sophomores"
+    },
+    {
+      "name": "Microsoft",
+      "sectors": [
+        "MAANG",
+        "Tech"
+      ],
+      "majors": [
+        "CS",
+        "CE",
+        "EE",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://careers.microsoft.com/students",
+      "status": "target",
+      "notes": "Explore program for first/second years"
+    },
+    {
+      "name": "Amazon",
+      "sectors": [
+        "MAANG",
+        "Tech"
+      ],
+      "majors": [
+        "CS",
+        "CE",
+        "IOE",
+        "ME",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://amazon.jobs/students",
+      "status": "target",
+      "notes": "Propel + huge ops/supply-chain pipeline for IOE"
+    },
+    {
+      "name": "Meta",
+      "sectors": [
+        "MAANG",
+        "Tech"
+      ],
+      "majors": [
+        "CS",
+        "CE",
+        "EE",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://metacareers.com/students",
+      "status": "target",
+      "notes": "Meta University for underclassmen"
+    },
+    {
+      "name": "Apple",
+      "sectors": [
+        "MAANG",
+        "Tech"
+      ],
+      "majors": [
+        "CS",
+        "CE",
+        "EE",
+        "ME",
+        "IOE",
+        "MatSci"
+      ],
+      "orgs": [
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://apple.com/careers/us/students.html",
+      "status": "target",
+      "notes": "Hardware + ops roles beyond SWE"
+    },
+    {
+      "name": "NVIDIA",
+      "sectors": [
+        "Semiconductor",
+        "Tech"
+      ],
+      "majors": [
+        "CE",
+        "EE",
+        "CS",
+        "Robotics"
+      ],
+      "orgs": [
+        "NSBE",
+        "IEEE"
+      ],
+      "partner": false,
+      "careers": "https://nvidia.com/en-us/about-nvidia/careers/university-recruiting/",
+      "status": "target",
+      "notes": "Ignite program targets underrepresented students"
+    },
+    {
+      "name": "Intel",
+      "sectors": [
+        "Semiconductor"
+      ],
+      "majors": [
+        "CE",
+        "EE",
+        "MatSci",
+        "ChemE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SHPE",
+        "IEEE"
+      ],
+      "partner": true,
+      "careers": "https://intel.com/jobs/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "AMD",
+      "sectors": [
+        "Semiconductor"
+      ],
+      "majors": [
+        "CE",
+        "EE",
+        "CS"
+      ],
+      "orgs": [
+        "IEEE"
+      ],
+      "partner": false,
+      "careers": "https://careers.amd.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Qualcomm",
+      "sectors": [
+        "Semiconductor"
+      ],
+      "majors": [
+        "CE",
+        "EE",
+        "CS"
+      ],
+      "orgs": [
+        "NSBE",
+        "IEEE"
+      ],
+      "partner": false,
+      "careers": "https://qualcomm.com/company/careers/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Texas Instruments",
+      "sectors": [
+        "Semiconductor"
+      ],
+      "majors": [
+        "EE",
+        "CE",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "IEEE"
+      ],
+      "partner": true,
+      "careers": "https://careers.ti.com/students/",
+      "status": "target",
+      "notes": "Strong analog/embedded rotation programs"
+    },
+    {
+      "name": "Stripe",
+      "sectors": [
+        "Tech",
+        "FinTech"
+      ],
+      "majors": [
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "ats": "greenhouse:stripe",
+      "careers": "https://stripe.com/jobs/university",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Databricks",
+      "sectors": [
+        "Tech",
+        "AI"
+      ],
+      "majors": [
+        "CS",
+        "DS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "ats": "greenhouse:databricks",
+      "careers": "https://databricks.com/company/careers/university-recruiting",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Coinbase",
+      "sectors": [
+        "Tech",
+        "FinTech"
+      ],
+      "majors": [
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "ats": "greenhouse:coinbase",
+      "careers": "https://coinbase.com/careers",
+      "status": "contacted",
+      "notes": "Hosted F25 bowling social \u2014 warm relationship!"
+    },
+    {
+      "name": "Waymo",
+      "sectors": [
+        "AI",
+        "Robotics",
+        "Startup"
+      ],
+      "majors": [
+        "CS",
+        "Robotics",
+        "EE",
+        "ME"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://waymo.com/careers/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Anduril",
+      "sectors": [
+        "Defense",
+        "Startup",
+        "Robotics"
+      ],
+      "majors": [
+        "CS",
+        "EE",
+        "ME",
+        "Aero",
+        "Robotics"
+      ],
+      "orgs": [],
+      "partner": false,
+      "ats": "greenhouse:andurilindustries",
+      "careers": "https://anduril.com/careers/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Palantir",
+      "sectors": [
+        "Tech",
+        "AI"
+      ],
+      "majors": [
+        "CS",
+        "DS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "ats": "lever:palantir",
+      "careers": "https://palantir.com/careers/",
+      "status": "target",
+      "notes": "Path program for underrepresented sophomores"
+    },
+    {
+      "name": "Ford",
+      "sectors": [
+        "Automotive"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CE",
+        "CS",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE",
+        "SAE"
+      ],
+      "partner": true,
+      "careers": "https://corporate.ford.com/careers/students.html",
+      "status": "confirmed",
+      "notes": "Hosted F25 golf outing \u2014 Michigan anchor, keep warm"
+    },
+    {
+      "name": "General Motors",
+      "sectors": [
+        "Automotive"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CE",
+        "CS",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SAE"
+      ],
+      "partner": true,
+      "careers": "https://search-careers.gm.com/en/students/",
+      "status": "target",
+      "notes": "Michigan anchor"
+    },
+    {
+      "name": "Rivian",
+      "sectors": [
+        "Automotive",
+        "Startup"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CS",
+        "MatSci"
+      ],
+      "orgs": [
+        "SAE"
+      ],
+      "partner": false,
+      "careers": "https://careers.rivian.com/",
+      "status": "target",
+      "notes": "Plymouth MI office"
+    },
+    {
+      "name": "Tesla",
+      "sectors": [
+        "Automotive",
+        "Energy"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CE",
+        "CS",
+        "MatSci",
+        "Robotics"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://tesla.com/careers/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Toyota",
+      "sectors": [
+        "Automotive"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SHPE",
+        "SAE"
+      ],
+      "partner": true,
+      "careers": "https://toyota.com/usa/careers/students",
+      "status": "target",
+      "notes": "R&D center in Ann Arbor/York Twp"
+    },
+    {
+      "name": "Stellantis",
+      "sectors": [
+        "Automotive"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CE",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SAE"
+      ],
+      "partner": true,
+      "careers": "https://careers.stellantis.com/students/",
+      "status": "target",
+      "notes": "Auburn Hills MI"
+    },
+    {
+      "name": "Bosch",
+      "sectors": [
+        "Automotive",
+        "Industrial"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CE",
+        "CS"
+      ],
+      "orgs": [
+        "SAE"
+      ],
+      "partner": false,
+      "careers": "https://bosch.us/careers/students-and-graduates/",
+      "status": "target",
+      "notes": "Plymouth MI"
+    },
+    {
+      "name": "Boeing",
+      "sectors": [
+        "Aerospace & Defense"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "CE",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "AIAA"
+      ],
+      "partner": true,
+      "careers": "https://jobs.boeing.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Lockheed Martin",
+      "sectors": [
+        "Aerospace & Defense"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "CE",
+        "CS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE",
+        "AIAA"
+      ],
+      "partner": true,
+      "careers": "https://lockheedmartinjobs.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Northrop Grumman",
+      "sectors": [
+        "Aerospace & Defense"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "CE",
+        "CS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "AIAA"
+      ],
+      "partner": true,
+      "careers": "https://northropgrumman.com/careers/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "RTX (Raytheon)",
+      "sectors": [
+        "Aerospace & Defense"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "CE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://careers.rtx.com/global/en/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "SpaceX",
+      "sectors": [
+        "Aerospace & Defense",
+        "Startup"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "CE",
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "ats": "greenhouse:spacex",
+      "careers": "https://spacex.com/careers/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Blue Origin",
+      "sectors": [
+        "Aerospace & Defense"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "AIAA"
+      ],
+      "partner": false,
+      "careers": "https://blueorigin.com/careers",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "NASA",
+      "sectors": [
+        "Aerospace & Defense",
+        "Government"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "CS",
+        "MatSci"
+      ],
+      "orgs": [
+        "NSBE",
+        "AIAA"
+      ],
+      "partner": false,
+      "careers": "https://intern.nasa.gov/",
+      "status": "target",
+      "notes": "OSTEM internships \u2014 apply early"
+    },
+    {
+      "name": "GE Aerospace",
+      "sectors": [
+        "Aerospace & Defense",
+        "Industrial"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "MatSci"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://jobs.gecareers.com/aerospace/global/en/students",
+      "status": "target",
+      "notes": "Edison/rotational programs"
+    },
+    {
+      "name": "Caterpillar",
+      "sectors": [
+        "Industrial"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "IOE",
+        "Civil"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://careers.caterpillar.com/en/students/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "John Deere",
+      "sectors": [
+        "Industrial"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CE",
+        "IOE",
+        "CS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://johndeere.com/en/our-company/careers/students/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Honeywell",
+      "sectors": [
+        "Industrial",
+        "Aerospace & Defense"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CE",
+        "ChemE",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://careers.honeywell.com/us/en/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Siemens",
+      "sectors": [
+        "Industrial",
+        "Energy"
+      ],
+      "majors": [
+        "EE",
+        "ME",
+        "CE",
+        "CS"
+      ],
+      "orgs": [
+        "SWE",
+        "IEEE"
+      ],
+      "partner": false,
+      "careers": "https://siemens.com/us/en/company/jobs/students.html",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Eaton",
+      "sectors": [
+        "Industrial",
+        "Energy"
+      ],
+      "majors": [
+        "EE",
+        "ME",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://eaton.com/us/en-us/company/careers/students.html",
+      "status": "target",
+      "notes": "Michigan HQ (Galesburg) + leadership programs"
+    },
+    {
+      "name": "Whirlpool",
+      "sectors": [
+        "Industrial",
+        "Consumer"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "IOE",
+        "CS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://whirlpoolcareers.com/students/",
+      "status": "target",
+      "notes": "Benton Harbor MI \u2014 strong UM pipeline"
+    },
+    {
+      "name": "DTE Energy",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "EE",
+        "ME",
+        "Civil",
+        "NERS",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://newlook.dteenergy.com/wps/wcm/connect/dte-web/careers",
+      "status": "target",
+      "notes": "Detroit \u2014 hometown utility, hires many UM engineers"
+    },
+    {
+      "name": "Consumers Energy",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "EE",
+        "ME",
+        "Civil"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": false,
+      "careers": "https://consumersenergy.com/company/careers",
+      "status": "target",
+      "notes": "Jackson MI"
+    },
+    {
+      "name": "ExxonMobil",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "ChemE",
+        "ME",
+        "EE",
+        "Civil"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "AIChE"
+      ],
+      "partner": true,
+      "careers": "https://corporate.exxonmobil.com/careers/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Chevron",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "ChemE",
+        "ME",
+        "EE",
+        "Civil"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "AIChE"
+      ],
+      "partner": true,
+      "careers": "https://chevron.com/careers/students-and-graduates",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "NextEra Energy",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "EE",
+        "ME",
+        "Civil",
+        "NERS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://nexteraenergy.com/careers/students.html",
+      "status": "target",
+      "notes": "Largest renewables operator in the US"
+    },
+    {
+      "name": "Constellation Energy",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "NERS",
+        "EE",
+        "ME"
+      ],
+      "orgs": [
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://jobs.constellationenergy.com/students",
+      "status": "target",
+      "notes": "Largest US nuclear fleet"
+    },
+    {
+      "name": "Dow",
+      "sectors": [
+        "Manufacturing",
+        "Chemicals"
+      ],
+      "majors": [
+        "ChemE",
+        "MatSci",
+        "ME"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "AIChE"
+      ],
+      "partner": true,
+      "careers": "https://corporate.dow.com/en-us/careers/students.html",
+      "status": "target",
+      "notes": "Midland MI HQ \u2014 major NSBE partner"
+    },
+    {
+      "name": "DuPont",
+      "sectors": [
+        "Manufacturing",
+        "Chemicals"
+      ],
+      "majors": [
+        "ChemE",
+        "MatSci",
+        "BME"
+      ],
+      "orgs": [
+        "NSBE",
+        "AIChE"
+      ],
+      "partner": true,
+      "careers": "https://careers.dupont.com/us/en/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "3M",
+      "sectors": [
+        "Manufacturing"
+      ],
+      "majors": [
+        "ChemE",
+        "ME",
+        "MatSci",
+        "BME",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://3m.com/3M/en_US/careers-us/students/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "BASF",
+      "sectors": [
+        "Manufacturing",
+        "Chemicals"
+      ],
+      "majors": [
+        "ChemE",
+        "MatSci"
+      ],
+      "orgs": [
+        "AIChE"
+      ],
+      "partner": false,
+      "careers": "https://basf.com/us/en/careers/students.html",
+      "status": "target",
+      "notes": "Wyandotte MI site"
+    },
+    {
+      "name": "Procter & Gamble",
+      "sectors": [
+        "Manufacturing",
+        "Consumer"
+      ],
+      "majors": [
+        "ChemE",
+        "ME",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": true,
+      "careers": "https://pgcareers.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Medtronic",
+      "sectors": [
+        "Healthcare"
+      ],
+      "majors": [
+        "BME",
+        "ME",
+        "EE",
+        "CS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "BMES"
+      ],
+      "partner": true,
+      "careers": "https://jobs.medtronic.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Johnson & Johnson",
+      "sectors": [
+        "Healthcare"
+      ],
+      "majors": [
+        "BME",
+        "ChemE",
+        "ME",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "BMES"
+      ],
+      "partner": true,
+      "careers": "https://careers.jnj.com/en/students/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Stryker",
+      "sectors": [
+        "Healthcare"
+      ],
+      "majors": [
+        "BME",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "BMES",
+        "SWE"
+      ],
+      "partner": false,
+      "careers": "https://careers.stryker.com/students/",
+      "status": "target",
+      "notes": "Kalamazoo MI HQ"
+    },
+    {
+      "name": "Abbott",
+      "sectors": [
+        "Healthcare"
+      ],
+      "majors": [
+        "BME",
+        "EE",
+        "ChemE"
+      ],
+      "orgs": [
+        "NSBE",
+        "BMES"
+      ],
+      "partner": true,
+      "careers": "https://abbott.com/careers/students.html",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Boston Scientific",
+      "sectors": [
+        "Healthcare"
+      ],
+      "majors": [
+        "BME",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "BMES",
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://bostonscientific.com/en-US/careers/students-and-new-grads.html",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "McKinsey & Company",
+      "sectors": [
+        "Consulting"
+      ],
+      "majors": [
+        "IOE",
+        "CS",
+        "ME",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SHPE"
+      ],
+      "partner": false,
+      "careers": "https://mckinsey.com/careers/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Deloitte",
+      "sectors": [
+        "Consulting"
+      ],
+      "majors": [
+        "IOE",
+        "CS",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://www2.deloitte.com/us/en/pages/careers/topics/students.html",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Accenture",
+      "sectors": [
+        "Consulting"
+      ],
+      "majors": [
+        "IOE",
+        "CS",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://accenture.com/us-en/careers/local/entry-level",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Boston Consulting Group",
+      "sectors": [
+        "Consulting"
+      ],
+      "majors": [
+        "IOE",
+        "CS",
+        "ME",
+        "DS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://careers.bcg.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Kiewit",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "ME",
+        "EE",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "ASCE"
+      ],
+      "partner": true,
+      "careers": "https://kiewitcareers.kiewit.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "AECOM",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "EE",
+        "ME"
+      ],
+      "orgs": [
+        "ASCE",
+        "SWE"
+      ],
+      "partner": false,
+      "careers": "https://aecom.com/careers/students-graduates/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Jacobs",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "EE",
+        "ME",
+        "Aero"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "ASCE"
+      ],
+      "partner": true,
+      "careers": "https://careers.jacobs.com/students/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Bechtel",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "ME",
+        "EE",
+        "NERS"
+      ],
+      "orgs": [
+        "NSBE",
+        "ASCE"
+      ],
+      "partner": true,
+      "careers": "https://jobs.bechtel.com/students",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Capital One",
+      "sectors": [
+        "FinTech",
+        "F500"
+      ],
+      "majors": [
+        "CS",
+        "DS",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://capitalonecareers.com/students",
+      "status": "target",
+      "notes": "Tech Early Internship targets underclassmen"
+    },
+    {
+      "name": "JPMorgan Chase",
+      "sectors": [
+        "FinTech",
+        "F500"
+      ],
+      "majors": [
+        "CS",
+        "DS",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SHPE"
+      ],
+      "partner": true,
+      "careers": "https://careers.jpmorgan.com/us/en/students",
+      "status": "target",
+      "notes": "Advancing Black Pathways programs"
+    },
+    {
+      "name": "Goldman Sachs",
+      "sectors": [
+        "FinTech",
+        "F500"
+      ],
+      "majors": [
+        "CS",
+        "DS",
+        "IOE"
+      ],
+      "orgs": [
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://goldmansachs.com/careers/students/",
+      "status": "target",
+      "notes": "Early insight programs for freshmen/sophomores"
+    },
+    {
+      "name": "Bloomberg",
+      "sectors": [
+        "FinTech",
+        "Tech"
+      ],
+      "majors": [
+        "CS",
+        "CE",
+        "DS"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": false,
+      "careers": "https://bloomberg.com/careers/students/",
+      "status": "target",
+      "notes": ""
+    }
+  ]
+}

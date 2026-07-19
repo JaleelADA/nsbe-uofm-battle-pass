@@ -3,48 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Company Hub — NSBE UM Battle Pass</title>
-  <meta name="description" content="NSBE UM's employer intelligence hub: which companies partner with NSBE and student orgs, which majors they recruit, and upcoming recruiting events." />
-  <meta name="theme-color" content="#0d1117" />
+  <title>Companies — NSBE UM Careers</title>
+  <meta name="description" content="Employer discovery for Michigan engineers: which companies hire your major, which recruit through NSBE, SWE, SHPE, IEEE and other student orgs, plus recruiting events and application-season timing." />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="platform.css" />
+  <script>
+    (function () {
+      var t = localStorage.getItem('bp:ptheme');
+      if (t) document.documentElement.dataset.ptheme = t;
+    })();
+  </script>
 </head>
-<body>
+<body class="platform">
 
-  <header class="hero hero-sub">
-    <p class="hero-kicker"><a href="index.html">← Battle Pass</a> · <a href="careers.html">Careers →</a></p>
-    <h1>Company <span class="accent">Hub</span></h1>
-    <p class="hero-season" id="hub-stats"></p>
+  <nav class="topnav">
+    <div class="topnav-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">NSBE</span> UM <span class="brand-sub">Careers</span></a>
+      <div class="topnav-links">
+        <a href="index.html">🏆 Battle Pass</a>
+        <a href="careers.html">Jobs</a>
+        <a href="outreach.html" class="active" aria-current="page">Companies</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark theme">◐</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-head">
+    <h1>Companies that hire Michigan engineers</h1>
+    <p class="page-sub" id="hub-stats">Loading…</p>
   </header>
 
-  <main>
-    <section class="card">
-      <h2>📅 Upcoming recruiting events</h2>
-      <div id="events" class="announcement-list"></div>
-    </section>
-
-    <section class="card">
-      <div class="section-head">
-        <h2>🏢 Employer directory</h2>
-        <span id="company-count" class="muted"></span>
+  <div class="layout single">
+    <main>
+      <div class="searchbar">
+        <div class="search-wrap">
+          <span class="search-ico" aria-hidden="true">🔎</span>
+          <label for="co-search" class="visually-hidden">Search companies</label>
+          <input id="co-search" type="search" placeholder="Search companies, sectors, notes…" autocomplete="off" />
+        </div>
+        <label for="co-sort" class="visually-hidden">Sort companies</label>
+        <select id="co-sort">
+          <option value="az">A–Z</option>
+          <option value="roles">Most open student roles</option>
+        </select>
       </div>
-      <p class="muted">Which companies partner with NSBE &amp; student orgs, and which majors they recruit. Board members: edit <code>data/companies.json</code> on GitHub to update outreach status.</p>
-      <div class="lookup-row">
-        <label for="co-search" class="visually-hidden">Search companies</label>
-        <input id="co-search" type="text" placeholder="🔎 Search companies…" autocomplete="off" />
-        <label class="check-label"><input type="checkbox" id="partner-only" /> NSBE partners only</label>
-      </div>
-      <div id="sector-chips" class="chip-row"></div>
-      <div id="major-chips" class="chip-row"></div>
-      <div id="company-grid" class="company-grid"></div>
-    </section>
-  </main>
 
-  <footer>
-    <p class="muted">Open-role counts refresh weekly from public job boards · Partner flags are board-curated — verify each year · <a href="index.html">Battle Pass</a> · <a href="careers.html">Careers</a></p>
+      <div class="panel filter-card" style="margin-top:0.7rem">
+        <h3>Your major</h3>
+        <div class="chipbar" id="major-chips"></div>
+        <h3 style="margin-top:0.8rem">Sector</h3>
+        <div class="chipbar" id="sector-chips"></div>
+        <h3 style="margin-top:0.8rem">Recruits through</h3>
+        <div class="chipbar" id="org-chips"></div>
+        <div class="chipbar" style="margin-top:0.8rem">
+          <label class="fopt" style="display:inline-flex"><input type="checkbox" id="partner-only" /> NSBE partners only</label>
+          <label class="fopt" style="display:inline-flex"><input type="checkbox" id="open-only" /> Has open student roles</label>
+          <button id="co-clear" class="filter-clear" style="margin-left:auto">Clear all</button>
+        </div>
+      </div>
+
+      <div class="results-meta"><span id="company-count"></span></div>
+      <div id="company-grid" class="co-grid"></div>
+
+      <section class="section-block">
+        <h2>📅 Recruiting events &amp; career fairs</h2>
+        <p class="section-sub">National org conventions double as the biggest engineering career fairs in the country — many companies interview and extend offers on-site.</p>
+        <div id="events" class="event-list"></div>
+      </section>
+
+      <section class="section-block" id="cycles-section" hidden>
+        <h2>🗓️ When applications open</h2>
+        <p class="section-sub">Typical summer-internship application windows by industry. Recruiting runs a year ahead — fall of junior year is peak season for almost everything.</p>
+        <div class="panel" style="padding:1rem">
+          <div class="cycle-wrap"><div id="cycle-grid" class="cycle-grid"></div></div>
+          <div class="cycle-legend">
+            <span><span class="sw" style="background:var(--p-accent-soft)"></span>Applications open</span>
+            <span><span class="sw" style="background:var(--p-accent);opacity:0.85"></span>Peak hiring</span>
+          </div>
+          <details style="margin-top:0.7rem">
+            <summary style="cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--p-text-2)">Tips by industry</summary>
+            <div id="cycle-tips" style="margin-top:0.5rem;display:grid;gap:0.3rem"></div>
+          </details>
+        </div>
+      </section>
+
+      <section class="section-block">
+        <h2>🤝 How engineers actually get recruited</h2>
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-t">Join the org for your major</div>
+            <div class="step-d">NSBE membership unlocks the national convention &amp; career fair. SWE, SHPE, IEEE, SAE, AIChE, BMES, and ASCE run the same play for their disciplines — companies pay to recruit there.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-t">Work the career fairs</div>
+            <div class="step-d">Org conventions are massive career fairs with on-site interviews — people walk out with offers. Campus fair weeks (September &amp; January) are the local version.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-t">Meet sponsors up close</div>
+            <div class="step-d">Companies sponsor chapters to meet you early: info sessions, socials, resume reviews. Sponsor events are warm intros — show up and follow up.</div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-t">Apply inside the window</div>
+            <div class="step-d">Most engineering internships open August–November for the following summer. Use the timeline above — applying in week one beats applying in month three.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="pfooter">
+    <p>Open-role counts refresh weekly from public job feeds · Partner flags &amp; outreach statuses are board-curated (edit <code>data/companies.json</code>) — verify each year.</p>
+    <p style="margin-top:0.4rem"><a href="index.html">Battle Pass</a> · <a href="careers.html">Jobs</a> · <a href="https://github.com/JaleelADA/nsbe-uofm-battle-pass">GitHub</a></p>
   </footer>
 
   <noscript><p style="text-align:center;padding:2rem">This page needs JavaScript.</p></noscript>

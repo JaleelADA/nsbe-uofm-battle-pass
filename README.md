@@ -30,10 +30,10 @@ season name, sheet links, point values, badges, announcements.
 👉 **Read [`SETUP.md`](SETUP.md)** for the click-by-click guide (no coding
 needed, ~15 minutes per semester).
 
-## Careers Intelligence (new)
+## Careers platform
 
-- **[Careers](https://jaleelada.github.io/nsbe-uofm-battle-pass/careers.html)** — 2,700+ live internships, freshman programs, co-ops, and full-time roles across 14 engineering disciplines, auto-refreshed every Monday by GitHub Actions.
-- **[Company Hub](https://jaleelada.github.io/nsbe-uofm-battle-pass/outreach.html)** — employer intelligence: who partners with NSBE & student orgs, who recruits which majors, outreach tracker, recruiting events.
+- **[Jobs](https://jaleelada.github.io/nsbe-uofm-battle-pass/careers.html)** — thousands of live internships, co-ops, freshman programs, and full-time roles across 14 engineering disciplines (community trackers + Greenhouse/Lever/Workday employer feeds), auto-refreshed every Monday by GitHub Actions. Search, facet filters, saved jobs, sponsorship flags.
+- **[Companies](https://jaleelada.github.io/nsbe-uofm-battle-pass/outreach.html)** — employer discovery: who hires each major, who recruits through NSBE/SWE/SHPE/IEEE and other orgs, live open-role counts, the 2026–27 recruiting events calendar, and per-industry application-window timelines.
 - Roadmap to the full platform vision: [docs/ROADMAP.md](docs/ROADMAP.md)
 
 ## Repo layout

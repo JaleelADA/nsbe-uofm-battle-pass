@@ -21,14 +21,46 @@ and build a path from freshman year to full-time.
   NSBE-partner flags, outreach status tracker, live open-role counts, and the
   recruiting events calendar.
 
-## Phase 1.5 — next (still $0, config/data work)
+## Phase 1.5 — IN PROGRESS (this branch)
 
-- More sources: additional community trackers (quant/hardware-specific lists),
-  NSF REU search deep links per discipline, co-op boards.
-- Board fills real outreach statuses + campus career-fair employer lists each
-  semester (`data/companies.json`).
+Shipped in this pass (July 2026):
+
+- **Workday connector** — the pipeline now reads the public Workday JSON feeds
+  that most large ME/EE/Civil/ChemE/Aero/BME employers use. 15 tenants
+  verified live: Boeing, GM, Caterpillar, Northrop, GE Aerospace, Medtronic,
+  Stryker, Abbott, J&J, 3M, Dow, Chevron, P&G, GE HealthCare, Applied
+  Materials. This is the fix for the software skew called out below.
+- **More community sources** — vanshb03 internship + new-grad trackers (same
+  listings format, deduped by URL and company+title) add ~700 unique live
+  roles including strong fall/winter co-op coverage; off-cycle `terms` from
+  the Simplify feed now flow into the co-op filter.
+- **8 new Greenhouse feeds** for aero/robotics/energy startups: Rocket Lab,
+  Astranis, Neuralink, Figure AI, Varda, Nuro, Lucid, Waymo.
+- **Employer DB grown 65 → 89** with Civil (Turner, Burns & McDonnell, HDR,
+  Kimley-Horn), Nuclear (Westinghouse, Holtec, X-energy), Robotics, MatSci,
+  BME employers and Michigan anchors (Holtec/Palisades, ITC, FANUC, Marathon).
+- **Recruiting-cycle calendar** — per-industry application windows
+  (`recruiting_cycles` in companies.json) rendered as a timeline on the
+  Companies page, with per-industry tips.
+- **2026–27 events calendar** — verified dates for NSBE Convention/FRC,
+  SWE WE26, SHPE NC, AIChE, BMES, IEEE virtual fair, SAE WCX/FSAE, and the
+  U-M career fairs.
+- **UI overhaul** — Jobs + Companies pages moved off the Battle Pass theme
+  onto a clean job-platform design (`platform.css`, light/dark): sidebar
+  facets with counts, saved jobs (☆, device-local), sponsorship flags,
+  location/posted filters, deep links (`?q=` / `&level=` / `&disc=`), and
+  cross-links from each company card to its live roles. Gamification stays
+  on the Battle Pass page.
+
+Still open (board, each semester):
+
+- Fill real outreach statuses + campus career-fair employer lists
+  (`data/companies.json`).
 - Taxonomy tuning as misclassified titles surface (edit `jobs-config.json`).
-- Recruiting-cycle calendar: per-industry "applications open" timeline data.
+- Roll tracker source URLs forward each recruiting cycle (~August).
+- Candidate for next pass: markdown-table parser for the jobright-ai
+  engineering trackers (the only daily non-CS lists found — Civil/ME/EE —
+  but links are tracking redirects; linked from the Jobs page for now).
 
 ## Phase 2 — multi-org / multi-school
 

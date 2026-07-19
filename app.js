@@ -371,9 +371,9 @@ function renderStaticSections() {
   nav.innerHTML = '';
   const links = CONFIG.links || {};
   if (links.signInForm)  nav.appendChild(linkButton('📝 Sign In to Event', links.signInForm, 'btn primary'));
-  const careersBtn = el('a', 'btn', '💼 Careers'); careersBtn.href = 'careers.html';
+  const careersBtn = el('a', 'btn', '💼 Jobs'); careersBtn.href = 'careers.html';
   nav.appendChild(careersBtn);
-  const hubBtn = el('a', 'btn', '🏢 Company Hub'); hubBtn.href = 'outreach.html';
+  const hubBtn = el('a', 'btn', '🏢 Companies'); hubBtn.href = 'outreach.html';
   nav.appendChild(hubBtn);
   if (links.chapterSite) nav.appendChild(linkButton('🌐 Chapter Site', links.chapterSite, 'btn'));
   if (links.linktree)    nav.appendChild(linkButton('🔗 Linktree', links.linktree, 'btn'));

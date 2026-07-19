@@ -6,6 +6,18 @@
     "simplify_newgrad": "https://raw.githubusercontent.com/SimplifyJobs/New-Grad-Positions/dev/.github/scripts/listings.json"
   },
 
+  "extra_sources": [
+    { "name": "vanshb03_internships", "level": "intern", "url": "https://raw.githubusercontent.com/vanshb03/Summer2027-Internships/dev/.github/scripts/listings.json" },
+    { "name": "vanshb03_newgrad", "level": "newgrad", "url": "https://raw.githubusercontent.com/vanshb03/New-Grad-2027/dev/.github/scripts/listings.json" }
+  ],
+
+  "workday": {
+    "_readme": "Settings for companies whose 'ats' is workday:HOST/TENANT/SITE in data/companies.json. us_only filters to US postings (tenants that reject the filter fall back to worldwide automatically).",
+    "terms": ["intern", "co-op", "new grad"],
+    "pages_per_term": 6,
+    "us_only": true
+  },
+
   "max_jobs_per_level": 1500,
 
   "freshman_keywords": ["freshman", "first-year", "first year", "sophomore", "step intern", "explore intern", "meta university", "uber star", "palantir path", "early insight", "early id", "discovery program", "launch intern", "propel", "code2040", "emerging talent", "underclassmen"],
@@ -129,11 +141,15 @@
   ],
 
   "resources": [
-    { "title": "UM Handshake (log in for campus-exclusive roles)", "url": "https://umich.joinhandshake.com" },
-    { "title": "Levels.fyi — compensation data", "url": "https://www.levels.fyi" },
-    { "title": "Simplify internship tracker (source)", "url": "https://github.com/SimplifyJobs/Summer2026-Internships" },
-    { "title": "Simplify new-grad tracker (source)", "url": "https://github.com/SimplifyJobs/New-Grad-Positions" },
-    { "title": "NSBE Career Center", "url": "https://careers.nsbe.org" },
-    { "title": "UM Engineering Career Resource Center", "url": "https://career.engin.umich.edu" }
+    { "title": "UM Handshake", "desc": "Campus-exclusive roles + on-campus interview signups. Login-walled — check weekly.", "url": "https://umich.joinhandshake.com" },
+    { "title": "UM Engineering Career Resource Center", "desc": "Career fair dates, resume reviews, and employer info sessions.", "url": "https://career.engin.umich.edu" },
+    { "title": "NSBE Career Center", "desc": "NSBE's own job board — employers here are actively seeking NSBE members.", "url": "https://careers.nsbe.org" },
+    { "title": "Levels.fyi — internships", "desc": "What each company actually pays interns (monthly + housing).", "url": "https://www.levels.fyi/internships/" },
+    { "title": "Levels.fyi — full-time offers", "desc": "Verified new-grad compensation by company, level, and location.", "url": "https://www.levels.fyi" },
+    { "title": "NSF REU — paid research", "desc": "Paid summer research for every engineering major; apply Dec–Feb.", "url": "https://www.nsf.gov/crssprgm/reu/reu_search.jsp" },
+    { "title": "Jobright engineering tracker", "desc": "Daily-updated Civil/ME/EE internship list we can't auto-index yet (redirect links).", "url": "https://github.com/jobright-ai/2026-Engineer-Internship" },
+    { "title": "Quant internship tracker", "desc": "Northwestern FinTech's list of quant trading/research programs.", "url": "https://github.com/northwesternfintech/2027QuantInternships" },
+    { "title": "Simplify internship tracker", "desc": "The community source behind most listings on this page.", "url": "https://github.com/SimplifyJobs/Summer2026-Internships" },
+    { "title": "Simplify new-grad tracker", "desc": "The community source behind the full-time tab.", "url": "https://github.com/SimplifyJobs/New-Grad-Positions" }
   ]
 }

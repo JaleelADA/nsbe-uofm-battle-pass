@@ -1,29 +1,71 @@
 {
-  "_readme": "Board-curated employer database for the Company Hub. Edit freely on GitHub \u2014 the weekly pipeline only refreshes 'open_student_roles' counts for companies with an 'ats' slug (greenhouse:SLUG or lever:SLUG) and never touches your other fields. 'partner' means known NSBE national Board of Corporate Affiliates / frequent NSBE recruiter \u2014 verify each year. 'status' is your outreach tracker: target | contacted | confirmed | sponsor.",
+  "_readme": "Board-curated employer database for the Companies page. Edit freely on GitHub - the weekly pipeline only refreshes 'open_student_roles' counts for companies with an 'ats' feed (greenhouse:SLUG, lever:SLUG, or workday:HOST/TENANT/SITE) and never touches your other fields. 'partner' means known NSBE national Board of Corporate Affiliates / frequent NSBE recruiter - verify each year. 'status' is your outreach tracker: target | contacted | confirmed | sponsor. 'events' and 'recruiting_cycles' render on the Companies page; months are 1-12 calendar numbers.",
   "events": [
     {
-      "title": "NSBE Annual Convention",
-      "when": "March (annual)",
+      "title": "U-M SWE/TBP Fall Engineering Career Fair",
+      "when": "Early Sept 2026",
+      "url": "https://career.engin.umich.edu/career-fairs-students/",
+      "note": "Michigan's biggest engineering fair \u2014 200+ companies, all majors, next-day on-campus interviews. Dates post mid-August."
+    },
+    {
+      "title": "IEEE Global Virtual Career Fair",
+      "when": "Sep 23\u201324, 2026",
+      "url": "https://careerfair.ieee.org/",
+      "note": "Virtual \u2014 semiconductor, energy, aerospace, robotics employers. Best national EE/CE recruiting event."
+    },
+    {
+      "title": "BMES Annual Meeting",
+      "when": "Oct 21\u201324, 2026 \u00b7 Orlando, FL",
+      "url": "https://www.bmes.org/2026/annualmeeting",
+      "note": "The national biomedical engineering conference + career fair for medtech and pharma."
+    },
+    {
+      "title": "SHPE National Convention",
+      "when": "Oct 28\u201331, 2026 \u00b7 Indianapolis, IN",
+      "url": "https://shpe.org/engage/events/national-convention/",
+      "note": "Largest Hispanic-in-STEM career fair \u2014 heavy Fortune-500 recruiting with interview suites. Drivable from Ann Arbor."
+    },
+    {
+      "title": "NSBE Fall Regional Conference \u2014 Region IV",
+      "when": "Oct\u2013Nov 2026 \u00b7 TBA",
+      "url": "https://nsbe.org/events/",
+      "note": "Our region's conference \u2014 smaller fair, high interview-to-attendee ratio, many on-site internship offers."
+    },
+    {
+      "title": "SWE WE26 Annual Conference",
+      "when": "Nov 5\u20137, 2026 \u00b7 Boston, MA",
+      "url": "https://we26.swe.org/",
+      "note": "World's largest women-in-engineering event \u2014 ~14,000 attendees, 300+ employers, on-the-spot interviews. Open to all."
+    },
+    {
+      "title": "AIChE Annual Student Conference",
+      "when": "Nov 6\u20139, 2026 \u00b7 Minneapolis, MN",
+      "url": "https://www.aiche.org/conferences/annual-aiche-student-conference/2026",
+      "note": "ChemE career fair, grad-school fair, and competitions with students from 200+ schools."
+    },
+    {
+      "title": "U-M Winter Engineering Career Fair",
+      "when": "Late Jan 2027",
+      "url": "https://career.engin.umich.edu/career-fairs-students/",
+      "note": "Second-chance fair for still-open internships, co-ops, and full-time roles \u2014 smaller but far less crowded."
+    },
+    {
+      "title": "NSBE 53rd Annual Convention",
+      "when": "Mar 31\u2013Apr 4, 2027 \u00b7 Boston, MA",
       "url": "https://convention.nsbe.org/",
-      "note": "Largest Black engineering career fair in the country"
+      "note": "NSBE's flagship \u2014 one of the largest diversity STEM career fairs in the country, with on-site interviews and offers."
     },
     {
-      "title": "NSBE Fall Regional Conference (Region IV)",
-      "when": "October\u2013November",
-      "url": "https://nsbe.org/",
-      "note": "Regional career fair + workshops"
+      "title": "SAE WCX World Congress",
+      "when": "Apr 27\u201329, 2027 \u00b7 Novi, MI",
+      "url": "https://www.sae.org/attend",
+      "note": "The auto industry's flagship technical congress, 30 minutes from campus \u2014 strong ME/EE automotive networking."
     },
     {
-      "title": "UM SWE/TBP Career Fair",
-      "when": "September (annual)",
-      "url": "https://career.engin.umich.edu/",
-      "note": "Biggest on-campus engineering fair"
-    },
-    {
-      "title": "UM Engineering Career Fair Week",
-      "when": "January",
-      "url": "https://career.engin.umich.edu/",
-      "note": "Winter recruiting cycle"
+      "title": "Formula SAE Michigan",
+      "when": "May 2027 \u00b7 Michigan Int'l Speedway",
+      "url": "https://www.sae.org/attend/student-events/formula-sae-michigan/",
+      "note": "OEM and supplier sponsors scout competitors \u2014 one of the strongest resume signals for automotive roles."
     }
   ],
   "companies": [
@@ -248,7 +290,9 @@
       "ats": "greenhouse:stripe",
       "careers": "https://stripe.com/jobs/university",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "open_student_roles": 4,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Databricks",
@@ -265,7 +309,9 @@
       "ats": "greenhouse:databricks",
       "careers": "https://databricks.com/company/careers/university-recruiting",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "open_student_roles": 3,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Coinbase",
@@ -281,7 +327,9 @@
       "ats": "greenhouse:coinbase",
       "careers": "https://coinbase.com/careers",
       "status": "contacted",
-      "notes": "Hosted F25 bowling social \u2014 warm relationship!"
+      "notes": "Hosted F25 bowling social \u2014 warm relationship!",
+      "open_student_roles": 0,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Waymo",
@@ -300,7 +348,10 @@
       "partner": false,
       "careers": "https://waymo.com/careers/",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "greenhouse:waymo",
+      "open_student_roles": 1,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Anduril",
@@ -321,7 +372,9 @@
       "ats": "greenhouse:andurilindustries",
       "careers": "https://anduril.com/careers/",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "open_student_roles": 24,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Palantir",
@@ -338,7 +391,9 @@
       "ats": "lever:palantir",
       "careers": "https://palantir.com/careers/",
       "status": "target",
-      "notes": "Path program for underrepresented sophomores"
+      "notes": "Path program for underrepresented sophomores",
+      "open_student_roles": 51,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Ford",
@@ -383,7 +438,10 @@
       "partner": true,
       "careers": "https://search-careers.gm.com/en/students/",
       "status": "target",
-      "notes": "Michigan anchor"
+      "notes": "Michigan anchor",
+      "ats": "workday:generalmotors.wd5.myworkdayjobs.com/generalmotors/Careers_GM",
+      "open_student_roles": 3,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Rivian",
@@ -505,7 +563,10 @@
       "partner": true,
       "careers": "https://jobs.boeing.com/students",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:boeing.wd1.myworkdayjobs.com/boeing/EXTERNAL_CAREERS",
+      "open_student_roles": 3,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Lockheed Martin",
@@ -550,7 +611,10 @@
       "partner": true,
       "careers": "https://northropgrumman.com/careers/students",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:ngc.wd1.myworkdayjobs.com/ngc/Northrop_Grumman_External_Site",
+      "open_student_roles": 0,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "RTX (Raytheon)",
@@ -590,7 +654,9 @@
       "ats": "greenhouse:spacex",
       "careers": "https://spacex.com/careers/",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "open_student_roles": 26,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Blue Origin",
@@ -651,7 +717,10 @@
       "partner": true,
       "careers": "https://jobs.gecareers.com/aerospace/global/en/students",
       "status": "target",
-      "notes": "Edison/rotational programs"
+      "notes": "Edison/rotational programs",
+      "ats": "workday:geaerospace.wd5.myworkdayjobs.com/geaerospace/GE_ExternalSite",
+      "open_student_roles": 33,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Caterpillar",
@@ -672,7 +741,10 @@
       "partner": true,
       "careers": "https://careers.caterpillar.com/en/students/",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:cat.wd5.myworkdayjobs.com/cat/CaterpillarCareers",
+      "open_student_roles": 11,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "John Deere",
@@ -860,7 +932,10 @@
       "partner": true,
       "careers": "https://chevron.com/careers/students-and-graduates",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:chevron.wd5.myworkdayjobs.com/chevron/jobs",
+      "open_student_roles": 4,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "NextEra Energy",
@@ -916,7 +991,10 @@
       "partner": true,
       "careers": "https://corporate.dow.com/en-us/careers/students.html",
       "status": "target",
-      "notes": "Midland MI HQ \u2014 major NSBE partner"
+      "notes": "Midland MI HQ \u2014 major NSBE partner",
+      "ats": "workday:dow.wd1.myworkdayjobs.com/dow/ExternalCareers",
+      "open_student_roles": 6,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "DuPont",
@@ -957,7 +1035,10 @@
       "partner": true,
       "careers": "https://3m.com/3M/en_US/careers-us/students/",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:3m.wd1.myworkdayjobs.com/3m/Search",
+      "open_student_roles": 4,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "BASF",
@@ -995,7 +1076,10 @@
       "partner": true,
       "careers": "https://pgcareers.com/students",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:pg.wd5.myworkdayjobs.com/pg/1000",
+      "open_student_roles": 14,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Medtronic",
@@ -1016,7 +1100,10 @@
       "partner": true,
       "careers": "https://jobs.medtronic.com/students",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:medtronic.wd1.myworkdayjobs.com/medtronic/MedtronicCareers",
+      "open_student_roles": 0,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Johnson & Johnson",
@@ -1037,7 +1124,10 @@
       "partner": true,
       "careers": "https://careers.jnj.com/en/students/",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:jj.wd5.myworkdayjobs.com/jj/JJ",
+      "open_student_roles": 6,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Stryker",
@@ -1056,7 +1146,10 @@
       "partner": false,
       "careers": "https://careers.stryker.com/students/",
       "status": "target",
-      "notes": "Kalamazoo MI HQ"
+      "notes": "Kalamazoo MI HQ",
+      "ats": "workday:stryker.wd1.myworkdayjobs.com/stryker/StrykerCareers",
+      "open_student_roles": 17,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Abbott",
@@ -1075,7 +1168,10 @@
       "partner": true,
       "careers": "https://abbott.com/careers/students.html",
       "status": "target",
-      "notes": ""
+      "notes": "",
+      "ats": "workday:abbott.wd5.myworkdayjobs.com/abbott/abbottcareers",
+      "open_student_roles": 37,
+      "roles_checked": "2026-07-19"
     },
     {
       "name": "Boston Scientific",
@@ -1332,6 +1428,589 @@
       "careers": "https://bloomberg.com/careers/students/",
       "status": "target",
       "notes": ""
+    },
+    {
+      "name": "Rocket Lab",
+      "sectors": [
+        "Aerospace & Defense",
+        "Startup"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "EE",
+        "CS"
+      ],
+      "orgs": [
+        "AIAA"
+      ],
+      "partner": false,
+      "careers": "https://www.rocketlabusa.com/careers/",
+      "status": "target",
+      "notes": "Intern cohorts across propulsion, avionics, structures, GNC",
+      "ats": "greenhouse:rocketlab",
+      "open_student_roles": 13,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "Astranis",
+      "sectors": [
+        "Aerospace & Defense",
+        "Startup"
+      ],
+      "majors": [
+        "Aero",
+        "EE",
+        "CE",
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://www.astranis.com/careers",
+      "status": "target",
+      "notes": "SF satcom startup with a large intern class (RF, avionics, GNC)",
+      "ats": "greenhouse:astranis",
+      "open_student_roles": 23,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "L3Harris",
+      "sectors": [
+        "Aerospace & Defense"
+      ],
+      "majors": [
+        "Aero",
+        "EE",
+        "CE",
+        "CS",
+        "ME"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "IEEE"
+      ],
+      "partner": false,
+      "careers": "https://careers.l3harris.com/",
+      "status": "target",
+      "notes": "RF/avionics heavy \u2014 big intern program"
+    },
+    {
+      "name": "Neuralink",
+      "sectors": [
+        "Healthcare",
+        "Startup"
+      ],
+      "majors": [
+        "BME",
+        "EE",
+        "CE",
+        "Robotics",
+        "ME"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://neuralink.com/careers/",
+      "status": "target",
+      "notes": "Implant hardware, surgical robotics, analog IC intern roles",
+      "ats": "greenhouse:neuralink",
+      "open_student_roles": 18,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "GE HealthCare",
+      "sectors": [
+        "Healthcare"
+      ],
+      "majors": [
+        "BME",
+        "EE",
+        "CS",
+        "ME"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "BMES"
+      ],
+      "partner": false,
+      "careers": "https://careers.gehealthcare.com/global/en",
+      "status": "target",
+      "notes": "Major BME/imaging internship program",
+      "ats": "workday:gehc.wd5.myworkdayjobs.com/gehc/GEHC_ExternalSite",
+      "open_student_roles": 24,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "Zimmer Biomet",
+      "sectors": [
+        "Healthcare"
+      ],
+      "majors": [
+        "BME",
+        "ME"
+      ],
+      "orgs": [
+        "BMES"
+      ],
+      "partner": false,
+      "careers": "https://careers.zimmerbiomet.com/",
+      "status": "target",
+      "notes": "Warsaw IN orthopedics leader"
+    },
+    {
+      "name": "Figure AI",
+      "sectors": [
+        "Robotics",
+        "Startup"
+      ],
+      "majors": [
+        "Robotics",
+        "EE",
+        "ME",
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://www.figure.ai/careers",
+      "status": "target",
+      "notes": "Humanoid robotics \u2014 EE/firmware/controls internships",
+      "ats": "greenhouse:figureai",
+      "open_student_roles": 7,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "Boston Dynamics",
+      "sectors": [
+        "Robotics"
+      ],
+      "majors": [
+        "Robotics",
+        "ME",
+        "EE",
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://bostondynamics.com/careers/",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Nuro",
+      "sectors": [
+        "Robotics",
+        "AI"
+      ],
+      "majors": [
+        "CS",
+        "Robotics",
+        "EE"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://www.nuro.ai/careers",
+      "status": "target",
+      "notes": "Autonomous delivery \u2014 SWE/perception interns",
+      "ats": "greenhouse:nuro",
+      "open_student_roles": 3,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "FANUC America",
+      "sectors": [
+        "Robotics",
+        "Industrial"
+      ],
+      "majors": [
+        "Robotics",
+        "EE",
+        "ME",
+        "CS"
+      ],
+      "orgs": [
+        "SAE",
+        "IEEE"
+      ],
+      "partner": false,
+      "careers": "https://www.fanucamerica.com/about-fanuc/careers",
+      "status": "target",
+      "notes": "Rochester Hills MI \u2014 industrial robotics leader"
+    },
+    {
+      "name": "Lucid Motors",
+      "sectors": [
+        "Automotive",
+        "Startup"
+      ],
+      "majors": [
+        "ME",
+        "EE",
+        "CS",
+        "MatSci",
+        "IOE"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://lucidmotors.com/careers",
+      "status": "target",
+      "notes": "EV maker \u2014 engineering + manufacturing interns",
+      "ats": "greenhouse:lucidmotors",
+      "open_student_roles": 7,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "Varda Space",
+      "sectors": [
+        "Aerospace & Defense",
+        "Startup"
+      ],
+      "majors": [
+        "Aero",
+        "ME",
+        "ChemE",
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://www.varda.com/",
+      "status": "target",
+      "notes": "In-space manufacturing + reentry capsules",
+      "ats": "greenhouse:vardaspace",
+      "open_student_roles": 7,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "Applied Materials",
+      "sectors": [
+        "Semiconductor"
+      ],
+      "majors": [
+        "MatSci",
+        "EE",
+        "ME",
+        "ChemE",
+        "CE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "SHPE"
+      ],
+      "partner": false,
+      "careers": "https://careers.appliedmaterials.com/",
+      "status": "target",
+      "notes": "Semiconductor equipment \u2014 MatSci/EE heavy",
+      "ats": "workday:amat.wd1.myworkdayjobs.com/amat/External",
+      "open_student_roles": 16,
+      "roles_checked": "2026-07-19"
+    },
+    {
+      "name": "Corning",
+      "sectors": [
+        "Manufacturing"
+      ],
+      "majors": [
+        "MatSci",
+        "ChemE",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE"
+      ],
+      "partner": false,
+      "careers": "https://careers.corning.com/",
+      "status": "target",
+      "notes": "Glass/ceramics \u2014 classic MatSci co-op employer"
+    },
+    {
+      "name": "Turner Construction",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "IOE",
+        "ME"
+      ],
+      "orgs": [
+        "NSBE",
+        "ASCE"
+      ],
+      "partner": false,
+      "careers": "https://www.turnerconstruction.com/careers",
+      "status": "target",
+      "notes": "Hires hundreds of construction interns nationwide each summer"
+    },
+    {
+      "name": "Burns & McDonnell",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "EE",
+        "ME",
+        "ChemE"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "ASCE"
+      ],
+      "partner": false,
+      "careers": "https://careers.burnsmcd.com/",
+      "status": "target",
+      "notes": "Employee-owned AEC firm \u2014 strong co-op culture"
+    },
+    {
+      "name": "HDR",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "EE",
+        "ME"
+      ],
+      "orgs": [
+        "ASCE",
+        "SWE"
+      ],
+      "partner": false,
+      "careers": "https://www.hdrinc.com/careers",
+      "status": "target",
+      "notes": ""
+    },
+    {
+      "name": "Kimley-Horn",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil"
+      ],
+      "orgs": [
+        "ASCE"
+      ],
+      "partner": false,
+      "careers": "https://www.kimley-horn.com/careers/",
+      "status": "target",
+      "notes": "Consistently top-ranked civil internship program"
+    },
+    {
+      "name": "Marathon Petroleum",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "ChemE",
+        "ME",
+        "EE",
+        "Civil"
+      ],
+      "orgs": [
+        "NSBE",
+        "SWE",
+        "AIChE"
+      ],
+      "partner": false,
+      "careers": "https://jobs.marathonpetroleum.com/",
+      "status": "target",
+      "notes": "Findlay OH HQ + Detroit refinery \u2014 strong Midwest co-op pipeline"
+    },
+    {
+      "name": "Air Products",
+      "sectors": [
+        "Chemicals"
+      ],
+      "majors": [
+        "ChemE",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "AIChE",
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://www.airproducts.com/company/careers",
+      "status": "target",
+      "notes": "Industrial gases / hydrogen \u2014 ChemE co-ops"
+    },
+    {
+      "name": "Westinghouse",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "ANS",
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://careers.westinghousenuclear.com/",
+      "status": "target",
+      "notes": "Reactor design + AP1000/AP300 programs"
+    },
+    {
+      "name": "Holtec International",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "ANS"
+      ],
+      "partner": false,
+      "careers": "https://holtecinternational.com/company/careers/",
+      "status": "target",
+      "notes": "Restarting Palisades plant in Covert, MI \u2014 hiring nuclear engineers"
+    },
+    {
+      "name": "X-energy",
+      "sectors": [
+        "Energy",
+        "Startup"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "ChemE"
+      ],
+      "orgs": [
+        "ANS"
+      ],
+      "partner": false,
+      "careers": "https://x-energy.com/careers",
+      "status": "target",
+      "notes": "Advanced small modular reactors"
+    },
+    {
+      "name": "ITC Holdings",
+      "sectors": [
+        "Energy"
+      ],
+      "majors": [
+        "EE",
+        "Civil"
+      ],
+      "orgs": [
+        "IEEE",
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://www.itc-holdings.com/careers",
+      "status": "target",
+      "notes": "Novi MI \u2014 largest independent transmission grid operator"
+    }
+  ],
+  "recruiting_cycles": [
+    {
+      "industry": "Quant & Trading",
+      "opens": 6,
+      "closes": 10,
+      "peak_opens": 6,
+      "peak_closes": 9,
+      "tip": "Postings go live a year+ ahead and are rolling \u2014 apply June\u2013July; interview slots fill by late October."
+    },
+    {
+      "industry": "Big Tech Software",
+      "opens": 7,
+      "closes": 12,
+      "peak_opens": 8,
+      "peak_closes": 10,
+      "tip": "Amazon opens in July, Microsoft mid-August, Google ~October. Rolling review \u2014 apply within two weeks of a posting going live."
+    },
+    {
+      "industry": "Hardware & Semiconductors",
+      "opens": 8,
+      "closes": 2,
+      "peak_opens": 9,
+      "peak_closes": 11,
+      "tip": "NVIDIA/Intel/AMD/TI post Aug\u2013Oct; niche roles (verification, FPGA, analog) keep filling into Jan\u2013Feb."
+    },
+    {
+      "industry": "Aerospace & Defense",
+      "opens": 8,
+      "closes": 1,
+      "peak_opens": 8,
+      "peak_closes": 10,
+      "tip": "Boeing/Lockheed/Northrop/RTX post Aug\u2013Oct and most programs close before January. Citizenship/clearance eligibility often required."
+    },
+    {
+      "industry": "Automotive & Manufacturing",
+      "opens": 8,
+      "closes": 2,
+      "peak_opens": 9,
+      "peak_closes": 10,
+      "tip": "OEMs recruit through September campus fairs \u2014 the U-M fair is a direct pipeline; remaining roles post into Jan\u2013Feb."
+    },
+    {
+      "industry": "Energy & Utilities",
+      "opens": 8,
+      "closes": 1,
+      "peak_opens": 9,
+      "peak_closes": 11,
+      "tip": "Utilities and O&G hire at fall fairs and many finish by Dec\u2013Jan \u2014 earlier than the industry's reputation suggests."
+    },
+    {
+      "industry": "Chemicals & Process",
+      "opens": 7,
+      "closes": 11,
+      "peak_opens": 8,
+      "peak_closes": 10,
+      "tip": "Dow/ExxonMobil/P&G recruit almost entirely in early fall \u2014 by the AIChE conference in November you should be networking, not starting."
+    },
+    {
+      "industry": "Civil & Construction",
+      "opens": 8,
+      "closes": 3,
+      "peak_opens": 9,
+      "peak_closes": 10,
+      "tip": "Big contractors hire in fall nearly a year out, but design firms and DOTs keep hiring through spring \u2014 the longest tail of any industry."
+    },
+    {
+      "industry": "Healthcare & MedTech",
+      "opens": 9,
+      "closes": 2,
+      "peak_opens": 9,
+      "peak_closes": 11,
+      "tip": "Medtronic/Stryker/J&J post Sept\u2013Nov and close Jan\u2013Feb \u2014 BMES in October lands right at peak."
+    },
+    {
+      "industry": "Consulting",
+      "opens": 3,
+      "closes": 9,
+      "peak_opens": 6,
+      "peak_closes": 9,
+      "tip": "MBB internship deadlines now fall spring\u2013summer a full year ahead \u2014 start case prep the preceding spring."
+    },
+    {
+      "industry": "Government & National Labs",
+      "opens": 10,
+      "closes": 2,
+      "peak_opens": 11,
+      "peak_closes": 1,
+      "tip": "DOE SULI opens ~Oct 23 and closes ~Jan 7 (recommendation letters due too); NASA OSTEM closes ~late Feb."
+    },
+    {
+      "industry": "Freshman & Early-talent programs",
+      "opens": 8,
+      "closes": 12,
+      "peak_opens": 8,
+      "peak_closes": 11,
+      "tip": "Windows are short \u2014 Microsoft Explore opens mid-August, Google STEP ~mid-October for only 2\u20134 weeks. Check program pages every August."
     }
   ]
 }

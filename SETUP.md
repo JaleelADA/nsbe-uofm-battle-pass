@@ -106,21 +106,30 @@ missing comma/quote. You can validate the file for free at
 
 ---
 
-## 💼 Careers & Company Hub (runs itself)
+## 💼 Jobs & Companies pages (run themselves)
 
-The Careers page and Company Hub refresh automatically every Monday via the
+The Jobs page and Companies page refresh automatically every Monday via the
 "Update careers data" workflow (repo → Actions tab → you can also click
 **Run workflow** anytime). Board maintenance is just:
 
-- **Each recruiting cycle (~August):** in `jobs-config.json`, update the two
-  `sources` URLs to the new season's SimplifyJobs repos (e.g. change
-  `Summer2026-Internships` → `Summer2027-Internships`).
+- **Each recruiting cycle (~August):** in `jobs-config.json`, update the
+  `sources` and `extra_sources` URLs to the new season's tracker repos (e.g.
+  change `Summer2026-Internships` → `Summer2027-Internships`).
 - **Anytime:** edit `data/companies.json` to update outreach statuses
-  (target/contacted/confirmed/sponsor), add companies (add an
-  `"ats": "greenhouse:SLUG"` or `"lever:SLUG"` to get live role counts), and
-  keep the events list current.
-- **Tuning:** job keywords, career pathways, and the first-year program list
-  all live in `jobs-config.json`.
+  (target/contacted/confirmed/sponsor), add companies, and keep the `events`
+  list and `recruiting_cycles` timeline current. To get live role counts for
+  a company, add an `"ats"` field:
+  - `"greenhouse:SLUG"` or `"lever:SLUG"` — the slug is in the company's job
+    board URL (e.g. `boards.greenhouse.io/rocketlab` → `rocketlab`).
+  - `"workday:HOST/TENANT/SITE"` — from the company's Workday careers URL
+    `https://HOST/en-US/SITE` where HOST looks like `cat.wd5.myworkdayjobs.com`
+    and TENANT is the first part of the host (`cat`). Most big ME/EE/Civil/
+    ChemE/Aero employers use Workday, so this is how those majors get
+    coverage.
+  A wrong slug never breaks the site — it just shows up under
+  `sources_failed` inside `data/jobs.json` after the weekly run.
+- **Tuning:** job keywords, career pathways, resources, and the first-year
+  program list all live in `jobs-config.json`.
 
 ## 🤝 Board handoff checklist (do this every spring)
 

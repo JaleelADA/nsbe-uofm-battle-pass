@@ -3,77 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Careers — NSBE UM Battle Pass</title>
-  <meta name="description" content="Engineering internships, co-ops, freshman programs, and full-time roles across every discipline — refreshed weekly." />
-  <meta name="theme-color" content="#0d1117" />
+  <title>Jobs — NSBE UM Careers</title>
+  <meta name="description" content="Live engineering internships, co-ops, freshman programs, and full-time roles across every discipline — ME, EE, Civil, ChemE, Aero, BME, CS, and more. Refreshed weekly." />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="icon" type="image/svg+xml" href="icon.svg" />
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="platform.css" />
+  <script>
+    // Apply saved theme before first paint to avoid a flash.
+    (function () {
+      var t = localStorage.getItem('bp:ptheme');
+      if (t) document.documentElement.dataset.ptheme = t;
+    })();
+  </script>
 </head>
-<body>
+<body class="platform">
 
-  <header class="hero hero-sub">
-    <p class="hero-kicker"><a href="index.html">← Battle Pass</a> · <a href="outreach.html">Company Hub →</a></p>
-    <h1><span class="accent">Careers</span> Intelligence</h1>
-    <p class="hero-season" id="updated-label">Loading…</p>
+  <nav class="topnav">
+    <div class="topnav-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">NSBE</span> UM <span class="brand-sub">Careers</span></a>
+      <div class="topnav-links">
+        <a href="index.html">🏆 Battle Pass</a>
+        <a href="careers.html" class="active" aria-current="page">Jobs</a>
+        <a href="outreach.html">Companies</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark theme">◐</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-head">
+    <h1>Find your next engineering role</h1>
+    <p class="page-sub" id="updated-label">Loading live roles…</p>
   </header>
 
-  <main>
-    <div id="banner" class="banner" role="status" hidden></div>
+  <div id="banner" class="pbanner" role="status" hidden></div>
 
-    <section class="card">
-      <h2>🎓 Your profile</h2>
-      <p class="muted">Pick your major to auto-filter everything and see career pathways. Saved on this device only.</p>
-      <div class="profile-row">
-        <label for="major-select" class="visually-hidden">Your major</label>
-        <select id="major-select"><option value="">All majors / undecided</option></select>
-        <label for="year-select" class="visually-hidden">Your year</label>
-        <select id="year-select">
-          <option value="">Any year</option>
-          <option value="freshman">Freshman / Sophomore</option>
-          <option value="upper">Junior / Senior</option>
-          <option value="grad">Graduating — full-time</option>
+  <div class="layout">
+
+    <aside class="filters" id="filters-panel" aria-label="Filters">
+      <div class="panel filter-card">
+        <h3>Personalize</h3>
+        <div class="filter-stack">
+          <label for="major-select" class="visually-hidden">Your major</label>
+          <select id="major-select"><option value="">All majors / undecided</option></select>
+          <label for="year-select" class="visually-hidden">Your year</label>
+          <select id="year-select">
+            <option value="">Any year</option>
+            <option value="freshman">Freshman / Sophomore</option>
+            <option value="upper">Junior / Senior</option>
+            <option value="grad">Graduating — full-time</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel filter-card">
+        <h3>Discipline</h3>
+        <div class="filter-group" id="disc-list"></div>
+      </div>
+
+      <div class="panel filter-card">
+        <h3>Location</h3>
+        <label for="loc-input" class="visually-hidden">Filter by location</label>
+        <input id="loc-input" type="text" placeholder="City or state…" autocomplete="off" />
+
+        <h3 style="margin-top:0.9rem">Posted</h3>
+        <div class="filter-group" id="posted-group">
+          <label class="fopt"><input type="radio" name="posted" value="" checked /> Any time</label>
+          <label class="fopt"><input type="radio" name="posted" value="7" /> Past week</label>
+          <label class="fopt"><input type="radio" name="posted" value="30" /> Past month</label>
+        </div>
+
+        <h3 style="margin-top:0.9rem">Type</h3>
+        <div class="filter-group">
+          <label class="fopt"><input type="checkbox" id="coop-only" /> Co-ops only</label>
+          <label class="fopt"><input type="checkbox" id="fresh-only" /> First-year friendly</label>
+          <label class="fopt"><input type="checkbox" id="spons-only" /> Offers visa sponsorship</label>
+        </div>
+
+        <div style="margin-top:0.9rem">
+          <button id="clear-filters" class="filter-clear">Clear all filters</button>
+        </div>
+      </div>
+
+      <div class="panel pathway-card" id="pathways" hidden>
+        <h3 id="pathway-title">Career pathways</h3>
+        <div id="pathway-list"></div>
+      </div>
+    </aside>
+
+    <main class="results">
+      <div class="searchbar">
+        <button id="filters-btn" class="filters-btn" aria-expanded="false" aria-controls="filters-panel">Filters</button>
+        <div class="search-wrap">
+          <span class="search-ico" aria-hidden="true">🔎</span>
+          <label for="job-search" class="visually-hidden">Search roles</label>
+          <input id="job-search" type="search" placeholder="Search company, title, or location…" autocomplete="off" />
+        </div>
+        <label for="sort-select" class="visually-hidden">Sort</label>
+        <select id="sort-select">
+          <option value="new">Newest first</option>
+          <option value="co">Company A–Z</option>
         </select>
       </div>
-      <div id="pathways" class="pathway-box" hidden></div>
-    </section>
 
-    <section class="card">
-      <div class="section-head">
-        <h2>💼 Opportunities</h2>
-        <span id="result-count" class="muted"></span>
+      <div class="ptabs" id="level-tabs" role="tablist">
+        <button class="ptab active" data-level="intern" role="tab">Internships <span class="tab-n" data-count="intern"></span></button>
+        <button class="ptab" data-level="newgrad" role="tab">Full-Time <span class="tab-n" data-count="newgrad"></span></button>
+        <button class="ptab" data-level="fresh" role="tab">Freshman &amp; Early <span class="tab-n" data-count="fresh"></span></button>
+        <button class="ptab" data-level="saved" role="tab">Saved <span class="tab-n" data-count="saved"></span></button>
       </div>
-      <div class="tab-row" id="level-tabs">
-        <button class="tab" data-level="fresh">🌱 Freshman &amp; Early</button>
-        <button class="tab active" data-level="intern">🛠️ Internships</button>
-        <button class="tab" data-level="newgrad">🚀 Full-Time</button>
+
+      <div class="results-meta">
+        <span id="result-count"></span>
+        <span id="active-pills"></span>
       </div>
-      <div class="lookup-row">
-        <label for="job-search" class="visually-hidden">Search roles</label>
-        <input id="job-search" type="text" placeholder="🔎 Search company, title, or location…" autocomplete="off" />
-        <select id="days-select">
-          <option value="">Any date</option>
-          <option value="7">Posted this week</option>
-          <option value="30">Posted this month</option>
-        </select>
-        <label class="check-label"><input type="checkbox" id="coop-only" /> Co-ops only</label>
-      </div>
-      <div id="disc-chips" class="chip-row"></div>
+
       <div id="job-list" class="job-list"></div>
-      <button id="more-btn" class="btn small" hidden>Show more</button>
-    </section>
+      <div class="more-wrap"><button id="more-btn" class="pbtn ghost" hidden>Show more roles</button></div>
 
-    <section class="card">
-      <h2>🧰 More resources</h2>
-      <p class="muted">Sources we can't legally auto-index (login-walled or ToS-restricted) — go direct:</p>
-      <div id="resources" class="announcement-list"></div>
-    </section>
-  </main>
+      <section class="section-block" id="resources-section">
+        <h2>More places to look</h2>
+        <p class="section-sub">Login-walled or ToS-restricted sources we can't auto-index — go direct:</p>
+        <div id="resources" class="res-grid"></div>
+      </section>
+    </main>
+  </div>
 
-  <footer>
-    <p class="muted">Data refreshes every Monday via GitHub Actions · Sources: SimplifyJobs (community tracker) + public company job boards · <a href="index.html">Battle Pass</a> · <a href="outreach.html">Company Hub</a></p>
+  <footer class="pfooter">
+    <p>Data refreshes every Monday via GitHub Actions · Sources: SimplifyJobs community trackers + public company job feeds (Greenhouse / Lever / Workday) · Every listing links to the employer's official posting.</p>
+    <p style="margin-top:0.4rem"><a href="index.html">Battle Pass</a> · <a href="outreach.html">Companies</a> · <a href="https://github.com/JaleelADA/nsbe-uofm-battle-pass">GitHub</a></p>
   </footer>
 
   <noscript><p style="text-align:center;padding:2rem">This page needs JavaScript.</p></noscript>

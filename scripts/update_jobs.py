@@ -5,8 +5,13 @@ NSBE UM Careers pipeline — runs weekly via .github/workflows/update-jobs.yml.
 Pulls engineering internship / new-grad listings from:
   1. SimplifyJobs listing JSONs (community-maintained, structured) — URLs in
      jobs-config.json, update the repo year in "sources" each recruiting cycle.
-  2. Public ATS APIs (Greenhouse / Lever) for every company in
-     data/companies.json that declares an "ats" slug.
+  2. Any "extra_sources" in jobs-config.json using the same listings format
+     (community forks; duplicates are dropped by URL).
+  3. Public ATS APIs for every company in data/companies.json that declares
+     an "ats" slug: Greenhouse ("greenhouse:SLUG"), Lever ("lever:SLUG"),
+     or Workday ("workday:HOST/TENANT/SITE"). Workday is what most large
+     ME/EE/Civil/ChemE/Aero/BME employers use, so those slugs are what give
+     non-software disciplines real coverage.
 
 Classifies every role into engineering disciplines (CS, ME, EE, Aero, ...)
 using the keyword taxonomy in jobs-config.json, tags freshman-friendly
@@ -38,14 +43,20 @@ FIXTURES = os.environ.get("JOBS_FIXTURES", "")
 UA = {"User-Agent": "nsbe-um-battle-pass-careers/1.0 (github.com/JaleelADA/nsbe-uofm-battle-pass)"}
 
 
-def fetch_json(url, fixture_name):
+def fetch_json(url, fixture_name, post_body=None):
     if FIXTURES:
         path = os.path.join(FIXTURES, fixture_name + ".json")
         if not os.path.exists(path):
             raise RuntimeError("fixture missing: " + path)
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             return json.load(f)
-    req = urllib.request.Request(url, headers=UA)
+    headers = dict(UA)
+    data = None
+    if post_body is not None:
+        headers["Content-Type"] = "application/json"
+        headers["Accept"] = "application/json"
+        data = json.dumps(post_body).encode("utf-8")
+    req = urllib.request.Request(url, headers=headers, data=data)
     with urllib.request.urlopen(req, timeout=45) as resp:
         return json.loads(resp.read().decode("utf-8"))
 
@@ -108,7 +119,9 @@ def slim(company, title, url, locations, level, discs, cats, posted, sponsorship
     }
 
 
-def pull_simplify(url, level, matchers, config, fixture_name):
+def pull_simplify(url, level, matchers, config, fixture_name, source="simplify"):
+    """SimplifyJobs listings.json format — also used by community forks
+    (vanshb03 etc.) whose rows carry `season` instead of `terms`/`category`."""
     jobs = []
     data = fetch_json(url, fixture_name)
     if not isinstance(data, list):
@@ -127,18 +140,32 @@ def pull_simplify(url, level, matchers, config, fixture_name):
             ts = x.get("date_posted") or x.get("date_updated")
             if isinstance(ts, (int, float)) and ts > 0:
                 posted = datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%d")
-            jobs.append(slim(company, title, job_url, x.get("locations"), level,
-                             discs, cats, posted, x.get("sponsorship"), "simplify", config))
+            j = slim(company, title, job_url, x.get("locations"), level,
+                     discs, cats, posted, x.get("sponsorship"), source, config)
+            # Off-cycle detection: Simplify carries a `terms` array, forks carry
+            # a `season` string. Fall/Winter/Spring roles are what co-op
+            # students search for, so they share the co-op flag.
+            terms = x.get("terms") or ([x["season"]] if x.get("season") else [])
+            if any(t and "summer" not in str(t).lower() for t in terms):
+                j["coop"] = True
+            jobs.append(j)
         except Exception:
             continue  # one malformed row never kills the run
     return jobs
 
 
-ROLE_RX = re.compile(r"\bintern|\bco[- ]?op\b|new grad|university grad|entry level|early career|campus hire|graduate engineer|rotational", re.I)
+# Word-boundary on both sides: "Intern"/"Internship(s)" yes, "Internal"/"International" no.
+ROLE_RX = re.compile(r"\binterns?(?:ship)?\b|\bco[- ]?op\b|new grad|university grad|entry level|early career|campus hire|graduate engineer|rotational", re.I)
+NEWGRAD_RX = re.compile(r"new grad|entry|early career|graduate|rotational", re.I)
+INTERN_RX = re.compile(r"\binterns?(?:ship)?\b|\bco[- ]?op\b", re.I)
+
+
+def infer_level(title):
+    return "newgrad" if NEWGRAD_RX.search(title) and not INTERN_RX.search(title) else "intern"
 
 
 def pull_ats(company_entry, matchers, config):
-    """Greenhouse/Lever public boards -> student-relevant roles + open count."""
+    """Greenhouse/Lever/Workday public feeds -> student-relevant roles + open count."""
     ats = company_entry.get("ats", "")
     name = company_entry.get("name", "?")
     kind, _, slug = ats.partition(":")
@@ -150,41 +177,126 @@ def pull_ats(company_entry, matchers, config):
             title = str(p.get("title", ""))
             if not ROLE_RX.search(title):
                 continue
-            level = "newgrad" if re.search(r"new grad|entry|early career|graduate|rotational", title, re.I) \
-                    and not re.search(r"intern", title, re.I) else "intern"
             discs, cats = classify(title, None, matchers, config)
             posted = str(p.get("updated_at", ""))[:10]
             loc = (p.get("location") or {}).get("name", "")
             jobs.append(slim(name, title, p.get("absolute_url", ""), [loc] if loc else [],
-                             level, discs, cats, posted, "", "greenhouse", config))
+                             infer_level(title), discs, cats, posted, "", "greenhouse", config))
     elif kind == "lever":
         postings = fetch_json("https://api.lever.co/v0/postings/%s?mode=json" % slug, "lever-" + slug)
         for p in postings:
             title = str(p.get("text", ""))
             if not ROLE_RX.search(title):
                 continue
-            level = "newgrad" if re.search(r"new grad|entry|early career|graduate|rotational", title, re.I) \
-                    and not re.search(r"intern", title, re.I) else "intern"
             discs, cats = classify(title, None, matchers, config)
             posted = ""
             if isinstance(p.get("createdAt"), (int, float)):
                 posted = datetime.fromtimestamp(p["createdAt"] / 1000, tz=timezone.utc).strftime("%Y-%m-%d")
             loc = ((p.get("categories") or {}).get("location")) or ""
             jobs.append(slim(name, title, p.get("hostedUrl", ""), [loc] if loc else [],
-                             level, discs, cats, posted, "", "lever", config))
+                             infer_level(title), discs, cats, posted, "", "lever", config))
+    elif kind == "workday":
+        jobs = pull_workday(name, slug, matchers, config)
     else:
         raise RuntimeError("unknown ats kind: " + ats)
+    # Generic titles ("R&D Engineer Intern") carry no discipline keywords —
+    # fall back to the majors the board says this company recruits.
+    majors = [m for m in company_entry.get("majors", []) if m in config["disciplines"] and m != "Other"]
+    if majors:
+        for j in jobs:
+            if j["disc"] == ["Other"]:
+                j["disc"] = majors[:3]
+    return jobs
+
+
+# Workday's shared facet id for United States (same GUID across tenants).
+WD_US_FACET = "bc33aa3152ec42d4995f4791a106ed09"
+WD_POSTED_RX = re.compile(r"(\d+)\+?\s+day", re.I)
+
+
+def wd_posted_date(posted_on):
+    """'Posted Today' / 'Posted Yesterday' / 'Posted 12 Days Ago' / 'Posted 30+ Days Ago'
+    -> approximate ISO date ('' if unparseable)."""
+    t = (posted_on or "").lower()
+    days = None
+    if "today" in t:
+        days = 0
+    elif "yesterday" in t:
+        days = 1
+    else:
+        m = WD_POSTED_RX.search(t)
+        if m:
+            days = int(m.group(1))
+    if days is None:
+        return ""
+    ts = datetime.now(timezone.utc).timestamp() - days * 86400
+    return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%d")
+
+
+def pull_workday(name, slug, matchers, config):
+    """Workday CXS feed. slug format: HOST/TENANT/SITE, e.g.
+    'cat.wd5.myworkdayjobs.com/cat/CaterpillarCareers'. This is the same public
+    JSON endpoint each company's own career site calls — most large ME/EE/
+    Civil/ChemE/Aero/BME employers run Workday, so these feeds are what give
+    non-software disciplines real coverage."""
+    parts = slug.split("/")
+    if len(parts) != 3:
+        raise RuntimeError("workday slug must be HOST/TENANT/SITE: " + slug)
+    host, tenant, site = parts
+    wd_cfg = config.get("workday", {})
+    terms = wd_cfg.get("terms", ["intern", "co-op", "new grad"])
+    pages = int(wd_cfg.get("pages_per_term", 3))
+    url = "https://%s/wday/cxs/%s/%s/jobs" % (host, tenant, site)
+    base = "https://%s/en-US/%s" % (host, site)
+
+    jobs, seen_paths = [], set()
+    us_facet = {"locationCountry": [WD_US_FACET]} if wd_cfg.get("us_only", True) else {}
+    for term in terms:
+        for page in range(pages):
+            body = {"appliedFacets": us_facet, "limit": 20, "offset": page * 20, "searchText": term}
+            fixture = "wd-%s-%s-%d" % (tenant, term.replace(" ", ""), page)
+            try:
+                data = fetch_json(url, fixture, post_body=body)
+            except Exception:
+                if us_facet and page == 0:
+                    # Some tenants reject the country facet (HTTP 400) — retry unfiltered.
+                    us_facet = {}
+                    data = fetch_json(url, fixture, post_body={"appliedFacets": {}, "limit": 20,
+                                                               "offset": page * 20, "searchText": term})
+                else:
+                    raise
+            postings = data.get("jobPostings", []) or []
+            for p in postings:
+                title = str(p.get("title", "")).strip()
+                path = str(p.get("externalPath", ""))
+                if not title or not path or path in seen_paths:
+                    continue
+                seen_paths.add(path)
+                if not ROLE_RX.search(title):
+                    continue
+                discs, cats = classify(title, None, matchers, config)
+                loc = str(p.get("locationsText", "") or "")
+                jobs.append(slim(name, title, base + path, [loc] if loc else [],
+                                 infer_level(title), discs, cats,
+                                 wd_posted_date(p.get("postedOn", "")), "", "workday", config))
+            if len(postings) < 20:
+                break
+            time.sleep(0.3)
     return jobs
 
 
 # --------------------------------------------------------------------- main --
 
 def main():
-    with open(CONFIG_PATH) as f:
+    with open(CONFIG_PATH, encoding="utf-8") as f:
         config = json.load(f)
     matchers = build_matchers(config)
     report = {"sources_ok": [], "sources_failed": []}
     all_jobs = []
+
+    def norm(url):
+        # Forked trackers list the same posting with differing query strings.
+        return url.split("?")[0].rstrip("/").lower()
 
     for key, level, fixture in (("simplify_internships", "intern", "simplify-intern"),
                                 ("simplify_newgrad", "newgrad", "simplify-newgrad")):
@@ -198,13 +310,33 @@ def main():
         except Exception as e:
             report["sources_failed"].append("%s: %s" % (key, e))
 
+    seen_urls = {norm(j["url"]) for j in all_jobs}
+    seen_keys = {(j["company"].lower(), j["title"].lower()) for j in all_jobs}
+
+    # Community forks in the same listings format (jobs-config "extra_sources").
+    for src in config.get("extra_sources", []):
+        try:
+            jobs = pull_simplify(src["url"], src.get("level", "intern"), matchers, config,
+                                 "extra-" + src["name"], source=src["name"])
+            added = 0
+            for j in jobs:
+                key = (j["company"].lower(), j["title"].lower())
+                if norm(j["url"]) in seen_urls or key in seen_keys:
+                    continue
+                seen_urls.add(norm(j["url"]))
+                seen_keys.add(key)
+                all_jobs.append(j)
+                added += 1
+            report["sources_ok"].append("%s (%d listed, %d new)" % (src["name"], len(jobs), added))
+        except Exception as e:
+            report["sources_failed"].append("%s: %s" % (src["name"], e))
+
     # ATS enrichment for the curated employer database.
     companies_doc = {"companies": [], "events": []}
     if os.path.exists(COMPANIES_PATH):
-        with open(COMPANIES_PATH) as f:
+        with open(COMPANIES_PATH, encoding="utf-8") as f:
             companies_doc = json.load(f)
 
-    seen_urls = {j["url"] for j in all_jobs}
     for c in companies_doc.get("companies", []):
         if not c.get("ats"):
             continue
@@ -214,8 +346,8 @@ def main():
             c["roles_checked"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
             added = 0
             for j in jobs:
-                if j["url"] not in seen_urls:
-                    seen_urls.add(j["url"])
+                if norm(j["url"]) not in seen_urls:
+                    seen_urls.add(norm(j["url"]))
                     all_jobs.append(j)
                     added += 1
             report["sources_ok"].append("ats %s (%d roles, %d new)" % (c.get("ats"), len(jobs), added))
@@ -246,9 +378,9 @@ def main():
         "jobs": final,
     }
     os.makedirs(os.path.dirname(JOBS_PATH), exist_ok=True)
-    with open(JOBS_PATH, "w") as f:
+    with open(JOBS_PATH, "w", encoding="utf-8") as f:
         json.dump(out, f, separators=(",", ":"))
-    with open(COMPANIES_PATH, "w") as f:
+    with open(COMPANIES_PATH, "w", encoding="utf-8") as f:
         json.dump(companies_doc, f, indent=2)
 
     print("Wrote %d jobs (%s). Failures: %s" %

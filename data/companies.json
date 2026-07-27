@@ -292,7 +292,7 @@
       "status": "target",
       "notes": "",
       "open_student_roles": 4,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Databricks",
@@ -311,7 +311,7 @@
       "status": "target",
       "notes": "",
       "open_student_roles": 3,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Coinbase",
@@ -329,7 +329,7 @@
       "status": "contacted",
       "notes": "Hosted F25 bowling social \u2014 warm relationship!",
       "open_student_roles": 0,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Waymo",
@@ -351,7 +351,7 @@
       "notes": "",
       "ats": "greenhouse:waymo",
       "open_student_roles": 1,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Anduril",
@@ -373,8 +373,8 @@
       "careers": "https://anduril.com/careers/",
       "status": "target",
       "notes": "",
-      "open_student_roles": 24,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 21,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Palantir",
@@ -393,7 +393,7 @@
       "status": "target",
       "notes": "Path program for underrepresented sophomores",
       "open_student_roles": 51,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Ford",
@@ -440,8 +440,8 @@
       "status": "target",
       "notes": "Michigan anchor",
       "ats": "workday:generalmotors.wd5.myworkdayjobs.com/generalmotors/Careers_GM",
-      "open_student_roles": 3,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 6,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Rivian",
@@ -566,7 +566,7 @@
       "notes": "",
       "ats": "workday:boeing.wd1.myworkdayjobs.com/boeing/EXTERNAL_CAREERS",
       "open_student_roles": 2,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Lockheed Martin",
@@ -614,7 +614,7 @@
       "notes": "",
       "ats": "workday:ngc.wd1.myworkdayjobs.com/ngc/Northrop_Grumman_External_Site",
       "open_student_roles": 0,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "RTX (Raytheon)",
@@ -655,8 +655,8 @@
       "careers": "https://spacex.com/careers/",
       "status": "target",
       "notes": "",
-      "open_student_roles": 26,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 27,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Blue Origin",
@@ -719,8 +719,8 @@
       "status": "target",
       "notes": "Edison/rotational programs",
       "ats": "workday:geaerospace.wd5.myworkdayjobs.com/geaerospace/GE_ExternalSite",
-      "open_student_roles": 32,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 29,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Caterpillar",
@@ -743,8 +743,8 @@
       "status": "target",
       "notes": "",
       "ats": "workday:cat.wd5.myworkdayjobs.com/cat/CaterpillarCareers",
-      "open_student_roles": 11,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 14,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "John Deere",
@@ -934,8 +934,8 @@
       "status": "target",
       "notes": "",
       "ats": "workday:chevron.wd5.myworkdayjobs.com/chevron/jobs",
-      "open_student_roles": 4,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 3,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "NextEra Energy",
@@ -993,8 +993,8 @@
       "status": "target",
       "notes": "Midland MI HQ \u2014 major NSBE partner",
       "ats": "workday:dow.wd1.myworkdayjobs.com/dow/ExternalCareers",
-      "open_student_roles": 6,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 8,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "DuPont",
@@ -1037,8 +1037,8 @@
       "status": "target",
       "notes": "",
       "ats": "workday:3m.wd1.myworkdayjobs.com/3m/Search",
-      "open_student_roles": 4,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 3,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "BASF",
@@ -1079,7 +1079,7 @@
       "notes": "",
       "ats": "workday:pg.wd5.myworkdayjobs.com/pg/1000",
       "open_student_roles": 14,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Medtronic",
@@ -1103,7 +1103,7 @@
       "notes": "",
       "ats": "workday:medtronic.wd1.myworkdayjobs.com/medtronic/MedtronicCareers",
       "open_student_roles": 0,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Johnson & Johnson",
@@ -1126,8 +1126,8 @@
       "status": "target",
       "notes": "",
       "ats": "workday:jj.wd5.myworkdayjobs.com/jj/JJ",
-      "open_student_roles": 6,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 4,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Stryker",
@@ -1148,8 +1148,8 @@
       "status": "target",
       "notes": "Kalamazoo MI HQ",
       "ats": "workday:stryker.wd1.myworkdayjobs.com/stryker/StrykerCareers",
-      "open_student_roles": 17,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 16,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Abbott",
@@ -1170,8 +1170,8 @@
       "status": "target",
       "notes": "",
       "ats": "workday:abbott.wd5.myworkdayjobs.com/abbott/abbottcareers",
-      "open_student_roles": 34,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 32,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Boston Scientific",
@@ -1449,8 +1449,8 @@
       "status": "target",
       "notes": "Intern cohorts across propulsion, avionics, structures, GNC",
       "ats": "greenhouse:rocketlab",
-      "open_student_roles": 12,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 10,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Astranis",
@@ -1470,8 +1470,8 @@
       "status": "target",
       "notes": "SF satcom startup with a large intern class (RF, avionics, GNC)",
       "ats": "greenhouse:astranis",
-      "open_student_roles": 23,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 24,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "L3Harris",
@@ -1515,7 +1515,7 @@
       "notes": "Implant hardware, surgical robotics, analog IC intern roles",
       "ats": "greenhouse:neuralink",
       "open_student_roles": 18,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "GE HealthCare",
@@ -1538,8 +1538,8 @@
       "status": "target",
       "notes": "Major BME/imaging internship program",
       "ats": "workday:gehc.wd5.myworkdayjobs.com/gehc/GEHC_ExternalSite",
-      "open_student_roles": 16,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 6,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Zimmer Biomet",
@@ -1577,7 +1577,7 @@
       "notes": "Humanoid robotics \u2014 EE/firmware/controls internships",
       "ats": "greenhouse:figureai",
       "open_student_roles": 7,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Boston Dynamics",
@@ -1614,7 +1614,7 @@
       "notes": "Autonomous delivery \u2014 SWE/perception interns",
       "ats": "greenhouse:nuro",
       "open_student_roles": 3,
-      "roles_checked": "2026-07-20"
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "FANUC America",
@@ -1656,8 +1656,8 @@
       "status": "target",
       "notes": "EV maker \u2014 engineering + manufacturing interns",
       "ats": "greenhouse:lucidmotors",
-      "open_student_roles": 6,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 2,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Varda Space",
@@ -1677,8 +1677,8 @@
       "status": "target",
       "notes": "In-space manufacturing + reentry capsules",
       "ats": "greenhouse:vardaspace",
-      "open_student_roles": 7,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 6,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Applied Materials",
@@ -1702,8 +1702,8 @@
       "status": "target",
       "notes": "Semiconductor equipment \u2014 MatSci/EE heavy",
       "ats": "workday:amat.wd1.myworkdayjobs.com/amat/External",
-      "open_student_roles": 17,
-      "roles_checked": "2026-07-20"
+      "open_student_roles": 19,
+      "roles_checked": "2026-07-27"
     },
     {
       "name": "Corning",

@@ -79,11 +79,13 @@ async function loadData() {
     renderLeaderboard();
     renderLastUpdated();
 
-    // Welcome back: auto-show the saved member's card.
+    // Welcome back: auto-show the saved member's card, and bring their row
+    // into view — outside the top 10 they'd otherwise have to hunt for it.
     const saved = localStorage.getItem(STORE.uniqname);
     if (saved && MEMBERS.some(m => m.uniqname === saved)) {
       document.getElementById('lookup-input').value = saved;
       showMember(saved, { auto: true });
+      revealYourRow(saved);
     }
   } catch (err) {
     console.error(err);
@@ -362,6 +364,22 @@ function el(tag, className, text) {
   return node;
 }
 
+/** Makes a non-button element behave like one: mouse, keyboard, and AT.
+    Leaderboard rows and podium spots open a member card, so they need to be
+    focusable and Enter/Space activated, not just clickable. */
+function makeActivatable(node, uniqname, label) {
+  node.tabIndex = 0;
+  node.setAttribute('role', 'button');
+  node.setAttribute('aria-label', label);
+  node.addEventListener('click', () => showMember(uniqname));
+  node.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+      e.preventDefault();
+      showMember(uniqname);
+    }
+  });
+}
+
 function renderStaticSections() {
   document.getElementById('season-label').textContent = CONFIG.season || '';
   document.title = 'NSBE UM Battle Pass — ' + (CONFIG.season || '');
@@ -519,7 +537,8 @@ function renderLeaderboard() {
       spot.appendChild(el('div', 'podium-medal', ['🥈', '🥇', '🥉'][i]));
       spot.appendChild(el('div', 'podium-name', m.uniqname));
       spot.appendChild(el('div', 'podium-points', m.points + ' pts'));
-      spot.addEventListener('click', () => showMember(m.uniqname));
+      makeActivatable(spot, m.uniqname,
+        'View ' + m.uniqname + ', rank ' + m.rank + ', ' + m.points + ' points');
       podium.appendChild(spot);
     });
     podium.hidden = false;
@@ -547,7 +566,8 @@ function renderLeaderboard() {
     tr.appendChild(el('td', 'uniq-cell', m.uniqname + (m.uniqname === you ? ' (you)' : '')));
     tr.appendChild(el('td', 'center', String(m.totalEvents)));
     tr.appendChild(el('td', 'points-cell', String(m.points)));
-    tr.addEventListener('click', () => showMember(m.uniqname));
+    makeActivatable(tr, m.uniqname,
+      'View ' + m.uniqname + ', rank ' + m.rank + ', ' + m.points + ' points');
     tbody.appendChild(tr);
   }
 
@@ -727,6 +747,18 @@ function statTile(big, label) {
   tile.appendChild(el('div', 'stat-big', big));
   tile.appendChild(el('div', 'stat-label', label));
   return tile;
+}
+
+/** If the saved member sits outside the default top 10, expand the board so
+    their highlighted row is actually reachable, and note where they are. */
+function revealYourRow(uniqname) {
+  const idx = MEMBERS.findIndex(m => m.uniqname === uniqname);
+  if (idx < 10) return;
+  const section = document.getElementById('leaderboard-section');
+  section.dataset.showAll = '1';
+  renderLeaderboard();
+  const row = document.querySelector('.you-row');
+  if (row) row.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'center' });
 }
 
 function renderLastUpdated() {

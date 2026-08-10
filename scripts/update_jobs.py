@@ -356,13 +356,19 @@ def main():
             report["sources_failed"].append("ats %s: %s" % (c.get("ats"), e))
 
     # Cap size per level, newest first, so jobs.json stays fast to load.
+    # Freshman-friendly roles are exempt: they are rare (a handful out of
+    # thousands) and are the whole point of the Freshman tab, so a date-ordered
+    # cut would silently drop them.
     cap = int(config.get("max_jobs_per_level", 1500))
     by_level = {}
     for j in sorted(all_jobs, key=lambda j: j.get("posted") or "", reverse=True):
         by_level.setdefault(j["level"], []).append(j)
     final = []
     for level, jobs in by_level.items():
-        final.extend(jobs[:cap])
+        kept = jobs[:cap]
+        kept_urls = {j["url"] for j in kept}
+        kept.extend(j for j in jobs[cap:] if j["fresh"] and j["url"] not in kept_urls)
+        final.extend(kept)
 
     # Never clobber good data with a catastrophically failed run.
     if not final and os.path.exists(JOBS_PATH):

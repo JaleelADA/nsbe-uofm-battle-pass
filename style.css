@@ -11,9 +11,28 @@
   --text: #e6edf3;
   --muted: #8b949e;
   --gold: #ffd700;
+  --gold-deep: #ffa500;
   --gold-soft: rgba(255, 215, 0, 0.35);
   --green: #00ffab;
   --blue: #00d4ff;
+  --ink: #1a1a1a;              /* text on gold fills */
+
+  /* Tier colors (were hardcoded across tier cards, chips, and share cards) */
+  --silver: #c0c0c0;
+  --bronze: #cd7f32;
+  --participant: #3b82f6;
+
+  /* Two radius tokens: containers vs. controls */
+  --r-lg: 14px;
+  --r-sm: 8px;
+
+  /* Borders: --border is decorative; --border-control meets the 3:1
+     non-text contrast minimum for inputs/buttons, where the border is the
+     only thing signalling an interactive control. */
+  --border-control: #484f58;
+
+  --tap: 44px;                 /* minimum touch target */
+
   --font-display: 'Orbitron', 'Segoe UI', sans-serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
@@ -37,7 +56,7 @@ main {
   margin: 0 auto;
   padding: 0 1rem 3rem;
   display: grid;
-  gap: 1.25rem;
+  gap: 1.75rem;
 }
 
 a { color: var(--blue); }
@@ -70,7 +89,7 @@ h2 { font-size: 1.15rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
 }
 
 .hero .accent {
-  background: linear-gradient(135deg, var(--gold), #ffa500);
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -90,15 +109,20 @@ h2 { font-size: 1.15rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
   gap: 0.6rem;
   justify-content: center;
   margin-top: 1.2rem;
+  /* Reserved so the JS-injected CTA doesn't shift the page on load. */
+  min-height: var(--tap);
 }
 
 /* ------------------------------------------------------------ buttons -- */
 
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
   padding: 0.55rem 1.1rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--r-sm);
   background: var(--bg-card);
   color: var(--text);
   font-family: var(--font-display);
@@ -112,21 +136,34 @@ h2 { font-size: 1.15rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
 .btn:hover { border-color: var(--gold); box-shadow: 0 0 14px var(--gold-soft); transform: translateY(-1px); }
 
 .btn.primary {
-  background: linear-gradient(135deg, var(--gold), #ffa500);
-  color: #1a1a1a;
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: var(--ink);
   border-color: transparent;
   font-weight: 700;
 }
 
-.btn.small { padding: 0.3rem 0.7rem; font-size: 0.7rem; }
+.btn.small { min-height: var(--tap); padding: 0.4rem 0.9rem; font-size: 0.78rem; }
 
 /* -------------------------------------------------------------- cards -- */
 
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--r-lg);
   padding: 1.4rem;
+}
+
+/* The leaderboard is the app; everything else is supporting reference. */
+#leaderboard-section {
+  border-color: var(--gold-soft);
+  box-shadow: 0 0 28px rgba(255, 215, 0, 0.07);
+}
+#leaderboard-section > .section-head h2 { font-size: 1.35rem; }
+
+/* Reference sections (tiers, points, badges) sit flatter and quieter. */
+.card.reference {
+  background: transparent;
+  border-color: rgba(48, 54, 61, 0.55);
 }
 
 .section-head {
@@ -145,7 +182,7 @@ h2 { font-size: 1.15rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
 /* ------------------------------------------------------------- banner -- */
 
 .banner {
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   padding: 0.9rem 1.1rem;
   font-size: 0.92rem;
   border: 1px solid;
@@ -164,9 +201,10 @@ h2 { font-size: 1.15rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
 #lookup-input {
   flex: 1;
   min-width: 200px;
+  min-height: var(--tap);
   padding: 0.6rem 0.9rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-control);
   background: var(--bg);
   color: var(--text);
   font-size: 1rem;
@@ -197,7 +235,7 @@ h2 { font-size: 1.15rem; letter-spacing: 0.03em; margin-bottom: 0.35rem; }
 .stat-tile {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   padding: 0.8rem;
   text-align: center;
 }
@@ -224,7 +262,7 @@ table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
 th {
   text-align: left;
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 0.5rem 0.7rem;
@@ -236,6 +274,8 @@ td { padding: 0.55rem 0.7rem; border-bottom: 1px solid rgba(48, 54, 61, 0.6); }
 
 #leaderboard-body tr { cursor: pointer; transition: background 0.12s; }
 #leaderboard-body tr:hover { background: rgba(0, 212, 255, 0.06); }
+#leaderboard-body tr:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.podium-spot:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
 .rank-cell { color: var(--blue); font-weight: 700; }
 .points-cell { color: var(--gold); font-weight: 700; }
@@ -254,24 +294,24 @@ td { padding: 0.55rem 0.7rem; border-bottom: 1px solid rgba(48, 54, 61, 0.6); }
 }
 
 .tier-card {
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   padding: 1rem;
   border: 1px solid var(--border);
   background: var(--bg);
 }
 .tier-card .tier-icon { font-size: 1.6rem; }
 .tier-card .tier-name { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.05em; margin-top: 0.2rem; }
-.tier-card .tier-range { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.tier-card .tier-range { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .tier-card .tier-desc { font-size: 0.85rem; margin-top: 0.4rem; }
 
 .tier-gold        { border-color: rgba(255, 215, 0, 0.55);  box-shadow: 0 0 16px rgba(255, 215, 0, 0.12); }
 .tier-gold .tier-name { color: var(--gold); }
 .tier-silver      { border-color: rgba(192, 192, 192, 0.5); }
-.tier-silver .tier-name { color: #c0c0c0; }
+.tier-silver .tier-name { color: var(--silver); }
 .tier-bronze      { border-color: rgba(205, 127, 50, 0.55); }
-.tier-bronze .tier-name { color: #cd7f32; }
+.tier-bronze .tier-name { color: var(--bronze); }
 .tier-participant { border-color: rgba(59, 130, 246, 0.5); }
-.tier-participant .tier-name { color: #3b82f6; }
+.tier-participant .tier-name { color: var(--participant); }
 
 /* ------------------------------------------------------------- badges -- */
 
@@ -285,15 +325,20 @@ td { padding: 0.55rem 0.7rem; border-bottom: 1px solid rgba(48, 54, 61, 0.6); }
 .badge-card {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   padding: 0.9rem;
   text-align: center;
 }
 .badge-card .badge-icon { font-size: 1.7rem; }
-.badge-card .badge-name { font-family: var(--font-display); font-size: 0.78rem; font-weight: 700; margin-top: 0.3rem; }
-.badge-card .badge-desc { color: var(--muted); font-size: 0.74rem; margin-top: 0.2rem; }
+.badge-card .badge-name { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; margin-top: 0.3rem; }
+.badge-card .badge-desc { color: var(--muted); font-size: 0.78rem; margin-top: 0.2rem; }
 
-.member-badges .badge-card { opacity: 0.55; }
+.member-badges .badge-card {
+  opacity: 1;
+  border-color: rgba(48, 54, 61, 0.5);
+  background: rgba(13, 17, 23, 0.6);
+}
+.member-badges .badge-card:not(.earned) .badge-icon { opacity: 0.45; }
 .member-badges .badge-card.earned {
   opacity: 1;
   border-color: var(--green);
@@ -308,7 +353,7 @@ td { padding: 0.55rem 0.7rem; border-bottom: 1px solid rgba(48, 54, 61, 0.6); }
   overflow: hidden;
 }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); }
-.progress-label { color: var(--muted); font-size: 0.7rem; margin-top: 0.25rem; }
+.progress-label { color: var(--muted); font-size: 0.78rem; margin-top: 0.25rem; }
 
 /* ------------------------------------------------------ announcements -- */
 
@@ -318,7 +363,7 @@ td { padding: 0.55rem 0.7rem; border-bottom: 1px solid rgba(48, 54, 61, 0.6); }
   display: block;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   padding: 0.65rem 0.9rem;
   color: var(--text);
   text-decoration: none;
@@ -370,13 +415,13 @@ footer {
 .podium-spot {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   text-align: center;
   padding: 0.9rem 0.5rem;
   cursor: pointer;
   transition: transform 0.12s, border-color 0.15s;
 }
-.podium-spot:hover { transform: translateY(-3px); }
+.podium-spot:hover { transform: translateY(-3px); border-color: var(--gold-soft); }
 .podium-spot.first {
   border-color: rgba(255, 215, 0, 0.6);
   box-shadow: 0 0 18px rgba(255, 215, 0, 0.15);
@@ -394,9 +439,10 @@ footer {
 .board-filter-row { margin-top: 0.7rem; }
 #board-filter {
   width: 100%;
+  min-height: var(--tap);
   padding: 0.5rem 0.9rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-control);
   background: var(--bg);
   color: var(--text);
   font-size: 0.92rem;
@@ -425,7 +471,8 @@ footer {
   border: 1px solid var(--blue);
   color: var(--blue);
   border-radius: 999px;
-  padding: 0.25rem 0.8rem;
+  min-height: var(--tap);
+  padding: 0.35rem 0.9rem;
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -447,10 +494,10 @@ footer {
   position: absolute;
   top: -8px;
   right: -6px;
-  background: linear-gradient(135deg, var(--gold), #ffa500);
-  color: #1a1a1a;
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+  color: var(--ink);
   font-family: var(--font-display);
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   font-weight: 900;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
@@ -545,7 +592,7 @@ footer {
   display: block;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   padding: 0.7rem 0.9rem;
   text-decoration: none;
   color: var(--text);
@@ -579,7 +626,7 @@ footer {
 .company-card {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--r-lg);
   padding: 0.9rem 1rem;
   display: flex;
   flex-direction: column;
@@ -596,4 +643,4 @@ footer {
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--gold), #ffa500); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border-radius: 4px; }

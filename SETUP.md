@@ -130,6 +130,23 @@ The Jobs page and Companies page refresh automatically every Monday via the
   `sources_failed` inside `data/jobs.json` after the weekly run.
 - **Tuning:** job keywords, career pathways, resources, and the first-year
   program list all live in `jobs-config.json`.
+- **Don't want to hunt for the feed URL?** Add 2–3 guesses under the company's
+  name in `data/feed-candidates.json` and run the **Verify job feeds** workflow
+  (Actions tab). It probes each guess, keeps whichever actually returns roles,
+  writes it into `data/companies.json`, and lists whatever it couldn't find in
+  `data/feed-report.json`.
+- **A role filed under the wrong major?** Add the phrase to
+  `taxonomy_exclusions` in `jobs-config.json` (e.g. "civil liberties" under
+  `Civil`, so a privacy-software job stops counting as civil engineering).
+  Non-engineering roles slipping in from an employer feed? Add the phrase to
+  `non_engineering_titles`.
+
+> **Why some majors show few roles.** The community trackers this pulls from
+> are software-heavy, so Civil, Nuclear, ChemE and BME openings mostly live on
+> employers' own career sites. Those numbers grow as more employer feeds get
+> verified — that is what the Verify job feeds workflow is for. A major showing
+> a handful of roles usually means "we don't have those employers' feeds yet",
+> not "there are no jobs".
 
 ## 🤝 Board handoff checklist (do this every spring)
 

@@ -83,10 +83,10 @@
       "Energy & Sustainability": ["sustainab", "renewable", "solar", "wind energy", "hydrogen", "carbon capture", "climate"]
     },
     "Civil": {
-      "Civil & Infrastructure": ["civil", "structural engineer", "geotech", "transportation engineer", "highway", "bridge", "water resources", "wastewater", "construction", "estimating", "land develop", "site engineer", "surveying", "environmental engineer", "remediation", "air quality"]
+      "Civil & Infrastructure": ["civil engineer", "civil/structural", "civil and structural", "civil design", "structural engineer", "structural design", "geotech", "transportation engineer", "traffic engineer", "highway", "roadway", "bridge", "water resources", "wastewater", "stormwater", "hydraulic", "hydrolog", "construction engineer", "construction management", "construction intern", "construction co-op", "estimating", "estimator", "land develop", "site engineer", "site development", "surveying", "environmental engineer", "remediation", "air quality", "building engineer", "facilities engineer", "architectural engineer", "pavement", "utilities engineer", "municipal"]
     },
     "NERS": {
-      "Nuclear": ["nuclear", "reactor", "radiation", "radiolog", "health physics"]
+      "Nuclear": ["nuclear", "reactor", "radiation", "radiolog", "health physics", "radioactive", "fission", "fusion engineer", "spent fuel", "criticality", "isotope"]
     },
     "Robotics": {
       "Robotics & Autonomy": ["robotic", "autonom", "mechatronic", "motion planning", "slam", "self-driving", "drone", "uav"]
@@ -94,6 +94,16 @@
     "MatSci": {
       "Materials": ["materials engineer", "materials scien", "metallurg", "ceramic", "composite", "corrosion", "coating"]
     }
+  },
+
+  "_non_engineering_readme": "Employer career feeds list every internship. A role whose title matches one of these and matches no engineering keyword is left out of the Jobs page — it keeps HR/Finance/Sales internships from being filed under a major. Add a phrase if you see an off-topic role slip through.",
+  "non_engineering_titles": ["human resources", "hr ", "hrbp", "people operations", "people relations", "pension", "benefits", "payroll", "recruit", "talent acquisition", "finance intern", "finance co-op", "accounting", "audit", "tax intern", "treasury", "legal intern", "paralegal", "compliance intern", "marketing", "brand ", "public relations", "communications intern", "social media", "sales intern", "sales co-op", "account executive", "customer service", "customer experience", "customer success", "call center", "merchandis", "retail", "real estate", "procurement clerk", "office administra", "administrative assistant", "executive assistant", "graphic design", "content creator", "copywrit", "journalis", "market research", "customs", "insurance", "claims"],
+
+  "_taxonomy_exclusions_readme": "Veto phrases: if a title matches one of these, that discipline is dropped even when a keyword hit. Other disciplines on the same title are unaffected. Add a phrase here when you see a role tagged with the wrong major.",
+  "taxonomy_exclusions": {
+    "Civil": ["civil liberties", "civil rights", "civil war", "construction project analyst", "digital construction", "construction systems", "construction data", "construction technology", "construction software", "construction marketing", "construction sales", "construction finance", "construction accounting", "construction recruiter"],
+    "NERS": ["radiation oncology", "nuclear medicine technologist", "nuclear pharmacy"],
+    "ME": ["mechanical technician apprentice"]
   },
 
   "category_fallback": {

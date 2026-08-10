@@ -1,0 +1,61 @@
+name: Verify job feeds
+
+# Probes the candidate feed URLs in data/feed-candidates.json, keeps the ones
+# that actually return roles, and writes them into data/companies.json.
+# Run this after adding new employers or candidates — then the weekly
+# "Update careers data" run will start pulling their listings.
+
+on:
+  workflow_dispatch:
+    inputs:
+      recheck_existing:
+        description: "Also re-check feeds that already work (slower)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: careers-data
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe candidate feeds
+        run: |
+          if [ "${{ inputs.recheck_existing }}" = "true" ]; then
+            python scripts/verify_feeds.py --all
+          else
+            python scripts/verify_feeds.py
+          fi
+      - name: Commit verified feeds
+        run: |
+          git config user.name "battle-pass-bot"
+          git config user.email "actions@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git add data/companies.json data/feed-report.json
+            if git diff --cached --quiet; then
+              echo "No feed changes."
+              exit 0
+            fi
+            git commit -m "Verify job feeds: promote working employer feeds"
+            if git push; then
+              echo "Pushed on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected — main moved. Re-syncing and retrying..."
+            git fetch origin main
+            git reset --mixed origin/main
+            sleep 5
+          done
+          echo "::error::Could not push after 3 attempts."
+          exit 1

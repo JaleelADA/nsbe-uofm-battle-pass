@@ -1913,6 +1913,188 @@
       "careers": "https://www.itc-holdings.com/careers",
       "status": "target",
       "notes": "Novi MI \u2014 largest independent transmission grid operator"
+    },
+    {
+      "name": "Oklo",
+      "sectors": [
+        "Energy",
+        "Startup"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "EE",
+        "MatSci"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://oklo.com/careers",
+      "status": "target",
+      "notes": "Advanced fission startup \u2014 SMR design"
+    },
+    {
+      "name": "Kairos Power",
+      "sectors": [
+        "Energy",
+        "Startup"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "MatSci",
+        "ChemE"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://kairospower.com/careers/",
+      "status": "target",
+      "notes": "Molten-salt reactor developer; large intern cohort"
+    },
+    {
+      "name": "TerraPower",
+      "sectors": [
+        "Energy",
+        "Startup"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "EE",
+        "MatSci"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://www.terrapower.com/careers/",
+      "status": "target",
+      "notes": "Gates-backed advanced reactor company"
+    },
+    {
+      "name": "Radiant Nuclear",
+      "sectors": [
+        "Energy",
+        "Startup"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "EE"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://www.radiantnuclear.com/careers",
+      "status": "target",
+      "notes": "Portable microreactors"
+    },
+    {
+      "name": "Commonwealth Fusion Systems",
+      "sectors": [
+        "Energy",
+        "Startup"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "EE",
+        "MatSci"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://cfs.energy/careers",
+      "status": "target",
+      "notes": "Fusion \u2014 heavy on magnets/materials/controls"
+    },
+    {
+      "name": "Antares Nuclear",
+      "sectors": [
+        "Energy",
+        "Startup",
+        "Defense"
+      ],
+      "majors": [
+        "NERS",
+        "ME",
+        "EE",
+        "CS"
+      ],
+      "orgs": [],
+      "partner": false,
+      "careers": "https://www.antares.industries/careers",
+      "status": "target",
+      "notes": "Already appearing in live listings"
+    },
+    {
+      "name": "WSP",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "EnvE",
+        "EE",
+        "ME"
+      ],
+      "orgs": [
+        "ASCE",
+        "SWE"
+      ],
+      "partner": false,
+      "careers": "https://www.wsp.com/en-us/careers",
+      "status": "target",
+      "notes": "Already appearing in live listings"
+    },
+    {
+      "name": "Walter P Moore",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil"
+      ],
+      "orgs": [
+        "ASCE"
+      ],
+      "partner": false,
+      "careers": "https://www.walterpmoore.com/careers",
+      "status": "target",
+      "notes": "Structural/diagnostics \u2014 active intern postings"
+    },
+    {
+      "name": "Barton Malow",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "ME",
+        "IOE"
+      ],
+      "orgs": [
+        "ASCE",
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://bartonmalow.com/careers/",
+      "status": "target",
+      "notes": "Michigan HQ (Southfield) \u2014 strong local civil pipeline"
+    },
+    {
+      "name": "Walbridge",
+      "sectors": [
+        "Construction & Civil"
+      ],
+      "majors": [
+        "Civil",
+        "ME",
+        "EE"
+      ],
+      "orgs": [
+        "ASCE",
+        "NSBE"
+      ],
+      "partner": false,
+      "careers": "https://www.walbridge.com/careers/",
+      "status": "target",
+      "notes": "Detroit HQ construction firm"
     }
   ],
   "recruiting_cycles": [

@@ -69,19 +69,38 @@ def build_matchers(config):
         for cat, kws in cats.items():
             for kw in kws:
                 matchers.append((disc, cat, re.compile(r"\b" + re.escape(kw))))
+    # Compiled once and cached on the config so classify() keeps its signature.
+    config["_exclusions"] = {
+        disc: [re.compile(r"\b" + re.escape(k)) for k in kws]
+        for disc, kws in (config.get("taxonomy_exclusions") or {}).items()
+    }
     return matchers
 
 
 def classify(title, simplify_category, matchers, config):
-    """Returns (disciplines, categories) for a job title."""
+    """Returns (disciplines, categories) for a job title.
+
+    A discipline keyword can fire on an unrelated title ("Civil Liberties
+    Software Engineer" is not civil engineering), so each discipline may list
+    veto phrases under taxonomy_exclusions in jobs-config.json. A vetoed
+    discipline drops out along with its categories; other matches survive, so
+    that example still classifies as CS.
+    """
     t = " " + title.lower() + " "
-    discs, cats = [], []
+    exclusions = config.get("_exclusions") or {}
+    pairs = []
     for disc, cat, rx in matchers:
-        if rx.search(t):
-            if disc not in discs:
-                discs.append(disc)
-            if cat not in cats:
-                cats.append(cat)
+        if rx.search(t) and (disc, cat) not in pairs:
+            pairs.append((disc, cat))
+    pairs = [(d, c) for (d, c) in pairs
+             if not any(ex.search(t) for ex in exclusions.get(d, []))]
+
+    discs, cats = [], []
+    for d, c in pairs:
+        if d not in discs:
+            discs.append(d)
+        if c not in cats:
+            cats.append(c)
     if not discs and simplify_category:
         fb = config["category_fallback"].get(simplify_category)
         if fb:
@@ -156,6 +175,23 @@ def pull_simplify(url, level, matchers, config, fixture_name, source="simplify")
 
 # Word-boundary on both sides: "Intern"/"Internship(s)" yes, "Internal"/"International" no.
 ROLE_RX = re.compile(r"\binterns?(?:ship)?\b|\bco[- ]?op\b|new grad|university grad|entry level|early career|campus hire|graduate engineer|rotational", re.I)
+
+# A title has to read as technical before we'll assume an employer's recruited
+# majors apply to it.
+ENG_HINT_RX = re.compile(
+    r"\bengineer|\bengineering\b|\btechnical\b|\btechnolog|\br&d\b|\bdesign\b|"
+    r"\bmanufactur|\bquality\b|\bscien|\bdevelop|\bautomation\b|\breliability\b|"
+    r"\bprocess\b|\bproduct development\b|\bhardware\b|\bsoftware\b|\blab\b|"
+    r"\btechnician\b|\bmaintenance\b|\bsupply chain\b|\boperations\b", re.I)
+
+
+def is_non_engineering(title, config):
+    """True for roles an engineering careers site shouldn't file under a major."""
+    t = " " + title.lower() + " "
+    for kw in (config.get("non_engineering_titles") or []):
+        if re.search(r"\b" + re.escape(kw.lower()), t):
+            return True
+    return False
 NEWGRAD_RX = re.compile(r"new grad|entry|early career|graduate|rotational", re.I)
 INTERN_RX = re.compile(r"\binterns?(?:ship)?\b|\bco[- ]?op\b", re.I)
 
@@ -195,16 +231,37 @@ def pull_ats(company_entry, matchers, config):
             loc = ((p.get("categories") or {}).get("location")) or ""
             jobs.append(slim(name, title, p.get("hostedUrl", ""), [loc] if loc else [],
                              infer_level(title), discs, cats, posted, "", "lever", config))
+    elif kind == "ashby":
+        # Common among the reactor/robotics startups, which is where a lot of
+        # the Nuclear and Robotics openings live.
+        data = fetch_json("https://api.ashbyhq.com/posting-api/job-board/%s" % slug, "ashby-" + slug)
+        for p in (data or {}).get("jobs", []) or []:
+            title = str(p.get("title", ""))
+            if not ROLE_RX.search(title):
+                continue
+            discs, cats = classify(title, None, matchers, config)
+            loc = str(p.get("location", "") or "")
+            jobs.append(slim(name, title, p.get("jobUrl", ""), [loc] if loc else [],
+                             infer_level(title), discs, cats,
+                             str(p.get("publishedAt", ""))[:10], "", "ashby", config))
     elif kind == "workday":
         jobs = pull_workday(name, slug, matchers, config)
     else:
         raise RuntimeError("unknown ats kind: " + ats)
-    # Generic titles ("R&D Engineer Intern") carry no discipline keywords —
-    # fall back to the majors the board says this company recruits.
+    # Employer feeds list every internship, not just engineering ones. Drop the
+    # clearly non-technical roles (Finance, HR, Customs, Communications…) unless
+    # a discipline keyword actually matched the title — otherwise an HR co-op at
+    # a medical-device company ends up filed under Biomedical Engineering.
+    jobs = [j for j in jobs
+            if j["disc"] != ["Other"] or not is_non_engineering(j["title"], config)]
+
+    # Generic engineering titles ("R&D Engineer Intern") carry no discipline
+    # keywords — fall back to the majors the board says this company recruits.
+    # Gated on the title reading as technical, for the same reason as above.
     majors = [m for m in company_entry.get("majors", []) if m in config["disciplines"] and m != "Other"]
     if majors:
         for j in jobs:
-            if j["disc"] == ["Other"]:
+            if j["disc"] == ["Other"] and ENG_HINT_RX.search(j["title"]):
                 j["disc"] = majors[:3]
     return jobs
 
@@ -354,6 +411,28 @@ def main():
             time.sleep(0.4)  # be polite to public APIs
         except Exception as e:
             report["sources_failed"].append("ats %s: %s" % (c.get("ats"), e))
+
+    # Collapse the same role listed once per city (sources post "Digital
+    # Construction Project Analyst" four times for four offices). Keep one row
+    # and gather the locations onto it rather than showing four identical rows.
+    merged = {}
+    for j in all_jobs:
+        key = (j["company"].strip().lower(), j["title"].strip().lower(), j["level"])
+        prev = merged.get(key)
+        if prev is None:
+            merged[key] = j
+            continue
+        for loc in j["locs"]:
+            if loc not in prev["locs"]:
+                prev["locs"].append(loc)
+        del prev["locs"][3:]
+        if (j.get("posted") or "") > (prev.get("posted") or ""):
+            prev["posted"] = j["posted"]
+        prev["fresh"] = prev["fresh"] or j["fresh"]
+        prev["coop"] = prev["coop"] or j["coop"]
+    collapsed = len(all_jobs) - len(merged)
+    all_jobs = list(merged.values())
+    report["collapsed_duplicates"] = collapsed
 
     # Cap size per level, newest first, so jobs.json stays fast to load.
     # Freshman-friendly roles are exempt: they are rare (a handful out of

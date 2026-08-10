@@ -8,11 +8,21 @@ on:
 permissions:
   contents: write
 
+# Two runs writing data/ at once would race each other to push.
+concurrency:
+  group: careers-data
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Always start from the tip of main. Without this, re-running an
+          # older run checks out that run's original commit, so the push is
+          # rejected the moment main has moved on.
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -22,10 +32,26 @@ jobs:
         run: |
           git config user.name "battle-pass-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/jobs.json data/companies.json
-          if git diff --cached --quiet; then
-            echo "No changes this week."
-          else
+
+          # The pull takes several minutes; a merge to main during that window
+          # makes the first push fail. Re-base our generated files onto the new
+          # tip and try again — the data files are regenerated wholesale, so
+          # replaying them on top of the newer commit is always correct.
+          for attempt in 1 2 3; do
+            git add data/jobs.json data/companies.json
+            if git diff --cached --quiet; then
+              echo "No changes to commit."
+              exit 0
+            fi
             git commit -m "Weekly careers data refresh"
-            git push
-          fi
+            if git push; then
+              echo "Pushed on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected — main moved. Re-syncing and retrying..."
+            git fetch origin main
+            git reset --mixed origin/main   # keeps the generated files, drops our commit
+            sleep 5
+          done
+          echo "::error::Could not push after 3 attempts."
+          exit 1

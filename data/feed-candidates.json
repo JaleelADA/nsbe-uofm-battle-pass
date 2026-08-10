@@ -1,0 +1,177 @@
+{
+  "_readme": "Candidate job-feed URLs for employers that don't have one yet. These are GUESSES \u2014 run the 'Verify job feeds' workflow (Actions tab) and it will probe each one, keep only the ones that actually return student roles, write them into data/companies.json, and record the results in data/feed-report.json. Nothing here reaches the site until it has been verified.",
+  "_how_to_find_a_feed_by_hand": [
+    "Open the company's careers site and search for 'intern'.",
+    "If the address bar looks like https://HOST/en-US/SITE/... on a *.myworkdayjobs.com domain, the feed is workday:HOST/TENANT/SITE \u2014 the TENANT is the path segment right after the host in the job links (e.g. cat.wd5.myworkdayjobs.com/cat/CaterpillarCareers).",
+    "If it looks like boards.greenhouse.io/COMPANY, use greenhouse:COMPANY.",
+    "If it looks like jobs.lever.co/COMPANY, use lever:COMPANY.",
+    "Paste the result into that company's \"ats\" field in data/companies.json."
+  ],
+  "candidates": {
+    "Kiewit": [
+      "workday:kiewit.wd1.myworkdayjobs.com/kiewit/Kiewit_Careers",
+      "workday:kiewit.wd1.myworkdayjobs.com/kiewit/External",
+      "workday:kiewit.wd5.myworkdayjobs.com/kiewit/Careers"
+    ],
+    "AECOM": [
+      "workday:aecom.wd1.myworkdayjobs.com/aecom/AECOM_External",
+      "workday:aecom.wd1.myworkdayjobs.com/aecom/External",
+      "workday:aecom.wd1.myworkdayjobs.com/aecom/Careers"
+    ],
+    "Jacobs": [
+      "workday:jacobs.wd1.myworkdayjobs.com/jacobs/External",
+      "workday:jacobs.wd1.myworkdayjobs.com/jacobs/Careers",
+      "workday:jacobs.wd5.myworkdayjobs.com/jacobs/JacobsCareers"
+    ],
+    "Bechtel": [
+      "workday:bechtel.wd1.myworkdayjobs.com/bechtel/External",
+      "workday:bechtel.wd1.myworkdayjobs.com/bechtel/BechtelCareers",
+      "workday:bechtel.wd5.myworkdayjobs.com/bechtel/Careers"
+    ],
+    "Turner Construction": [
+      "workday:turnerconstruction.wd1.myworkdayjobs.com/turnerconstruction/External",
+      "workday:turner.wd1.myworkdayjobs.com/turner/Careers",
+      "greenhouse:turnerconstruction"
+    ],
+    "Burns & McDonnell": [
+      "workday:burnsmcd.wd1.myworkdayjobs.com/burnsmcd/External",
+      "workday:burnsmcd.wd1.myworkdayjobs.com/burnsmcd/BurnsMcDonnell",
+      "workday:burnsmcd.wd5.myworkdayjobs.com/burnsmcd/Careers"
+    ],
+    "HDR": [
+      "workday:hdrinc.wd1.myworkdayjobs.com/hdrinc/External",
+      "workday:hdr.wd1.myworkdayjobs.com/hdr/Careers",
+      "workday:hdrinc.wd5.myworkdayjobs.com/hdrinc/HDRCareers"
+    ],
+    "Kimley-Horn": [
+      "workday:kimley-horn.wd1.myworkdayjobs.com/kimley-horn/External",
+      "workday:kimleyhorn.wd1.myworkdayjobs.com/kimleyhorn/Careers",
+      "greenhouse:kimleyhorn"
+    ],
+    "DTE Energy": [
+      "workday:dtee.wd1.myworkdayjobs.com/dtee/External",
+      "workday:dteenergy.wd1.myworkdayjobs.com/dteenergy/Careers",
+      "workday:dtee.wd5.myworkdayjobs.com/dtee/DTECareers"
+    ],
+    "Consumers Energy": [
+      "workday:cmsenergy.wd1.myworkdayjobs.com/cmsenergy/External",
+      "workday:consumersenergy.wd1.myworkdayjobs.com/consumersenergy/Careers",
+      "workday:cmsenergy.wd5.myworkdayjobs.com/cmsenergy/CMSCareers"
+    ],
+    "NextEra Energy": [
+      "workday:nexteraenergy.wd1.myworkdayjobs.com/nexteraenergy/External",
+      "workday:nexteraenergy.wd1.myworkdayjobs.com/nexteraenergy/Careers",
+      "workday:nee.wd1.myworkdayjobs.com/nee/External"
+    ],
+    "Constellation Energy": [
+      "workday:constellation.wd1.myworkdayjobs.com/constellation/External",
+      "workday:constellationenergy.wd1.myworkdayjobs.com/constellationenergy/Careers",
+      "workday:exeloncorp.wd1.myworkdayjobs.com/exeloncorp/External"
+    ],
+    "Westinghouse": [
+      "workday:westinghouse.wd1.myworkdayjobs.com/westinghouse/External",
+      "workday:westinghousenuclear.wd1.myworkdayjobs.com/westinghousenuclear/Careers",
+      "workday:westinghouse.wd5.myworkdayjobs.com/westinghouse/WECCareers"
+    ],
+    "Holtec International": [
+      "workday:holtec.wd1.myworkdayjobs.com/holtec/External",
+      "greenhouse:holtecinternational",
+      "lever:holtec"
+    ],
+    "X-energy": [
+      "greenhouse:xenergy",
+      "lever:x-energy",
+      "workday:xenergy.wd1.myworkdayjobs.com/xenergy/External"
+    ],
+    "ExxonMobil": [
+      "workday:exxonmobil.wd5.myworkdayjobs.com/exxonmobil/External",
+      "workday:exxonmobil.wd5.myworkdayjobs.com/exxonmobil/ExxonMobil_Careers",
+      "workday:exxonmobil.wd1.myworkdayjobs.com/exxonmobil/Careers"
+    ],
+    "Marathon Petroleum": [
+      "workday:marathonpetroleum.wd5.myworkdayjobs.com/marathonpetroleum/External",
+      "workday:mpc.wd5.myworkdayjobs.com/mpc/Careers",
+      "workday:marathonpetroleum.wd1.myworkdayjobs.com/marathonpetroleum/MPCCareers"
+    ],
+    "ITC Holdings": [
+      "workday:itctransco.wd1.myworkdayjobs.com/itctransco/External",
+      "workday:itcholdings.wd1.myworkdayjobs.com/itcholdings/Careers",
+      "greenhouse:itcholdings"
+    ],
+    "DuPont": [
+      "workday:dupont.wd1.myworkdayjobs.com/dupont/External",
+      "workday:dupont.wd5.myworkdayjobs.com/dupont/DuPontCareers",
+      "workday:dupont.wd1.myworkdayjobs.com/dupont/Careers"
+    ],
+    "BASF": [
+      "workday:basf.wd3.myworkdayjobs.com/basf/External",
+      "workday:basf.wd3.myworkdayjobs.com/basf/BASFCareers",
+      "workday:basf.wd1.myworkdayjobs.com/basf/Careers"
+    ],
+    "Corning": [
+      "workday:corning.wd1.myworkdayjobs.com/corning/External",
+      "workday:corning.wd5.myworkdayjobs.com/corning/CorningCareers",
+      "workday:corning.wd1.myworkdayjobs.com/corning/Careers"
+    ],
+    "Boston Scientific": [
+      "workday:bostonscientific.wd1.myworkdayjobs.com/bostonscientific/External",
+      "workday:bsci.wd1.myworkdayjobs.com/bsci/Careers",
+      "workday:bostonscientific.wd5.myworkdayjobs.com/bostonscientific/BSCCareers"
+    ],
+    "Zimmer Biomet": [
+      "workday:zimmerbiomet.wd5.myworkdayjobs.com/zimmerbiomet/External",
+      "workday:zimmerbiomet.wd1.myworkdayjobs.com/zimmerbiomet/Careers",
+      "greenhouse:zimmerbiomet"
+    ],
+    "Oklo": [
+      "greenhouse:oklo",
+      "lever:oklo",
+      "ashby:oklo"
+    ],
+    "Kairos Power": [
+      "greenhouse:kairospower",
+      "lever:kairospower",
+      "ashby:kairospower"
+    ],
+    "TerraPower": [
+      "greenhouse:terrapower",
+      "lever:terrapower",
+      "workday:terrapower.wd1.myworkdayjobs.com/terrapower/External"
+    ],
+    "Radiant Nuclear": [
+      "greenhouse:radiantnuclear",
+      "lever:radiant",
+      "ashby:radiant"
+    ],
+    "Commonwealth Fusion Systems": [
+      "greenhouse:commonwealthfusionsystems",
+      "lever:cfs",
+      "ashby:commonwealthfusionsystems"
+    ],
+    "Antares Nuclear": [
+      "greenhouse:antaresnuclear",
+      "lever:antares",
+      "ashby:antares"
+    ],
+    "Barton Malow": [
+      "greenhouse:bartonmalow",
+      "workday:bartonmalow.wd1.myworkdayjobs.com/bartonmalow/External",
+      "lever:bartonmalow"
+    ],
+    "Walbridge": [
+      "greenhouse:walbridge",
+      "workday:walbridge.wd1.myworkdayjobs.com/walbridge/External",
+      "lever:walbridge"
+    ],
+    "WSP": [
+      "workday:wsp.wd3.myworkdayjobs.com/wsp/External",
+      "workday:wsp.wd3.myworkdayjobs.com/wsp/WSP_Careers",
+      "greenhouse:wsp"
+    ],
+    "Walter P Moore": [
+      "greenhouse:walterpmoore",
+      "workday:walterpmoore.wd1.myworkdayjobs.com/walterpmoore/External",
+      "lever:walterpmoore"
+    ]
+  }
+}
